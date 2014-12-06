@@ -1,5 +1,6 @@
 int main() {
 
+int i;
 int tab[10];
 	
 #pragma omp parallel for

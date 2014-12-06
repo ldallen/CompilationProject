@@ -1,8 +1,10 @@
 int main() {
-	
+
+int i;
+int a=2;
 #pragma omp parallel for
-for (i=0; i<10; i=i+1) {
-   (Statement)
+for (i=a; i<200; i=i+1) {
+	
 }
   
   return 0;
