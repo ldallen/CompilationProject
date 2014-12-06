@@ -1,35 +1,41 @@
 %{
     #include <stdio.h>
+    #include <stdlib.h>
+    #include "type.h"
     extern int yylineno;
     int bt;
-    int nb_args;
+    int nliste;
     int yylex ();
     int yyerror ();
 
 %}
-%type <t> declarator
-%type <t> parameter_declaration
-%type <lt> parameter_list
+
 %token <str> IDENTIFIER 
 %token <n> ICONSTANT 
 %token <f> FCONSTANT
 %token INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
 %token INT FLOAT VOID
 %token IF ELSE WHILE RETURN FOR DO
+%type <t> declarator
+%type <t> parameter_declaration
+%type <lt> parameter_list
 %union {
+  type_t t;
+  type_t lt[1000];
   char *str;
-  int n; float f; type_t t; type_t lt[100];
+  int n;
+  float f;
 }
 %start program
 %%
 
 primary_expression
-: IDENTIFIER 
+: IDENTIFIER
 | ICONSTANT {printf("%d\n",$1); }
 | FCONSTANT {printf("%f\n",$1); }
 | '(' expression ')'
-| IDENTIFIER '(' ')'{printf("%s\n",$1); }
-| IDENTIFIER '(' argument_expression_list ')'
+| IDENTIFIER '(' ')' 
+| IDENTIFIER '(' argument_expression_list ')' 
 | IDENTIFIER INC_OP
 | IDENTIFIER DEC_OP
 | IDENTIFIER '[' expression ']'
@@ -83,32 +89,28 @@ declarator_list
 ;
 
 type_name
-: VOID  {bt = VOID;}
-| INT   {bt = INT;}
-| FLOAT {bt = FLOAT;}
-;
+: VOID  {bt = VOID_T;}
+| INT  {bt = INT_T;}
+| FLOAT {bt = FLOAT_T;}
+; 
 
 declarator
-: IDENTIFIER  							{$$.type = bt;$$.size=0;$$.params=NULL;}
-| '*' IDENTIFIER 						{if (bt == VOID)
-											return EXIT_FAILURE;
-										else		
-											$$.type = bt+1;$$.size=0;$$.params=NULL;}
-| IDENTIFIER '[' ICONSTANT ']' 			{if (bt == INT)
-											$$.type=INTVECT;$$.size=$3;$$.params=NULL;
-										else
-											return EXIT_FAILURE;}
-| declarator '(' parameter_list ')'		{$$.type=FUNCTION;$$.size=nb_args;$$.params=append($1.type,parameter_list); //  /!\ la fonction append ne marche pas, il faut faire notre propre fonction /!\ } 
-| declarator '(' ')'					{$$.type=FUNCTION;$$.size=0;$$.params=append($1,NULL);}
+: IDENTIFIER  { $$.element_type = bt; $$.kind = -1 ;}
+| '*' IDENTIFIER { if(bt == VOID_T) {perror("void* not allowed"); exit(0);} else $$.element_type = bt+1 ; $$.kind = -1;}
+| IDENTIFIER '[' ICONSTANT ']' {$$.element_type = bt; $$.kind = 0;
+ $$.element_size = $3;}
+| declarator '(' parameter_list ')' {$$.element_type = bt; $$.kind = 1; 
+$$.element_size = nliste; $$.function_parameters = $3;} 
+| declarator '(' ')' {$$.element_type = bt; $$.kind = 1; $$.element_size = 0;}
 ;
 
 parameter_list
-: parameter_declaration						{$$[0]=$1;nb_args=1;}
-| parameter_list ',' parameter_declaration	{$$[nb_args++]=$3;}
+: parameter_declaration {$$[0] = $1; nliste=1;}
+| parameter_list ',' parameter_declaration {$$[nliste++] = $3;}
 ;
 
 parameter_declaration
-: type_name declarator	{$$=$2;} 
+: type_name declarator {$$ = $2;}
 ;
 
 statement
@@ -148,7 +150,7 @@ selection_statement
 iteration_statement
 : WHILE '(' expression ')' statement
 | FOR '(' expression_statement expression_statement expression ')' statement
-| DO statement WHILE '('expression')'';'
+| DO  statement  WHILE '(' expression ')' ';'
 ;
 
 jump_statement
