@@ -72,14 +72,17 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 15 "parser.y"
+#line 41 "parser.y"
 
+  type_t t;
+  type_t lt[1000];
   char *str;
-  int n; float f;
+  int n;
+  float f;
 
 
 /* Line 2058 of yacc.c  */
-#line 83 "parser.tab.h"
+#line 86 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

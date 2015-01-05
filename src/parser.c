@@ -66,13 +66,21 @@
 #line 1 "parser.y"
 
     #include <stdio.h>
+    #include <stdlib.h>
+    #include "type.h"
     extern int yylineno;
+    int bt;
+    int nliste = 0;
+    int dliste = 0;
+    int sliste = 0;
+    int pliste = 0;
+    int level = 0;
     int yylex ();
     int yyerror ();
 
 
 /* Line 371 of yacc.c  */
-#line 76 "parser.c"
+#line 84 "parser.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -134,14 +142,17 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 15 "parser.y"
+#line 41 "parser.y"
 
+  type_t t;
+  type_t lt[1000];
   char *str;
-  int n; float f;
+  int n;
+  float f;
 
 
 /* Line 387 of yacc.c  */
-#line 145 "parser.c"
+#line 156 "parser.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -169,7 +180,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 173 "parser.c"
+#line 184 "parser.c"
 
 #ifdef short
 # undef short
@@ -485,16 +496,16 @@ static const yytype_int8 yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    23,    23,    24,    25,    26,    27,    28,    29,    30,
-      31,    35,    36,    40,    41,    42,    46,    47,    51,    52,
-      53,    57,    58,    59,    60,    61,    62,    63,    67,    68,
-      69,    73,    77,    78,    82,    83,    84,    88,    89,    90,
-      91,    92,    96,    97,   101,   105,   106,   107,   108,   109,
-     113,   114,   115,   119,   120,   124,   125,   129,   130,   134,
-     135,   139,   140,   141,   145,   146,   150,   151,   155,   156,
-     160
+       0,    52,    52,    53,    54,    55,    56,    57,    58,    59,
+      60,    64,    65,    69,    76,    83,    93,   100,   116,   123,
+     136,   152,   159,   172,   185,   199,   213,   227,   244,   256,
+     275,   285,   289,   290,   294,   295,   296,   300,   301,   302,
+     304,   306,   310,   311,   315,   319,   320,   321,   322,   323,
+     327,   328,   329,   333,   334,   338,   339,   343,   344,   348,
+     349,   353,   354,   355,   359,   360,   364,   365,   369,   370,
+     374
 };
 #endif
 
@@ -1504,25 +1515,445 @@ yyreduce:
     {
         case 3:
 /* Line 1792 of yacc.c  */
-#line 24 "parser.y"
-    {printf("%d\n",(yyvsp[(1) - (1)].n)); }
+#line 53 "parser.y"
+    {/*printf("%d\n",$1);*/ }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 25 "parser.y"
-    {printf("%f\n",(yyvsp[(1) - (1)].f)); }
+#line 54 "parser.y"
+    {/*printf("%f\n",$1);*/ }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 27 "parser.y"
-    {printf("%s\n",(yyvsp[(1) - (3)].str)); }
+#line 56 "parser.y"
+    {(yyval.t).element_type = (yyvsp[(1) - (3)].t).element_type;}
+    break;
+
+  case 7:
+/* Line 1792 of yacc.c  */
+#line 57 "parser.y"
+    {(yyval.t).element_type = (yyvsp[(1) - (4)].t).element_type;}
+    break;
+
+  case 8:
+/* Line 1792 of yacc.c  */
+#line 58 "parser.y"
+    {if((yyvsp[(1) - (2)].t).element_type == INT_T && (yyvsp[(1) - (2)].t).kind == -1) {/*$1.n = ($1.no ++); printf("%d\n",$1.no);}*/}}
+    break;
+
+  case 9:
+/* Line 1792 of yacc.c  */
+#line 59 "parser.y"
+    {if((yyvsp[(1) - (2)].t).element_type == INT_T && (yyvsp[(1) - (2)].t).kind == -1) {/*$1.n = ($1.no --); printf("%d\n",$1.no);}*/}}
+    break;
+
+  case 10:
+/* Line 1792 of yacc.c  */
+#line 60 "parser.y"
+    {(yyval.t).element_type = (yyvsp[(1) - (4)].t).element_type;}
+    break;
+
+  case 13:
+/* Line 1792 of yacc.c  */
+#line 69 "parser.y"
+    {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
+     (yyval.t).element_type = INT_T;
+     //$$.no =  $1.no;
+     else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.fo = $1.fo;
+ }
+    break;
+
+  case 14:
+/* Line 1792 of yacc.c  */
+#line 76 "parser.y"
+    {if ((yyvsp[(2) - (2)].t).element_type == INT_T)
+      (yyval.t).element_type = INT_T;
+      //$$.no = - $2.no;
+     else if ((yyvsp[(2) - (2)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.fo = - $2.fo;
+  }
+    break;
+
+  case 15:
+/* Line 1792 of yacc.c  */
+#line 83 "parser.y"
+    {if ((yyvsp[(2) - (2)].t).element_type == INT_T)
+      (yyval.t).element_type = INT_T;
+      //$$.no = (! $2.no);
+     else if ((yyvsp[(2) - (2)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.fo = (! $2.fo);
+  }
+    break;
+
+  case 16:
+/* Line 1792 of yacc.c  */
+#line 93 "parser.y"
+    {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
+     (yyval.t).element_type = INT_T;
+     //$$.no =  $1.no;
+     else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.fo = $1.fo;
+ }
+    break;
+
+  case 17:
+/* Line 1792 of yacc.c  */
+#line 100 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+      (yyval.t).element_type = INT_T;
+      //$$.no = $1.no * $3.no;
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.no * $3.fo;
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.fo * $3.no;
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.fo * $3.fo;
+}
+    break;
+
+  case 18:
+/* Line 1792 of yacc.c  */
+#line 116 "parser.y"
+    {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
+     (yyval.t).element_type = INT_T;
+     //$$.no =  $1.no;
+     else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.fo = $1.fo;
+       }
+    break;
+
+  case 19:
+/* Line 1792 of yacc.c  */
+#line 123 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+      (yyval.t).element_type = INT_T;
+      // $$.no = $1.no + $3.no;
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     // $$.fo = $1.no + $3.fo;
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     // $$.fo = $1.fo + $3.no;
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.fo + $3.fo;
+}
+    break;
+
+  case 20:
+/* Line 1792 of yacc.c  */
+#line 136 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+      (yyval.t).element_type = INT_T;
+      // $$.no = $1.no - $3.no;
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.no - $3.fo;
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.fo - $3.no;
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = $1.fo - $3.fo;
+}
+    break;
+
+  case 21:
+/* Line 1792 of yacc.c  */
+#line 152 "parser.y"
+    {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
+     (yyval.t).element_type = INT_T;
+     //$$.no =  $1.no;
+     else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.fo = $1.fo;
+       }
+    break;
+
+  case 22:
+/* Line 1792 of yacc.c  */
+#line 159 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+      (yyval.t).element_type = INT_T;
+      //$$.no = ($1.no < $3.no);
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = ($1.no < $3.fo);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = ($1.fo < $3.no);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = ($1.fo < $3.fo);
+}
+    break;
+
+  case 23:
+/* Line 1792 of yacc.c  */
+#line 172 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+      (yyval.t).element_type = INT_T;
+      //$$.no = ($1.no > $3.no);
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = ($1.no > $3.fo);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = ($1.fo > $3.no);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.fo = ($1.fo > $3.fo);
+}
+    break;
+
+  case 24:
+/* Line 1792 of yacc.c  */
+#line 186 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+    (yyval.t).element_type = INT_T;
+    //$$.n = ($1.n >= $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.n >= $3.f);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.f >= $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.f >= $3.f);
+}
+    break;
+
+  case 25:
+/* Line 1792 of yacc.c  */
+#line 200 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+    (yyval.t).element_type = INT_T;
+    //$$.n = ($1.n <= $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.n <= $3.f);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.f <= $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     // $$.f = ($1.f <= $3.f);
+}
+    break;
+
+  case 26:
+/* Line 1792 of yacc.c  */
+#line 214 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+    (yyval.t).element_type = INT_T;
+    //$$.n = ($1.n == $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.n == $3.f);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     // $$.f = ($1.f == $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.f == $3.f);
+}
+    break;
+
+  case 27:
+/* Line 1792 of yacc.c  */
+#line 228 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+    (yyval.t).element_type = INT_T;
+  //$$.n = ($1.n != $3.n);
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+    (yyval.t).element_type = FLOAT_T;
+    //$$.f = ($1.n != $3.f);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.f != $3.n);
+   else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+     (yyval.t).element_type = FLOAT_T;
+     //$$.f = ($1.f != $3.f);
+}
+    break;
+
+  case 28:
+/* Line 1792 of yacc.c  */
+#line 244 "parser.y"
+    {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+     (yyval.t).element_type = INT_T;
+     //($1.n = $3.n);
+ else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+   perror("int = float not allowed");
+ else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
+   (yyval.t).element_type = FLOAT_T;
+   //($1.f = $3.n);
+ else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+   (yyval.t).element_type = FLOAT_T;
+   //($1.f = $3.f); 
+}
+    break;
+
+  case 29:
+/* Line 1792 of yacc.c  */
+#line 257 "parser.y"
+    {if((yyvsp[(3) - (6)].t).element_type == INT_T){
+    if (((yyvsp[(1) - (6)].t).element_type == INT_T)&&((yyvsp[(3) - (6)].t).element_type == INT_T))
+      (yyval.t).element_type = INT_T;
+      //($1[$3.n].n = $6.n);
+    else if (((yyvsp[(1) - (6)].t).element_type == INT_T)&&((yyvsp[(3) - (6)].t).element_type == FLOAT_T))
+      {perror("int[int] = float not allowed"); exit(0);}
+    else if (((yyvsp[(1) - (6)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (6)].t).element_type == INT_T))
+      (yyval.t).element_type = FLOAT_T;
+      //($1[$3.n].f = $6.n);
+    else if (((yyvsp[(1) - (6)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (6)].t).element_type == FLOAT_T))
+      (yyval.t).element_type = FLOAT_T;
+      //($1[$3.n].f = $6.f);
+  }
+  else
+    {
+      perror("expression not an int"); exit(0);
+    }
+}
+    break;
+
+  case 30:
+/* Line 1792 of yacc.c  */
+#line 275 "parser.y"
+    {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
+      (yyval.t).element_type = INT_T;
+      //$$.n =  $1.n;
+     else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
+       (yyval.t).element_type = FLOAT_T;
+       //$$.f = $1.f;
+}
+    break;
+
+  case 32:
+/* Line 1792 of yacc.c  */
+#line 289 "parser.y"
+    {(yyval.lt)[0].element_type = (yyvsp[(1) - (1)].t).element_type ; dliste =1;}
+    break;
+
+  case 33:
+/* Line 1792 of yacc.c  */
+#line 290 "parser.y"
+    {(yyval.lt)[dliste++].element_type = (yyvsp[(3) - (3)].t).element_type;}
+    break;
+
+  case 34:
+/* Line 1792 of yacc.c  */
+#line 294 "parser.y"
+    {bt = VOID_T;}
+    break;
+
+  case 35:
+/* Line 1792 of yacc.c  */
+#line 295 "parser.y"
+    {bt = INT_T;}
+    break;
+
+  case 36:
+/* Line 1792 of yacc.c  */
+#line 296 "parser.y"
+    {bt = FLOAT_T;}
+    break;
+
+  case 37:
+/* Line 1792 of yacc.c  */
+#line 300 "parser.y"
+    { (yyval.t).element_type = bt; (yyval.t).kind = -1 ;}
+    break;
+
+  case 38:
+/* Line 1792 of yacc.c  */
+#line 301 "parser.y"
+    { if(bt == VOID_T) {perror("void* not allowed"); exit(0);} else (yyval.t).element_type = bt+1 ; (yyval.t).kind = -1;}
+    break;
+
+  case 39:
+/* Line 1792 of yacc.c  */
+#line 302 "parser.y"
+    {(yyval.t).element_type = bt; (yyval.t).kind = 0;
+ (yyval.t).element_size = (yyvsp[(3) - (4)].n);}
+    break;
+
+  case 40:
+/* Line 1792 of yacc.c  */
+#line 304 "parser.y"
+    {(yyval.t).element_type = bt; (yyval.t).kind = 1; 
+(yyval.t).element_size = nliste; (yyval.t).function_parameters = (yyvsp[(3) - (4)].lt);}
+    break;
+
+  case 41:
+/* Line 1792 of yacc.c  */
+#line 306 "parser.y"
+    {(yyval.t).element_type = bt; (yyval.t).kind = 1; (yyval.t).element_size = 0;}
+    break;
+
+  case 42:
+/* Line 1792 of yacc.c  */
+#line 310 "parser.y"
+    {(yyval.lt)[0] = (yyvsp[(1) - (1)].t); nliste=1;}
+    break;
+
+  case 43:
+/* Line 1792 of yacc.c  */
+#line 311 "parser.y"
+    {(yyval.lt)[nliste++] = (yyvsp[(3) - (3)].t);}
+    break;
+
+  case 44:
+/* Line 1792 of yacc.c  */
+#line 315 "parser.y"
+    {(yyval.t) = (yyvsp[(2) - (2)].t);}
+    break;
+
+  case 53:
+/* Line 1792 of yacc.c  */
+#line 333 "parser.y"
+    {(yyval.lt)[0] = (yyvsp[(1) - (1)].t); pliste = 1;}
+    break;
+
+  case 54:
+/* Line 1792 of yacc.c  */
+#line 334 "parser.y"
+    {(yyval.lt)[pliste++] = (yyvsp[(2) - (2)].t);}
+    break;
+
+  case 55:
+/* Line 1792 of yacc.c  */
+#line 338 "parser.y"
+    {(yyval.lt)[0] = (yyvsp[(1) - (1)].t); sliste = 1;}
+    break;
+
+  case 56:
+/* Line 1792 of yacc.c  */
+#line 339 "parser.y"
+    {(yyval.lt)[pliste++] = (yyvsp[(2) - (2)].t);}
+    break;
+
+  case 58:
+/* Line 1792 of yacc.c  */
+#line 344 "parser.y"
+    {(yyval.t).element_type = (yyvsp[(1) - (2)].t).element_type;}
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1526 "parser.c"
+#line 1957 "parser.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1754,7 +2185,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 163 "parser.y"
+#line 377 "parser.y"
 
 #include <stdio.h>
 #include <string.h>

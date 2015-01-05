@@ -1,7 +1,7 @@
 #ifndef TYPE_H
 #define TYPE_H
 
-enum type{INT_T, INTSTAR_T, FLOAT_T, FLOATSTART_T, VOID_T};
+enum type{INT_T, INTSTAR_T, FLOAT_T, FLOATSTAR_T, VOID_T};
 
 typedef struct type_t{
   int kind; // -1 = single , 0 = array, 1 = function

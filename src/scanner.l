@@ -4,6 +4,7 @@ L[a-zA-Z_]
 %{
 #include <stdio.h>
 #include <string.h>
+#include "type.h"
 #include "parser.tab.h"
 void count();
 int comment ();
