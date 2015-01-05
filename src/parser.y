@@ -4,7 +4,9 @@
     #include "type.h"
     extern int yylineno;
     int bt;
-    int nliste;
+    int nliste = 0;
+    int dliste = 0;
+    int level = 0;
     int yylex ();
     int yyerror ();
 
@@ -33,12 +35,19 @@ primary_expression
 : IDENTIFIER
 | ICONSTANT {printf("%d\n",$1); }
 | FCONSTANT {printf("%f\n",$1); }
-| '(' expression ')'
-| IDENTIFIER '(' ')' 
-| IDENTIFIER '(' argument_expression_list ')' 
-| IDENTIFIER INC_OP
-| IDENTIFIER DEC_OP
-| IDENTIFIER '[' expression ']'
+| '(' expression ')' 
+| IDENTIFIER '(' ')' {if(!($1.t.element_type == VOID_T) && $1.t.kind == 1){
+     if($1.t.element_type == INT_T || $1.t.element_type == INTSTAR_T || $1.t.element_type == FLOATSTAR_T) {printf("%d\n", $1.n);}
+     if($1.t.element_type == FLOAT_T) {printf("%f\n",$1.f);}
+}} 
+| IDENTIFIER '(' argument_expression_list ')' {if(!($1.t.element_type == VOID_T) && $1.t.kind == 1){
+     if($1.t.element_type == INT_T || $1.t.element_type == INTSTAR_T || $1.t.element_type == FLOATSTAR_T) {printf("%d\n", $1.n);}
+     if($1.t.element_type == FLOAT_T) {printf("%f\n",$1.f);}
+}}
+| IDENTIFIER INC_OP {if($1.t.element_type == INT_T && $1.t.kind == -1) {$1.n = ($1.n ++); printf("%d\n",$1.n);}}
+| IDENTIFIER DEC_OP {if($1.t.element_type == INT_T && $1.t.kind == -1) {$1.n = ($1.n --); printf("%d\n",$1.n);}} 
+| IDENTIFIER '[' expression ']' {if($1.t.kind == 0) {if($1.t.element_type == INT_T) printf("%d\n", $1[$3.n].n); 
+     else if($1.t.element_type == FLOAT_T) printf("%f\n", $1[$3.n].f);}}
 ;
 
 argument_expression_list
@@ -47,36 +56,155 @@ argument_expression_list
 ;
 
 unary_expression
-: primary_expression
-| '-' unary_expression
-| '!' unary_expression
+: primary_expression {if ($1.t.element_type == INT_T)
+     $$.n =  $1.n;
+     else if ($1.t.element_type == FLOAT_T)
+       $$.f = $1.f;}
+| '-' unary_expression {if ($2.t.element_type == INT_T)
+     $$.n = - $2.n;
+     else if ($2.t.element_type == FLOAT_T)
+       $$.f = - $2.f;}
+| '!' unary_expression {if ($2.t.element_type == INT_T)
+      $$.n = (! $2.n);
+     else if ($2.t.element_type == FLOAT_T)
+       $$.f = (! $2.f);}
 ;
 
 multiplicative_expression
-: unary_expression
-| multiplicative_expression '*' unary_expression
+: unary_expression {if ($1.t.element_type == INT_T)
+     $$.n =  $1.n;
+     else if ($1.t.element_type == FLOAT_T)
+       $$.f = $1.f;}
+| multiplicative_expression '*' unary_expression {if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+      $$.n = $1.n * $3.n;
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+      $$.f = $1.n * $3.f;
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+      $$.f = $1.f * $3.n;
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+      $$.f = $1.f * $3.f;
+}
 ;
 
 additive_expression
-: multiplicative_expression
-| additive_expression '+' multiplicative_expression
-| additive_expression '-' multiplicative_expression
+: multiplicative_expression {if ($1.t.element_type == INT_T)
+     $$.n =  $1.n;
+     else if ($1.t.element_type == FLOAT_T)
+       $$.f = $1.f;}
+| additive_expression '+' multiplicative_expression {if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+      $$.n = $1.n + $3.n;
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+      $$.f = $1.n + $3.f;
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+      $$.f = $1.f + $3.n;
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+      $$.f = $1.f + $3.f;
+}
+| additive_expression '-' multiplicative_expression {if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+      $$.n = $1.n - $3.n;
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+      $$.f = $1.n - $3.f;
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+      $$.f = $1.f - $3.n;
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+      $$.f = $1.f - $3.f;
+}
 ;
 
 comparison_expression
-: additive_expression
-| additive_expression '<' additive_expression
-| additive_expression '>' additive_expression
+: additive_expression {if ($1.t.element_type == INT_T)
+     $$.n =  $1.n;
+     else if ($1.t.element_type == FLOAT_T)
+       $$.f = $1.f;}
+| additive_expression '<' additive_expression {if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+      $$.n = ($1.n < $3.n);
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.n < $3.f);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+     $$.f = ($1.f < $3.n);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.f < $3.f);
+}
+| additive_expression '>' additive_expression {if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+      $$.n = ($1.n > $3.n);
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.n > $3.f);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+     $$.f = ($1.f > $3.n);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.f > $3.f);
+}
 | additive_expression LE_OP additive_expression
+{if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+    $$.n = ($1.n >= $3.n);
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.n >= $3.f);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+     $$.f = ($1.f >= $3.n);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.f >= $3.f);
+}
 | additive_expression GE_OP additive_expression
+{if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+    $$.n = ($1.n <= $3.n);
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.n <= $3.f);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+     $$.f = ($1.f <= $3.n);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.f <= $3.f);
+}
 | additive_expression EQ_OP additive_expression
+{if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+    $$.n = ($1.n == $3.n);
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.n == $3.f);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+     $$.f = ($1.f == $3.n);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.f == $3.f);
+}
 | additive_expression NE_OP additive_expression
+{if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+    $$.n = ($1.n != $3.n);
+   else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.n != $3.f);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+     $$.f = ($1.f != $3.n);
+   else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+     $$.f = ($1.f != $3.f);
+}
 ;
 
 expression
-: IDENTIFIER '=' comparison_expression
-| IDENTIFIER '[' expression ']' '=' comparison_expression
-| comparison_expression
+: IDENTIFIER '=' comparison_expression {if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+     ($1.n = $3.n);
+ else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+   perror("int = float not allowed");
+ else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+   ($1.f = $3.n);
+ else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+   ($1.f = $3.f); }
+| IDENTIFIER '[' expression ']' '=' comparison_expression 
+{if($3.t.element_type == INT_T){
+    if (($1.t.element_type == INT_T)&&($3.t.element_type == INT_T))
+      ($1[$3.n].n = $6.n);
+    else if (($1.t.element_type == INT_T)&&($3.t.element_type == FLOAT_T))
+      perror("int[int] = float not allowed"); exit(0);
+    else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == INT_T))
+      ($1[$3.n].f = $6.n);
+    else if (($1.t.element_type == FLOAT_T)&&($3.t.element_type == FLOAT_T))
+   ($1[$3.n].f = $6.f);
+  }
+  else
+    {
+      perror("expression not an int"); exit(0);
+    }
+} 
+| comparison_expression {if ($1.t.element_type == INT_T)
+     $$.n =  $1.n;
+     else if ($1.t.element_type == FLOAT_T)
+       $$.f = $1.f;}
 ;
 
 declaration
@@ -84,8 +212,8 @@ declaration
 ;
 
 declarator_list
-: declarator
-| declarator_list ',' declarator
+: declarator {$$[0] = $1 ; dliste =1;}
+| declarator_list ',' declarator {$$[dliste++] = $3;}
 ;
 
 type_name
@@ -128,8 +256,8 @@ compound_statement
 ;
 
 declaration_list
-: declaration
-| declaration_list declaration
+: declaration {$$[0] = $1; dliste = 1;}
+| declaration_list declaration {}
 ;
 
 statement_list
@@ -143,19 +271,19 @@ expression_statement
 ;
 
 selection_statement
-: IF '(' expression ')' statement
-| IF '(' expression ')' statement ELSE statement
+: IF '(' expression ')' statement {$$ = if ($3) $5;}
+| IF '(' expression ')' statement ELSE statement {$$ = if ($3) $5; else $7;}
 ;
 
 iteration_statement
-: WHILE '(' expression ')' statement
-| FOR '(' expression_statement expression_statement expression ')' statement
-| DO  statement  WHILE '(' expression ')' ';'
+: WHILE '(' expression ')' statement {$$ = while ($3) $5;)} 
+| FOR '(' expression_statement expression_statement expression ')' statement {$$ = for($3) $5;}
+| DO  statement  WHILE '(' expression ')' ';' {$$ = do $2; while ($5)}
 ;
 
 jump_statement
-: RETURN ';'
-| RETURN expression ';'
+: RETURN ';' {return ;}
+| RETURN expression ';' {return $2;}
 ;
 
 program
