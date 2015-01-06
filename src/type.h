@@ -8,6 +8,6 @@ typedef struct type_t{
   enum type element_type;
   int element_size; // size for an array or number of parameters for a function
   struct type_t* function_parameters;   
-	 
+  int addre ;
 } type_t;
 #endif

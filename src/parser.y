@@ -11,6 +11,8 @@
     int level = 0;
     int yylex ();
     int yyerror ();
+    int addr = 0;
+    int nlabel = 0;
 
 %}
 
@@ -42,22 +44,22 @@
   type_t t;
   type_t lt[1000];
   char *str;
-  int n;
-  float f;
 }
 %start program
 %%
 
 primary_expression
-: IDENTIFIER 
-| ICONSTANT {/*printf("%d\n",$1);*/ }
-| FCONSTANT {/*printf("%f\n",$1);*/ }
+: IDENTIFIER {printf("pushl $%rbp\n");}
+| ICONSTANT {printf("pushl $%d\n",$1); }
+| FCONSTANT {printf("pushl $%f\n",$1); }
 | '(' expression ')' 
 | IDENTIFIER '(' ')' {$$.element_type = $1.element_type;} 
 | IDENTIFIER '(' argument_expression_list ')' {$$.element_type = $1.element_type;}
-| IDENTIFIER INC_OP {if($1.element_type == INT_T && $1.kind == -1) {/*$1.n = ($1.no ++); printf("%d\n",$1.no);}*/}}
-| IDENTIFIER DEC_OP {if($1.element_type == INT_T && $1.kind == -1) {/*$1.n = ($1.no --); printf("%d\n",$1.no);}*/}}
-| IDENTIFIER '[' expression ']' {$$.element_type = $1.element_type;}
+| IDENTIFIER INC_OP {$$.element_type = $1.element_type; printf("addl $1 -$%d(%rbp)\n",$1.addre);}}
+| IDENTIFIER DEC_OP {$$.element_type = $1.element_type; printf("subl $1 -$%d(%rbp)\n",$1);}}
+| IDENTIFIER '[' expression ']' {$$.element_type = $1.element_type; if($1.element_type == INT_T) 
+								      {printf("popl %eax\nsubl $%d %eax\naddl %eax %rbp\npushl [%eax]\n",$1.addre*4);} /* A revoir au plus vite !*/ 
+else if {};}
 ;
 
 argument_expression_list
@@ -74,15 +76,19 @@ unary_expression
        //$$.fo = $1.fo;
  }
 | '-' unary_expression {if ($2.element_type == INT_T)
-      $$.element_type = INT_T;
+      {  $$.element_type = INT_T;
+	printf("popl %%eax\nneg %%eax\npushl %%eax\n");
+      }
       //$$.no = - $2.no;
      else if ($2.element_type == FLOAT_T)
        $$.element_type = FLOAT_T;
        //$$.fo = - $2.fo;
   }
 | '!' unary_expression {if ($2.element_type == INT_T)
-      $$.element_type = INT_T;
-      //$$.no = (! $2.no);
+      {   $$.element_type = INT_T;
+	printf("popl %%eax\ncmpl $0, %%eax\njne L%d\npushl $1\njmp L%d\nL%d:\npushl $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); // Y a peut-etre besoin de mettre un . devant les labels...
+	nlabel += 2;
+  }
      else if ($2.element_type == FLOAT_T)
        $$.element_type = FLOAT_T;
        //$$.fo = (! $2.fo);
@@ -97,18 +103,29 @@ multiplicative_expression
        $$.element_type = FLOAT_T;
        //$$.fo = $1.fo;
  }
-| multiplicative_expression '*' unary_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
-      $$.element_type = INT_T;
-      //$$.no = $1.no * $3.no;
+| multiplicative_expression '*' unary_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T)) 
+      {
+	$$.element_type = INT_T;
+	printf("popl %%eax\npopl %%ebx\nimul %%ebx, %%eax\npushl %%eax\n");
+      }
+      // $$.no = $1.no + $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
-     $$.element_type = FLOAT_T;
-     //$$.fo = $1.no * $3.fo;
+     {
+       $$.element_type = FLOAT_T;
+       printf("popl %%eax\npopl %%ebx\nfmul %%ebx, %%eax\npushl %%eax\n");  // On doit convertir le int en float avant
+     }
+       // $$.fo = $1.no + $3.fo;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
+     {
      $$.element_type = FLOAT_T;
-     //$$.fo = $1.fo * $3.no;
+     printf("popl %%eax\npopl %%ebx\nfmul %%ebx, %%eax\npushl %%eax\n");  // On doit convertir le int en float avant
+     }
+     // $$.fo = $1.fo + $3.no;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
-     $$.element_type = FLOAT_T;
-     //$$.fo = $1.fo * $3.fo;
+     {
+       $$.element_type = FLOAT_T;
+       printf("popl %%eax\npopl %%ebx\nfmul %%ebx, %%eax\npushl %%eax\n");
+     }
 }
 ;
 
@@ -121,36 +138,61 @@ additive_expression
        //$$.fo = $1.fo;
        }
 | additive_expression '+' multiplicative_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
-      $$.element_type = INT_T;
+      {
+	$$.element_type = INT_T;
+	printf("popl %%eax\npopl %%ebx\naddl %%ebx, %%eax\npushl %%eax\n");
+      }
       // $$.no = $1.no + $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
-     $$.element_type = FLOAT_T;
-     // $$.fo = $1.no + $3.fo;
+     {
+       $$.element_type = FLOAT_T;
+       printf("popl %%eax\npopl %%ebx\naddss %%ebx, %%eax\npushl %%eax\n"); // On doit convertir le int en float avant
+     }
+       // $$.fo = $1.no + $3.fo;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
+     {
      $$.element_type = FLOAT_T;
+     printf("popl %%eax\npopl %%ebx\naddl %%ebx, %%eax\npushl %%eax\n"); // ici aussi
+     }
      // $$.fo = $1.fo + $3.no;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
-     $$.element_type = FLOAT_T;
+     {
+       $$.element_type = FLOAT_T;
+       printf("popl %%eax\npopl %%ebx\naddss %%ebx, %%eax\npushl %%eax\n");
+     }
      //$$.fo = $1.fo + $3.fo;
 }
 | additive_expression '-' multiplicative_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
+      {
       $$.element_type = INT_T;
+      printf("popl %%eax\npopl %%ebx\nsubl %%ebx, %%eax\npushl %%eax\n");
+      }
       // $$.no = $1.no - $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
-     $$.element_type = FLOAT_T;
-     //$$.fo = $1.no - $3.fo;
+     {
+       $$.element_type = FLOAT_T;
+       //printf("popl %%eax\npopl %%ebx\nsubl %%ebx, %%eax\npushl %%eax\n"); // On doit convertir le int en float avant
+       //$$.fo = $1.no - $3.fo;
+     }
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
-     $$.element_type = FLOAT_T;
-     //$$.fo = $1.fo - $3.no;
+     {
+       $$.element_type = FLOAT_T;
+       //printf("popl %%eax\npopl %%ebx\nsubl %%ebx, %%eax\npushl %%eax\n");  // On doit convertir le int en float avant
+       //$$.fo = $1.fo - $3.no;
+     }
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
-     $$.element_type = FLOAT_T;
+     {
+       $$.element_type = FLOAT_T;
+       printf("popl %%eax\npopl %%ebx\nsubss %%ebx, %%eax\npushl %%eax\n");
+     }
      //$$.fo = $1.fo - $3.fo;
 }
 ;
 
 comparison_expression
 : additive_expression {if ($1.element_type == INT_T)
-     $$.element_type = INT_T;
+      {$$.element_type = INT_T;
+      }
      //$$.no =  $1.no;
      else if ($1.element_type == FLOAT_T)
        $$.element_type = FLOAT_T;
