@@ -284,23 +284,29 @@ comparison_expression
 ;
 
 expression
-: IDENTIFIER '=' comparison_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
+: IDENTIFIER '=' comparison_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T)){
      $$.element_type = INT_T;
      //($1.n = $3.n);
+     printf("popl %%eax\nmovl %%eax -%d(%%rbp)\npushl %%eax\n",$1.addre);
+   }
  else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
    perror("int = float not allowed");
  else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
    $$.element_type = FLOAT_T;
    //($1.f = $3.n);
- else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
+ else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T)){
    $$.element_type = FLOAT_T;
    //($1.f = $3.f); 
+   printf("popl %%eax\nmovl %%eax -%d(%%rbp)\npushl %%eax\n",$1.addre);
+ }
 }
 | IDENTIFIER '[' expression ']' '=' comparison_expression 
 {if($3.element_type == INT_T){
-    if (($1.element_type == INT_T)&&($3.element_type == INT_T))
+    if (($1.element_type == INT_T)&&($3.element_type == INT_T)){
       $$.element_type = INT_T;
       //($1[$3.n].n = $6.n);
+      printf("popl %%eax\npopl %%ebx\nimul $4 %%ebx\nsubl %d %%ebx\nmovl %%eax %%rbp\n",$1.addre);
+    }
     else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
       {perror("int[int] = float not allowed"); exit(0);}
     else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
@@ -340,10 +346,26 @@ type_name
 ; 
 
 declarator
-: IDENTIFIER  { $$.element_type = bt; $$.kind = -1 ;}
-| '*' IDENTIFIER { if(bt == VOID_T) {perror("void* not allowed"); exit(0);} else $$.element_type = bt+1 ; $$.kind = -1;}
+: IDENTIFIER  { 
+  if (bt != VOID_T){ 
+      addr += 4; $$.addre += addr;
+  }
+  $$.element_type = bt; $$.kind = -1 ;}
+| '*' IDENTIFIER { 
+  if(bt == VOID_T)
+ {
+     perror("void* not allowed"); exit(0);
+ } 
+  else
+    {
+      addr += 8;
+      $$.addre += addr;
+      $$.element_type = bt+1 ; 
+      $$.kind = -1;
+    }
+}
 | IDENTIFIER '[' ICONSTANT ']' {$$.element_type = bt; $$.kind = 0;
- $$.element_size = $3;}
+   $$.element_size = $3; addr += 4*$3 ; $$.addre = addr;}
 | declarator '(' parameter_list ')' {$$.element_type = bt; $$.kind = 1; 
 $$.element_size = nliste; $$.function_parameters = $3;} 
 | declarator '(' ')' {$$.element_type = bt; $$.kind = 1; $$.element_size = 0;}
