@@ -408,9 +408,9 @@ expression_statement
 : ';' 
 | expression ';' {$$.element_type = $1.element_type;}
 ;
-
+//{printf("popl %%eax\ncmpl $0, %%eax\njne L%d\npushl $1\njmp L%d\nL%d:\npushl $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); }
 selection_statement
-: IF '(' expression ')' statement
+: IF '(' expression ')' statement  
 | IF '(' expression ')' statement ELSE statement 
 ;
 
