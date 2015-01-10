@@ -1,7 +1,7 @@
 LEX=lex
 YACC=bison
 CFLAGS=-Wall
-CC=gcc
+CC=g++
 
 all: parser
 

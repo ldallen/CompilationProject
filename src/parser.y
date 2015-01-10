@@ -1,9 +1,12 @@
 %{
-    #include <stdio.h>
-    #include <stdlib.h>
+    #include <cstdio>
+    #include <cstdlib>
+    #include <cstring>
     #include "type.h"
     extern int yylineno;
-    int bt;
+    int yyerror (const char *error);
+    int  yylex ();
+    type bt;
     int nliste = 0;
     int dliste = 0;
     int sliste = 0;
@@ -51,17 +54,16 @@
 %%
 
 primary_expression
-: IDENTIFIER {printf("pushq $%%rbp\n"); $$.addre = $1.addre;}
+: IDENTIFIER {printf("pushq %%rbp\n"); $$.addre = $1.addre;}
 | ICONSTANT {printf("pushq $%d\n",$1); }
 | FCONSTANT {printf("pushq $%f\n",$1); }
 | '(' expression ')' {$$.element_type = $2.element_type;}
 | IDENTIFIER '(' ')' {$$.element_type = $1.element_type; $$.addre = $1.addre;} 
 | IDENTIFIER '(' argument_expression_list ')' {$$.element_type = $1.element_type; $$.addre = $1.addre;}
-| IDENTIFIER INC_OP {$$.element_type = $1.element_type; printf("addq $1 -%d(%%rbp)\n",$1.addre);$$.addre = $1.addre;}
-| IDENTIFIER DEC_OP {$$.element_type = $1.element_type; printf("subq $1 -%d(%%rbp)\n",$1.addre);$$.addre = $1.addre;}
+| IDENTIFIER INC_OP {$$.element_type = $1.element_type; printf("addq $1 -%d(%%rbp)\npushq -%d(%%rbp)\n",$1.addre, $1.addre);$$.addre = $1.addre;}
+| IDENTIFIER DEC_OP {$$.element_type = $1.element_type; printf("subq $1 -%d(%%rbp)\npushq -%d(%%rbp)\n",$1.addre, $1.addre);$$.addre = $1.addre;}
 | IDENTIFIER '[' expression ']' {$$.element_type = $1.element_type; if($1.element_type == INT_T) 
-								      /*printf("popl %%rax\nsubq $%d %%rax\naddq %%rax %%rbp\npushq [%%rax]\n",$1.addre*4);}$$.addre = $1.addre;*/
-									printf("popq %%rax\nimul $8, %%rax\nsubq %d %%rax\npushq -%%rax(%%rbp)\n",$1.addre); } /* A revoir au plus vite !*/ 
+								      printf("popq %%rax\nmovq -%d(%%rbp, %%rax, 8), %%rax\npushq %%rax\n",$1.addre);}
 ;
 
 argument_expression_list
@@ -90,7 +92,7 @@ unary_expression
   }
 | '!' unary_expression {if ($2.element_type == INT_T)
       {   $$.element_type = INT_T;
-	printf("popq %%rax\ncmpl $0, %%rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); // Y a peut-etre besoin de mettre un . devant les labels...
+	printf("popq %%rax\ncmpq $0, %%rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); // Y a peut-etre besoin de mettre un . devant les labels...
 	nlabel += 2;
   }
      else if ($2.element_type == FLOAT_T)
@@ -112,25 +114,25 @@ multiplicative_expression
 | multiplicative_expression '*' unary_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T)) 
       {
 	$$.element_type = INT_T;
-	printf("popq %%rax\npopq %%ebx\nimul %%ebx, %%rax\npushq %%rax\n");
+	printf("popq %%rax\npopq %%rbx\nimul %%rbx, %%rax\npushq %%rax\n");
       }
       // $$.no = $1.no + $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%ebx\nfmul %%ebx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
+       printf("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
      }
        // $$.fo = $1.no + $3.fo;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
      {
      $$.element_type = FLOAT_T;
-     printf("popq %%rax\npopq %%ebx\nfmul %%ebx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
+     printf("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
      }
      // $$.fo = $1.fo + $3.no;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%ebx\nfmul %%ebx, %%rax\npushq %%rax\n");
+       printf("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");
      }
 }
 ;
@@ -147,50 +149,50 @@ additive_expression
 | additive_expression '+' multiplicative_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
       {
 	$$.element_type = INT_T;
-	printf("popq %%rax\npopq %%ebx\naddq %%ebx, %%rax\npushq %%rax\n");
+	printf("popq %%rax\npopq %%rbx\naddq %%rbx, %%rax\npushq %%rax\n");
       }
       // $$.no = $1.no + $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%ebx\naddss %%ebx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
+       printf("popq %%rax\npopq %%rbx\naddss %%rbx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
      }
        // $$.fo = $1.no + $3.fo;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
      {
      $$.element_type = FLOAT_T;
-     printf("popq %%rax\npopq %%ebx\naddq %%ebx, %%rax\npushq %%rax\n"); // ici aussi
+     printf("popq %%rax\npopq %%rbx\naddq %%rbx, %%rax\npushq %%rax\n"); // ici aussi
      }
      // $$.fo = $1.fo + $3.no;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%ebx\naddss %%ebx, %%rax\npushq %%rax\n");
+       printf("popq %%rax\npopq %%rbx\naddss %%rbx, %%rax\npushq %%rax\n");
      }
      //$$.fo = $1.fo + $3.fo;
 }
 | additive_expression '-' multiplicative_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
       {
       $$.element_type = INT_T;
-      printf("popq %%rax\npopq %%ebx\nsubq %%ebx, %%rax\npushq %%rax\n");
+      printf("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");
       }
       // $$.no = $1.no - $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       //printf("popq %%rax\npopq %%ebx\nsubq %%ebx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
+       //printf("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
        //$$.fo = $1.no - $3.fo;
      }
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
      {
        $$.element_type = FLOAT_T;
-       //printf("popq %%rax\npopq %%ebx\nsubq %%ebx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
+       //printf("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
        //$$.fo = $1.fo - $3.no;
      }
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%ebx\nsubss %%ebx, %%rax\npushq %%rax\n");
+       printf("popq %%rax\npopq %%rbx\nsubss %%rbx, %%rax\npushq %%rax\n");
      }
      //$$.fo = $1.fo - $3.fo;
 }
@@ -313,7 +315,7 @@ expression
     if (($1.element_type == INT_T)&&($3.element_type == INT_T)){
       $$.element_type = INT_T;
       //($1[$3.n].n = $6.n);
-      printf("popq %%rax\npopq %%ebx\nimul $4 %%ebx\nsubq %d %%ebx\nmovl %%rax %%rbp\n",$1.addre);
+      printf("popq %%rax\npopq %%rbx\nmovq %%rax, -%d(%%rbp, %%rbx, 8)\npushq %%rax\n",$1.addre);
     }
     else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
       {perror("int[int] = float not allowed"); exit(0);}
@@ -370,12 +372,12 @@ declarator
     {
       addr += 8;
       $2.addre += addr;
-      $$.element_type = bt+1 ; 
+      $$.element_type = (type)(bt+1); 
       $$.kind = -1;
     }
 }
 | IDENTIFIER '[' ICONSTANT ']' {$$.element_type = bt; $$.kind = 0;
-   $$.element_size = $3; addr += 4*$3 ; $$.addre = addr; printf("popq %%rax\nmovl $%d, %%rax\nimul $8, %%rax\nsubq %d %%rax\npushl -%%rax(%%rbp)\n",$3,$1.addre);}
+   $$.element_size = $3; addr += 8*$3 ; $$.addre = addr;}
 | declarator '(' parameter_list ')' {$$.element_type = bt; $$.kind = 1; 
 $$.element_size = nliste; $$.function_parameters = $3;} 
 | declarator '(' ')' {$$.element_type = bt; $$.kind = 1; $$.element_size = 0;}
@@ -416,7 +418,7 @@ statement_list
 
 expression_statement
 : ';' 
-| expression ';' {$$.element_type = $1.element_type;}
+| expression ';' {$$.element_type = $1.element_type; printf("popq %%rax\n");}
 ;
 //{printf("popq %%rax\ncmpl $0, %%rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); }
 selection_statement
@@ -450,8 +452,8 @@ function_definition
 ;
 
 %%
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <string>
 
 extern char yytext[];
 extern int column;
@@ -460,7 +462,7 @@ extern FILE *yyin;
 
 char *file_name = NULL;
 
-int yyerror (char *s) {
+int yyerror (const char *s) {
     fflush (stdout);
     fprintf (stderr, "%s:%d:%d: %s\n", file_name, yylineno, column, s);
     return 0;

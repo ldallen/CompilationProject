@@ -2,8 +2,8 @@ D[0-9]
 L[a-zA-Z_]
 
 %{
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <string>
 #include "type.h"
 #include "parser.tab.h"
 void count();
@@ -65,8 +65,8 @@ int comment() {
 	char c, c1;
 
 loop:
-	while ((c = input()) != '*' && c != 0);
-	if ((c1 = input()) != '/' && c != 0) {
+	while ((c = getchar()) != '*' && c != 0);
+	if ((c1 = getchar()) != '/' && c != 0) {
 		unput(c1);
 		goto loop;
 	}
