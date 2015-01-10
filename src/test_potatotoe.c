@@ -1,9 +1,8 @@
-int main()
+void main()
 {
-  int x;
-  int b;
-  x = 2;
-  b = 3;
-  !(x-2);
-  return 0;
+  int t[10];
+  int x; 
+  x = t[5];
+  x++;
+  return ;
 }

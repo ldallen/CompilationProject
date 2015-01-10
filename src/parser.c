@@ -501,13 +501,13 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    54,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    67,    68,    72,    79,    88,   100,   107,   134,   141,
-     166,   194,   202,   215,   228,   242,   256,   270,   287,   303,
-     324,   334,   338,   339,   343,   344,   345,   349,   354,   367,
-     369,   371,   375,   376,   380,   384,   385,   386,   387,   388,
-     392,   393,   394,   398,   399,   403,   404,   408,   409,   413,
-     414,   418,   419,   420,   424,   425,   429,   430,   434,   435,
-     439
+      62,    68,    69,    73,    81,    91,   104,   112,   139,   147,
+     172,   200,   209,   222,   235,   249,   263,   277,   294,   311,
+     333,   344,   348,   349,   353,   354,   355,   359,   364,   377,
+     379,   381,   385,   386,   390,   394,   395,   396,   397,   398,
+     402,   403,   404,   408,   409,   413,   414,   418,   419,   423,
+     424,   428,   429,   430,   434,   435,   439,   440,   444,   445,
+     449
 };
 #endif
 
@@ -1518,19 +1518,19 @@ yyreduce:
         case 2:
 /* Line 1792 of yacc.c  */
 #line 54 "parser.y"
-    {printf("pushl $%%rbp\n");}
+    {printf("pushq $%%rbp\n"); (yyval.t).addre = (yyvsp[(1) - (1)].t).addre;}
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
 #line 55 "parser.y"
-    {printf("pushl $%d\n",(yyvsp[(1) - (1)].n)); }
+    {printf("pushq $%d\n",(yyvsp[(1) - (1)].n)); }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
 #line 56 "parser.y"
-    {printf("pushl $%f\n",(yyvsp[(1) - (1)].f)); }
+    {printf("pushq $%f\n",(yyvsp[(1) - (1)].f)); }
     break;
 
   case 5:
@@ -1542,152 +1542,158 @@ yyreduce:
   case 6:
 /* Line 1792 of yacc.c  */
 #line 58 "parser.y"
-    {(yyval.t).element_type = (yyvsp[(1) - (3)].t).element_type;}
+    {(yyval.t).element_type = (yyvsp[(1) - (3)].t).element_type; (yyval.t).addre = (yyvsp[(1) - (3)].t).addre;}
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
 #line 59 "parser.y"
-    {(yyval.t).element_type = (yyvsp[(1) - (4)].t).element_type;}
+    {(yyval.t).element_type = (yyvsp[(1) - (4)].t).element_type; (yyval.t).addre = (yyvsp[(1) - (4)].t).addre;}
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
 #line 60 "parser.y"
-    {(yyval.t).element_type = (yyvsp[(1) - (2)].t).element_type; printf("addl $1 -%d(%%rbp)\n",(yyvsp[(1) - (2)].t).addre);}
+    {(yyval.t).element_type = (yyvsp[(1) - (2)].t).element_type; printf("addl $1 -%d(%%rbp)\n",(yyvsp[(1) - (2)].t).addre);(yyval.t).addre = (yyvsp[(1) - (2)].t).addre;}
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
 #line 61 "parser.y"
-    {(yyval.t).element_type = (yyvsp[(1) - (2)].t).element_type; printf("subl $1 -%d(%%rbp)\n",(yyvsp[(1) - (2)].t).addre);}
+    {(yyval.t).element_type = (yyvsp[(1) - (2)].t).element_type; printf("subl $1 -%d(%%rbp)\n",(yyvsp[(1) - (2)].t).addre);(yyval.t).addre = (yyvsp[(1) - (2)].t).addre;}
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
 #line 62 "parser.y"
     {(yyval.t).element_type = (yyvsp[(1) - (4)].t).element_type; if((yyvsp[(1) - (4)].t).element_type == INT_T) 
-								      {printf("popl %%eax\nsubl $%d %%eax\naddl %%eax %%rbp\npushl [%%eax]\n",(yyvsp[(1) - (4)].t).addre*4);}}
+								      /*printf("popl %%rax\nsubl $%d %%rax\naddl %%rax %%rbp\npushq [%%rax]\n",$1.addre*4);}$$.addre = $1.addre;*/
+									printf("popq %%rax\nimul $8, %%rax\nsubl %d %%rax\npushq -%%rax(%%rbp)\n",(yyvsp[(1) - (4)].t).addre); }
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 72 "parser.y"
+#line 73 "parser.y"
     {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
      (yyval.t).element_type = INT_T;
      //$$.no =  $1.no;
      else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.fo = $1.fo;
+   (yyval.t).addre = (yyvsp[(1) - (1)].t).addre;
  }
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 79 "parser.y"
+#line 81 "parser.y"
     {if ((yyvsp[(2) - (2)].t).element_type == INT_T)
       {  (yyval.t).element_type = INT_T;
-	printf("popl %%eax\nneg %%eax\npushl %%eax\n");
+	printf("popq %%rax\nneg %%rax\npushq %%rax\n");
       }
       //$$.no = - $2.no;
      else if ((yyvsp[(2) - (2)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.fo = - $2.fo;
+   (yyval.t).addre = (yyvsp[(2) - (2)].t).addre;
   }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 88 "parser.y"
+#line 91 "parser.y"
     {if ((yyvsp[(2) - (2)].t).element_type == INT_T)
       {   (yyval.t).element_type = INT_T;
-	printf("popl %%eax\ncmpl $0, %%eax\njne L%d\npushl $1\njmp L%d\nL%d:\npushl $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); // Y a peut-etre besoin de mettre un . devant les labels...
+	printf("popq %%rax\ncmpl $0, %%rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); // Y a peut-etre besoin de mettre un . devant les labels...
 	nlabel += 2;
   }
      else if ((yyvsp[(2) - (2)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.fo = (! $2.fo);
+   (yyval.t).addre = (yyvsp[(2) - (2)].t).addre;
   }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 100 "parser.y"
+#line 104 "parser.y"
     {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
      (yyval.t).element_type = INT_T;
      //$$.no =  $1.no;
      else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.fo = $1.fo;
+   (yyval.t).addre = (yyvsp[(1) - (1)].t).addre;
  }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 107 "parser.y"
+#line 112 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)) 
       {
 	(yyval.t).element_type = INT_T;
-	printf("popl %%eax\npopl %%ebx\nimul %%ebx, %%eax\npushl %%eax\n");
+	printf("popq %%rax\npopq %%ebx\nimul %%ebx, %%rax\npushq %%rax\n");
       }
       // $$.no = $1.no + $3.no;
    else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       printf("popl %%eax\npopl %%ebx\nfmul %%ebx, %%eax\npushl %%eax\n");  // On doit convertir le int en float avant
+       printf("popq %%rax\npopq %%ebx\nfmul %%ebx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
      }
        // $$.fo = $1.no + $3.fo;
    else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
      {
      (yyval.t).element_type = FLOAT_T;
-     printf("popl %%eax\npopl %%ebx\nfmul %%ebx, %%eax\npushl %%eax\n");  // On doit convertir le int en float avant
+     printf("popq %%rax\npopq %%ebx\nfmul %%ebx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
      }
      // $$.fo = $1.fo + $3.no;
    else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       printf("popl %%eax\npopl %%ebx\nfmul %%ebx, %%eax\npushl %%eax\n");
+       printf("popq %%rax\npopq %%ebx\nfmul %%ebx, %%rax\npushq %%rax\n");
      }
 }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 134 "parser.y"
+#line 139 "parser.y"
     {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
      (yyval.t).element_type = INT_T;
      //$$.no =  $1.no;
      else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.fo = $1.fo;
+   (yyval.t).addre = (yyvsp[(1) - (1)].t).addre;
        }
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 141 "parser.y"
+#line 147 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
       {
 	(yyval.t).element_type = INT_T;
-	printf("popl %%eax\npopl %%ebx\naddl %%ebx, %%eax\npushl %%eax\n");
+	printf("popq %%rax\npopq %%ebx\naddl %%ebx, %%rax\npushq %%rax\n");
       }
       // $$.no = $1.no + $3.no;
    else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       printf("popl %%eax\npopl %%ebx\naddss %%ebx, %%eax\npushl %%eax\n"); // On doit convertir le int en float avant
+       printf("popq %%rax\npopq %%ebx\naddss %%ebx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
      }
        // $$.fo = $1.no + $3.fo;
    else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
      {
      (yyval.t).element_type = FLOAT_T;
-     printf("popl %%eax\npopl %%ebx\naddl %%ebx, %%eax\npushl %%eax\n"); // ici aussi
+     printf("popq %%rax\npopq %%ebx\naddl %%ebx, %%rax\npushq %%rax\n"); // ici aussi
      }
      // $$.fo = $1.fo + $3.no;
    else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       printf("popl %%eax\npopl %%ebx\naddss %%ebx, %%eax\npushl %%eax\n");
+       printf("popq %%rax\npopq %%ebx\naddss %%ebx, %%rax\npushq %%rax\n");
      }
      //$$.fo = $1.fo + $3.fo;
 }
@@ -1695,29 +1701,29 @@ yyreduce:
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 166 "parser.y"
+#line 172 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
       {
       (yyval.t).element_type = INT_T;
-      printf("popl %%eax\npopl %%ebx\nsubl %%ebx, %%eax\npushl %%eax\n");
+      printf("popq %%rax\npopq %%ebx\nsubl %%ebx, %%rax\npushq %%rax\n");
       }
       // $$.no = $1.no - $3.no;
    else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       //printf("popl %%eax\npopl %%ebx\nsubl %%ebx, %%eax\npushl %%eax\n"); // On doit convertir le int en float avant
+       //printf("popq %%rax\npopq %%ebx\nsubl %%ebx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
        //$$.fo = $1.no - $3.fo;
      }
    else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       //printf("popl %%eax\npopl %%ebx\nsubl %%ebx, %%eax\npushl %%eax\n");  // On doit convertir le int en float avant
+       //printf("popq %%rax\npopq %%ebx\nsubl %%ebx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
        //$$.fo = $1.fo - $3.no;
      }
    else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
      {
        (yyval.t).element_type = FLOAT_T;
-       printf("popl %%eax\npopl %%ebx\nsubss %%ebx, %%eax\npushl %%eax\n");
+       printf("popq %%rax\npopq %%ebx\nsubss %%ebx, %%rax\npushq %%rax\n");
      }
      //$$.fo = $1.fo - $3.fo;
 }
@@ -1725,7 +1731,7 @@ yyreduce:
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 194 "parser.y"
+#line 200 "parser.y"
     {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
       {(yyval.t).element_type = INT_T;
       }
@@ -1733,12 +1739,13 @@ yyreduce:
      else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.fo = $1.fo;
+   (yyval.t).addre = (yyvsp[(1) - (1)].t).addre;
        }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 202 "parser.y"
+#line 209 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
       (yyval.t).element_type = INT_T;
       //$$.no = ($1.no < $3.no);
@@ -1756,7 +1763,7 @@ yyreduce:
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 215 "parser.y"
+#line 222 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
       (yyval.t).element_type = INT_T;
       //$$.no = ($1.no > $3.no);
@@ -1774,7 +1781,7 @@ yyreduce:
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 229 "parser.y"
+#line 236 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     (yyval.t).element_type = INT_T;
     //$$.n = ($1.n >= $3.n);
@@ -1792,7 +1799,7 @@ yyreduce:
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 243 "parser.y"
+#line 250 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     (yyval.t).element_type = INT_T;
     //$$.n = ($1.n <= $3.n);
@@ -1810,7 +1817,7 @@ yyreduce:
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 257 "parser.y"
+#line 264 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     (yyval.t).element_type = INT_T;
     //$$.n = ($1.n == $3.n);
@@ -1828,7 +1835,7 @@ yyreduce:
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 271 "parser.y"
+#line 278 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     (yyval.t).element_type = INT_T;
   //$$.n = ($1.n != $3.n);
@@ -1846,11 +1853,11 @@ yyreduce:
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 287 "parser.y"
+#line 294 "parser.y"
     {if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
      (yyval.t).element_type = INT_T;
      //($1.n = $3.n);
-     printf("popl %%eax\nmovl %%eax -%d(%%rbp)\npushl %%eax\n",(yyvsp[(1) - (3)].t).addre);
+     printf("popq %%rax\nmovl %%rax -%d(%%rbp)\npushq %%rax\n",(yyvsp[(1) - (3)].t).addre);
    }
  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
    perror("int = float not allowed");
@@ -1860,19 +1867,20 @@ yyreduce:
  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
    (yyval.t).element_type = FLOAT_T;
    //($1.f = $3.f); 
-   printf("popl %%eax\nmovl %%eax -%d(%%rbp)\npushl %%eax\n",(yyvsp[(1) - (3)].t).addre);
+   printf("popq %%rax\nmovl %%rax -%d(%%rbp)\npushq %%rax\n",(yyvsp[(1) - (3)].t).addre);
  }
+   (yyval.t).addre = (yyvsp[(1) - (3)].t).addre;
 }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 304 "parser.y"
+#line 312 "parser.y"
     {if((yyvsp[(3) - (6)].t).element_type == INT_T){
     if (((yyvsp[(1) - (6)].t).element_type == INT_T)&&((yyvsp[(3) - (6)].t).element_type == INT_T)){
       (yyval.t).element_type = INT_T;
       //($1[$3.n].n = $6.n);
-      printf("popl %%eax\npopl %%ebx\nimul $4 %%ebx\nsubl %d %%ebx\nmovl %%eax %%rbp\n",(yyvsp[(1) - (6)].t).addre);
+      printf("popq %%rax\npopq %%ebx\nimul $4 %%ebx\nsubl %d %%ebx\nmovl %%rax %%rbp\n",(yyvsp[(1) - (6)].t).addre);
     }
     else if (((yyvsp[(1) - (6)].t).element_type == INT_T)&&((yyvsp[(3) - (6)].t).element_type == FLOAT_T))
       {perror("int[int] = float not allowed"); exit(0);}
@@ -1887,64 +1895,66 @@ yyreduce:
     {
       perror("expression not an int"); exit(0);
     }
+  (yyval.t).addre = (yyvsp[(1) - (6)].t).addre;
 }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 324 "parser.y"
+#line 333 "parser.y"
     {if ((yyvsp[(1) - (1)].t).element_type == INT_T)
       (yyval.t).element_type = INT_T;
       //$$.n =  $1.n;
      else if ((yyvsp[(1) - (1)].t).element_type == FLOAT_T)
        (yyval.t).element_type = FLOAT_T;
        //$$.f = $1.f;
+   (yyval.t).addre = (yyvsp[(1) - (1)].t).addre;
 }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 338 "parser.y"
+#line 348 "parser.y"
     {(yyval.lt)[0].element_type = (yyvsp[(1) - (1)].t).element_type ; dliste =1;}
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 339 "parser.y"
+#line 349 "parser.y"
     {(yyval.lt)[dliste++].element_type = (yyvsp[(3) - (3)].t).element_type;}
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 343 "parser.y"
+#line 353 "parser.y"
     {bt = VOID_T;}
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 344 "parser.y"
+#line 354 "parser.y"
     {bt = INT_T;}
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 345 "parser.y"
+#line 355 "parser.y"
     {bt = FLOAT_T;}
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 349 "parser.y"
+#line 359 "parser.y"
     { 
   if (bt != VOID_T){ 
-      addr += 4; (yyval.t).addre += addr;
+      addr += 8; (yyvsp[(1) - (1)].t).addre += addr;
   }
   (yyval.t).element_type = bt; (yyval.t).kind = -1 ;}
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 354 "parser.y"
+#line 364 "parser.y"
     { 
   if(bt == VOID_T)
  {
@@ -1953,7 +1963,7 @@ yyreduce:
   else
     {
       addr += 8;
-      (yyval.t).addre += addr;
+      (yyvsp[(2) - (2)].t).addre += addr;
       (yyval.t).element_type = bt+1 ; 
       (yyval.t).kind = -1;
     }
@@ -1962,75 +1972,93 @@ yyreduce:
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 367 "parser.y"
+#line 377 "parser.y"
     {(yyval.t).element_type = bt; (yyval.t).kind = 0;
-   (yyval.t).element_size = (yyvsp[(3) - (4)].n); addr += 4*(yyvsp[(3) - (4)].n) ; (yyval.t).addre = addr;}
+   (yyval.t).element_size = (yyvsp[(3) - (4)].n); addr += 4*(yyvsp[(3) - (4)].n) ; (yyval.t).addre = addr; printf("popq %%rax\nmovl $%d, %%rax\nimul $8, %%rax\nsubq %d %%rax\npushl -%%rax(%%rbp)\n",(yyvsp[(3) - (4)].n),(yyvsp[(1) - (4)].t).addre);}
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 369 "parser.y"
+#line 379 "parser.y"
     {(yyval.t).element_type = bt; (yyval.t).kind = 1; 
 (yyval.t).element_size = nliste; (yyval.t).function_parameters = (yyvsp[(3) - (4)].lt);}
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 371 "parser.y"
+#line 381 "parser.y"
     {(yyval.t).element_type = bt; (yyval.t).kind = 1; (yyval.t).element_size = 0;}
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 375 "parser.y"
+#line 385 "parser.y"
     {(yyval.lt)[0] = (yyvsp[(1) - (1)].t); nliste=1;}
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 376 "parser.y"
+#line 386 "parser.y"
     {(yyval.lt)[nliste++] = (yyvsp[(3) - (3)].t);}
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 380 "parser.y"
+#line 390 "parser.y"
     {(yyval.t) = (yyvsp[(2) - (2)].t);}
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 398 "parser.y"
+#line 408 "parser.y"
     {(yyval.lt)[0] = (yyvsp[(1) - (1)].t); pliste = 1;}
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 399 "parser.y"
+#line 409 "parser.y"
     {(yyval.lt)[pliste++] = (yyvsp[(2) - (2)].t);}
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 403 "parser.y"
+#line 413 "parser.y"
     {(yyval.lt)[0] = (yyvsp[(1) - (1)].t); sliste = 1;}
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 404 "parser.y"
+#line 414 "parser.y"
     {(yyval.lt)[pliste++] = (yyvsp[(2) - (2)].t);}
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 409 "parser.y"
+#line 419 "parser.y"
     {(yyval.t).element_type = (yyvsp[(1) - (2)].t).element_type;}
+    break;
+
+  case 59:
+/* Line 1792 of yacc.c  */
+#line 423 "parser.y"
+    {}
+    break;
+
+  case 64:
+/* Line 1792 of yacc.c  */
+#line 434 "parser.y"
+    {printf("movl $1, -8(%%rbp)\n");}
+    break;
+
+  case 65:
+/* Line 1792 of yacc.c  */
+#line 435 "parser.y"
+    {printf("popq %%rax\nmovl %%rax, -%d(%%rbp)\n",(yyvsp[(2) - (3)].t).addre);}
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 2034 "parser.c"
+#line 2062 "parser.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2262,7 +2290,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 442 "parser.y"
+#line 452 "parser.y"
 
 #include <stdio.h>
 #include <string.h>
