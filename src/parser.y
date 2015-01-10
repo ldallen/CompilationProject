@@ -44,22 +44,23 @@
   type_t t;
   type_t lt[1000];
   char *str;
+  int n;
+  float f;
 }
 %start program
 %%
 
 primary_expression
-: IDENTIFIER {printf("pushl $%rbp\n");}
+: IDENTIFIER {printf("pushl $%%rbp\n");}
 | ICONSTANT {printf("pushl $%d\n",$1); }
 | FCONSTANT {printf("pushl $%f\n",$1); }
-| '(' expression ')' 
+| '(' expression ')' {$$.element_type = $2.element_type;}
 | IDENTIFIER '(' ')' {$$.element_type = $1.element_type;} 
 | IDENTIFIER '(' argument_expression_list ')' {$$.element_type = $1.element_type;}
-| IDENTIFIER INC_OP {$$.element_type = $1.element_type; printf("addl $1 -$%d(%rbp)\n",$1.addre);}}
-| IDENTIFIER DEC_OP {$$.element_type = $1.element_type; printf("subl $1 -$%d(%rbp)\n",$1);}}
+| IDENTIFIER INC_OP {$$.element_type = $1.element_type; printf("addl $1 -%d(%%rbp)\n",$1.addre);}
+| IDENTIFIER DEC_OP {$$.element_type = $1.element_type; printf("subl $1 -%d(%%rbp)\n",$1.addre);}
 | IDENTIFIER '[' expression ']' {$$.element_type = $1.element_type; if($1.element_type == INT_T) 
-								      {printf("popl %eax\nsubl $%d %eax\naddl %eax %rbp\npushl [%eax]\n",$1.addre*4);} /* A revoir au plus vite !*/ 
-else if {};}
+								      {printf("popl %%eax\nsubl $%d %%eax\naddl %%eax %%rbp\npushl [%%eax]\n",$1.addre*4);}} /* A revoir au plus vite !*/ 
 ;
 
 argument_expression_list
