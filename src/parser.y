@@ -9,6 +9,7 @@
     using namespace std;
     extern int yylineno;
     int yyerror (const char *error);
+    void printCode (vector<std::string*> vec);
     int  yylex ();
     type bt;
     int nliste = 0;
@@ -506,12 +507,14 @@ jump_statement
  std::string s("movl $1, -8(%%rbp)\n");
  $$.code = new std::string(s);
  vec.push_back($$.code);
+ printCode(vec);
 }
 | RETURN expression ';' {
  std::stringstream s;
  s << "popq %%rax\nmovl %%rax, " << -$2.addre << "(%%rbp)\n";
  $$.code = new std::string(s.str());
  vec.push_back($$.code);
+ printCode(vec);
 }
 ;
 
@@ -550,6 +553,16 @@ int yyerror (const char *s) {
     fflush (stdout);
     fprintf (stderr, "%s:%d:%d: %s\n", file_name, yylineno, column, s);
     return 0;
+}
+
+void printCode (vector<std::string*> vec) {
+	
+	for (std::string* i : vec)
+	{
+		std::cout << *i;
+		delete(i);
+	}
+	vec.clear();
 }
 
 
