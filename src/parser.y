@@ -378,9 +378,9 @@ declarator
 }
 | IDENTIFIER '[' ICONSTANT ']' {$$.element_type = bt; $$.kind = 0;
    $$.element_size = $3; addr += 8*$3 ; $$.addre = addr;}
-| declarator '(' parameter_list ')' {$$.element_type = bt; $$.kind = 1; 
+| declarator '(' parameter_list ')' {addr = 0;$$.element_type = bt; $$.kind = 1; 
 $$.element_size = nliste; $$.function_parameters = $3;} 
-| declarator '(' ')' {$$.element_type = bt; $$.kind = 1; $$.element_size = 0;}
+| declarator '(' ')' {addr = 0; $$.element_type = bt; $$.kind = 1; $$.element_size = 0;printf("main:\n.LFB%d:\n.cfi_startproc\npushq	%%rbp\n.cfi_def_cfa_offset 16\n.cfi_offset 6, -16\nmovq	%%rsp, %%rbp\n.cfi_def_cfa_register 6\n",nfunc);}
 ;
 
 parameter_list
@@ -448,7 +448,7 @@ external_declaration
 ;
 
 function_definition
-: type_name declarator compound_statement
+: type_name declarator compound_statement {	printf(".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE%d:\n",nfunc); nfunc++;}
 ;
 
 %%
@@ -472,6 +472,7 @@ int yyerror (const char *s) {
 int main (int argc, char *argv[]) {
     FILE *input = NULL;
     if (argc==2) {
+    printf(".file	\"%s\"\n.text\n",argv[1]);
 	input = fopen (argv[1], "r");
 	file_name = strdup (argv[1]);
 	if (input) {
