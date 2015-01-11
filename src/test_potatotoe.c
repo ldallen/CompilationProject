@@ -4,5 +4,7 @@ void main()
   int x; 
   x = t[5];
   x++;
+  while(1)
+	1+2;
   return ;
 }

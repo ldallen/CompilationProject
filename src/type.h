@@ -1,5 +1,7 @@
 #ifndef TYPE_H
 #define TYPE_H
+#include <iostream>
+
 
 enum type{INT_T, INTSTAR_T, FLOAT_T, FLOATSTAR_T, VOID_T};
 
@@ -9,5 +11,6 @@ typedef struct type_t{
   int element_size; // size for an array or number of parameters for a function
   struct type_t* function_parameters;   
   int addre ;
+  std::string* code;
 } type_t;
 #endif

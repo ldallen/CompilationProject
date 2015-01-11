@@ -2,7 +2,11 @@
     #include <cstdio>
     #include <cstdlib>
     #include <cstring>
+    #include <iostream>
+    #include <vector>
+    #include <sstream>
     #include "type.h"
+    using namespace std;
     extern int yylineno;
     int yyerror (const char *error);
     int  yylex ();
@@ -17,6 +21,7 @@
     int addr = 0;
     int nlabel = 0;
     int nfunc = 0;
+    vector<std::string*> vec;
 
 %}
 
@@ -55,16 +60,37 @@
 %%
 
 primary_expression
-: IDENTIFIER {printf("pushq %%rbp\n"); $$.addre = $1.addre;}
-| ICONSTANT {printf("pushq $%d\n",$1); }
-| FCONSTANT {printf("pushq $%f\n",$1); }
+: IDENTIFIER {$$.code = new std::string("pushq %%rbp\n");vec.push_back($$.code); $$.addre = $1.addre;}
+| ICONSTANT {std::stringstream s; s << "pushq $" << $1 << "\n";$$.code = new std::string(s.str());vec.push_back($$.code);}
+| FCONSTANT {std::stringstream s; s << "pushq $" << $1 << "\n";$$.code = new std::string(s.str());vec.push_back($$.code);}
 | '(' expression ')' {$$.element_type = $2.element_type;}
 | IDENTIFIER '(' ')' {$$.element_type = $1.element_type; $$.addre = $1.addre;} 
 | IDENTIFIER '(' argument_expression_list ')' {$$.element_type = $1.element_type; $$.addre = $1.addre;}
-| IDENTIFIER INC_OP {$$.element_type = $1.element_type; printf("addq $1 -%d(%%rbp)\npushq -%d(%%rbp)\n",$1.addre, $1.addre);$$.addre = $1.addre;}
-| IDENTIFIER DEC_OP {$$.element_type = $1.element_type; printf("subq $1 -%d(%%rbp)\npushq -%d(%%rbp)\n",$1.addre, $1.addre);$$.addre = $1.addre;}
-| IDENTIFIER '[' expression ']' {$$.element_type = $1.element_type; if($1.element_type == INT_T) 
-								      printf("popq %%rax\nmovq -%d(%%rbp, %%rax, 8), %%rax\npushq %%rax\n",$1.addre);}
+| IDENTIFIER INC_OP {
+ $$.element_type = $1.element_type;
+ std::stringstream s;
+ s << "addq $1 " << -$1.addre << "(%%rbp)\npushq " << -$1.addre << "(%%rbp)\n";
+ $$.code = new std::string(s.str());
+ vec.push_back($$.code);
+ $$.addre = $1.addre;
+ }
+| IDENTIFIER DEC_OP {
+ $$.element_type = $1.element_type;
+ std::stringstream s;
+ s << "subq $1 " << -$1.addre << "(%%rbp)\npushq " << -$1.addre << "(%%rbp)\n";
+ $$.code = new std::string(s.str());
+ vec.push_back($$.code);
+ $$.addre = $1.addre;
+}
+| IDENTIFIER '[' expression ']' {
+$$.element_type = $1.element_type; 
+if($1.element_type == INT_T) {
+std::stringstream s;
+s << "popq %%rax\nmovq " << -$1.addre << "(%%rbp, %%rax, 8), %%rax\npushq %%rax\n";
+$$.code = new std::string(s.str());
+vec.push_back($$.code);
+}
+}
 ;
 
 argument_expression_list
@@ -82,8 +108,9 @@ unary_expression
    $$.addre = $1.addre;
  }
 | '-' unary_expression {if ($2.element_type == INT_T)
-      {  $$.element_type = INT_T;
-	printf("popq %%rax\nneg %%rax\npushq %%rax\n");
+      { $$.element_type = INT_T;
+		$$.code = new std::string("popq %%rax\nneg %%rax\npushq %%rax\n");
+		vec.push_back($$.code);
       }
       //$$.no = - $2.no;
      else if ($2.element_type == FLOAT_T)
@@ -92,10 +119,14 @@ unary_expression
    $$.addre = $2.addre;
   }
 | '!' unary_expression {if ($2.element_type == INT_T)
-      {   $$.element_type = INT_T;
-	printf("popq %%rax\ncmpq $0, %%rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); // Y a peut-etre besoin de mettre un . devant les labels...
-	nlabel += 2;
-  }
+		{   
+		  $$.element_type = INT_T;
+		  std::stringstream s;
+		  s << "popq %%rax\ncmpq $0, %%rax\njne L" << nlabel << "\npushq $1\njmp L" << (nlabel+1) << "\n.L" << nlabel << ":\npushq $0\n.L"<<(nlabel+1)<<":\n";
+		  $$.code = new std::string(s.str());
+		  vec.push_back($$.code); 
+		  nlabel += 2;
+		 }
      else if ($2.element_type == FLOAT_T)
        $$.element_type = FLOAT_T;
        //$$.fo = (! $2.fo);
@@ -114,26 +145,30 @@ multiplicative_expression
  }
 | multiplicative_expression '*' unary_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T)) 
       {
-	$$.element_type = INT_T;
-	printf("popq %%rax\npopq %%rbx\nimul %%rbx, %%rax\npushq %%rax\n");
+	  $$.element_type = INT_T;
+	  $$.code = new std::string("popq %%rax\npopq %%rbx\nimul %%rbx, %%rax\npushq %%rax\n");
+	  vec.push_back($$.code);
       }
       // $$.no = $1.no + $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      {
-       $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
+     $$.element_type = FLOAT_T;
+     $$.code = new std::string("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");
+	 vec.push_back($$.code);  // On doit convertir le int en float avant
      }
        // $$.fo = $1.no + $3.fo;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
      {
      $$.element_type = FLOAT_T;
-     printf("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
+     $$.code = new std::string("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");
+	 vec.push_back($$.code);   // On doit convertir le int en float avant
      }
      // $$.fo = $1.fo + $3.no;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
      {
-       $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");
+     $$.element_type = FLOAT_T;
+     $$.code = new std::string("popq %%rax\npopq %%rbx\nfmul %%rbx, %%rax\npushq %%rax\n");
+	 vec.push_back($$.code);   // On doit convertir le int en float avant
      }
 }
 ;
@@ -149,51 +184,59 @@ additive_expression
        }
 | additive_expression '+' multiplicative_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
       {
-	$$.element_type = INT_T;
-	printf("popq %%rax\npopq %%rbx\naddq %%rbx, %%rax\npushq %%rax\n");
+		$$.element_type = INT_T;
+		$$.code = new std::string("popq %%rax\npopq %%rbx\naddq %%rbx, %%rax\npushq %%rax\n");
+		vec.push_back($$.code);
       }
       // $$.no = $1.no + $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%rbx\naddss %%rbx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
+       $$.code = new std::string("popq %%rax\npopq %%rbx\naddss %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code); // On doit convertir le int en float avant
      }
        // $$.fo = $1.no + $3.fo;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
      {
-     $$.element_type = FLOAT_T;
-     printf("popq %%rax\npopq %%rbx\naddq %%rbx, %%rax\npushq %%rax\n"); // ici aussi
+	   $$.element_type = FLOAT_T;
+       $$.code = new std::string("popq %%rax\npopq %%rbx\naddq %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code); // ici aussi
      }
      // $$.fo = $1.fo + $3.no;
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%rbx\naddss %%rbx, %%rax\npushq %%rax\n");
+       $$.code = new std::string("popq %%rax\npopq %%rbx\naddss %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code);
      }
      //$$.fo = $1.fo + $3.fo;
 }
 | additive_expression '-' multiplicative_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
       {
-      $$.element_type = INT_T;
-      printf("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");
+       $$.element_type = INT_T;
+       $$.code = new std::string("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code);
       }
       // $$.no = $1.no - $3.no;
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       //printf("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n"); // On doit convertir le int en float avant
+       $$.code = new std::string("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code); // On doit convertir le int en float avant
        //$$.fo = $1.no - $3.fo;
      }
    else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
      {
        $$.element_type = FLOAT_T;
-       //printf("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");  // On doit convertir le int en float avant
+       $$.code = new std::string("popq %%rax\npopq %%rbx\nsubq %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code);  // On doit convertir le int en float avant
        //$$.fo = $1.fo - $3.no;
      }
    else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
      {
        $$.element_type = FLOAT_T;
-       printf("popq %%rax\npopq %%rbx\nsubss %%rbx, %%rax\npushq %%rax\n");
+       $$.code = new std::string("popq %%rax\npopq %%rbx\nsubss %%rbx, %%rax\npushq %%rax\n");
+	   vec.push_back($$.code);
      }
      //$$.fo = $1.fo - $3.fo;
 }
@@ -297,7 +340,10 @@ expression
 : IDENTIFIER '=' comparison_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T)){
      $$.element_type = INT_T;
      //($1.n = $3.n);
-     printf("popq %%rax\nmovl %%rax -%d(%%rbp)\npushq %%rax\n",$1.addre);
+     std::stringstream s;
+	 s << "popq %%rax\nmovl %%rax " << -$1.addre << "(%%rbp)\npushq %%rax\n";
+	 $$.code = new std::string(s.str());
+	 vec.push_back($$.code);
    }
  else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
    perror("int = float not allowed");
@@ -306,8 +352,11 @@ expression
    //($1.f = $3.n);
  else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T)){
    $$.element_type = FLOAT_T;
-   //($1.f = $3.f); 
-   printf("popq %%rax\nmovl %%rax -%d(%%rbp)\npushq %%rax\n",$1.addre);
+   //($1.f = $3.f);
+   std::stringstream s;
+   s << "popq %%rax\nmovl %%rax " << -$1.addre << "(%%rbp)\npushq %%rax\n";
+   $$.code = new std::string(s.str());
+   vec.push_back($$.code);
  }
    $$.addre = $1.addre;
 }
@@ -316,7 +365,10 @@ expression
     if (($1.element_type == INT_T)&&($3.element_type == INT_T)){
       $$.element_type = INT_T;
       //($1[$3.n].n = $6.n);
-      printf("popq %%rax\npopq %%rbx\nmovq %%rax, -%d(%%rbp, %%rbx, 8)\npushq %%rax\n",$1.addre);
+	  std::stringstream s;
+	  s << "popq %%rax\npopq %%rbx\nmovq %%rax, " << -$1.addre << "(%%rbp, %%rbx, 8)\npushq %%rax\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
     }
     else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
       {perror("int[int] = float not allowed"); exit(0);}
@@ -381,7 +433,17 @@ declarator
    $$.element_size = $3; addr += 8*$3 ; $$.addre = addr;}
 | declarator '(' parameter_list ')' {addr = 0;$$.element_type = bt; $$.kind = 1; 
 $$.element_size = nliste; $$.function_parameters = $3;} 
-| declarator '(' ')' {addr = 0; $$.element_type = bt; $$.kind = 1; $$.element_size = 0;printf("main:\n.LFB%d:\n.cfi_startproc\npushq	%%rbp\n.cfi_def_cfa_offset 16\n.cfi_offset 6, -16\nmovq	%%rsp, %%rbp\n.cfi_def_cfa_register 6\n",nfunc);}
+| declarator '(' ')' {
+	addr = 0;
+	$$.element_type = bt;
+	$$.kind = 1;
+	$$.element_size = 0;	
+	std::stringstream s;
+	s << "main:\n.LFB" << nfunc << ":\n.cfi_startproc\npushq	%%rbp\n";
+	s << ".cfi_def_cfa_offset 16\n.cfi_offset 6, -16\nmovq	%%rsp, %%rbp\n.cfi_def_cfa_register 6\n";
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+ }
 ;
 
 parameter_list
@@ -419,7 +481,11 @@ statement_list
 
 expression_statement
 : ';' 
-| expression ';' {$$.element_type = $1.element_type; printf("popq %%rax\n");}
+| expression ';' {
+ $$.element_type = $1.element_type;
+ $$.code = new std::string("popq %%rax\n");
+ vec.push_back($$.code);
+ }
 ;
 //{printf("popq %%rax\ncmpl $0, %%rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); }
 selection_statement
@@ -434,8 +500,17 @@ iteration_statement
 ;
 
 jump_statement
-: RETURN ';' {printf("movl $1, -8(%%rbp)\n");}
-| RETURN expression ';' {printf("popq %%rax\nmovl %%rax, -%d(%%rbp)\n",$2.addre);}
+: RETURN ';' {
+ std::string s("movl $1, -8(%%rbp)\n");
+ $$.code = new std::string(s.str());
+ vec.push_back($$.code);
+}
+| RETURN expression ';' {
+ std::stringstream s;
+ s << "popq %%rax\nmovl %%rax, " << -$2.addre << "(%%rbp)\n";
+ $$.code = new std::string(s.str());
+ vec.push_back($$.code);
+}
 ;
 
 program
@@ -449,7 +524,13 @@ external_declaration
 ;
 
 function_definition
-: type_name declarator compound_statement {	printf(".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE%d:\n",nfunc); nfunc++;}
+: type_name declarator compound_statement {
+ std::stringstream s;
+ s << ".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
+ $$.code = new std::string(s.str());
+ vec.push_back($$.code);
+ nfunc++;
+ }
 ;
 
 %%
