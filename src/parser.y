@@ -16,6 +16,7 @@
     int yyerror ();
     int addr = 0;
     int nlabel = 0;
+    int nfunc = 0;
 
 %}
 
