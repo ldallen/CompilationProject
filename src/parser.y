@@ -274,7 +274,20 @@ comparison_expression
    $$.addre = $1.addre;
        }
 | additive_expression '<' additive_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
+      {
       $$.element_type = INT_T;
+      std::stringstream s;
+	  s << "popq %%rax\n";
+	  s << "popq %%rbx\n";
+	  s << "cmp %%rax, %%rbx\n";
+	  s << "jl .L" << nlabel << "\n";
+	  s << "movq $1 %%rbp\n";
+	  s << ".L" << nlabel << ":\n";
+	  s << "movq $0 %%rbp\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
+	  nlabel++;
+      }
       //$$.no = ($1.no < $3.no);
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      $$.element_type = FLOAT_T;
@@ -287,7 +300,20 @@ comparison_expression
      //$$.fo = ($1.fo < $3.fo);
 }
 | additive_expression '>' additive_expression {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
+      {
       $$.element_type = INT_T;
+      std::stringstream s;
+	  s << "popq %%rax\n";
+	  s << "popq %%rbx\n";
+	  s << "cmp %%rax, %%rbx\n";
+	  s << "jg .L" << nlabel << "\n";
+	  s << "movq $1 %%rbp\n";
+	  s << ".L" << nlabel << ":\n";
+	  s << "movq $0 %%rbp\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
+	  nlabel++;
+      }
       //$$.no = ($1.no > $3.no);
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      $$.element_type = FLOAT_T;
@@ -301,7 +327,19 @@ comparison_expression
 }
 | additive_expression LE_OP additive_expression
 {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
-    $$.element_type = INT_T;
+    { $$.element_type = INT_T;
+      std::stringstream s;
+	  s << "popq %%rax\n";
+	  s << "popq %%rbx\n";
+	  s << "cmp %%rax, %%rbx\n";
+	  s << "jle .L" << nlabel << "\n";
+	  s << "movq $1 %%rbp\n";
+	  s << ".L" << nlabel << ":\n";
+	  s << "movq $0 %%rbp\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
+	  nlabel++;
+      }
     //$$.n = ($1.n >= $3.n);
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      $$.element_type = FLOAT_T;
@@ -315,7 +353,19 @@ comparison_expression
 }
 | additive_expression GE_OP additive_expression
 {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
-    $$.element_type = INT_T;
+    { $$.element_type = INT_T;
+      std::stringstream s;
+	  s << "popq %%rax\n";
+	  s << "popq %%rbx\n";
+	  s << "cmp %%rax, %%rbx\n";
+	  s << "jge .L" << nlabel << "\n";
+	  s << "movq $1 %%rbp\n";
+	  s << ".L" << nlabel << ":\n";
+	  s << "movq $0 %%rbp\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
+	  nlabel++;
+      }
     //$$.n = ($1.n <= $3.n);
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      $$.element_type = FLOAT_T;
@@ -329,7 +379,20 @@ comparison_expression
 }
 | additive_expression EQ_OP additive_expression
 {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
-    $$.element_type = INT_T;
+    { $$.element_type = INT_T;
+      std::stringstream s;
+	  s << "popq %%rax\n";
+	  s << "popq %%rbx\n";
+	  s << "cmp %%rax, %%rbx\n";
+	  s << "je .L" << nlabel << "\n";
+	  s << "movq $1 %%rbp\n";
+	  s << ".L" << nlabel << ":\n";
+	  s << "movq $0 %%rbp\n";
+	  $$.code = new std::string(s.str());
+	  printf("pointeur vers code: %p\n",$$.code);
+	  vec.push_back($$.code);
+	  nlabel++;
+      }
     //$$.n = ($1.n == $3.n);
    else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
      $$.element_type = FLOAT_T;
@@ -343,7 +406,19 @@ comparison_expression
 }
 | additive_expression NE_OP additive_expression
 {if (($1.element_type == INT_T)&&($3.element_type == INT_T))
-    $$.element_type = INT_T;
+    { $$.element_type = INT_T;
+      std::stringstream s;
+	  s << "popq %%rax\n";
+	  s << "popq %%rbx\n";
+	  s << "cmp %%rax, %%rbx\n";
+	  s << "jne .L" << nlabel << "\n";
+	  s << "movq $1 %%rbp\n";
+	  s << ".L" << nlabel << ":\n";
+	  s << "movq $0 %%rbp\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
+	  nlabel++;
+      }
   //$$.n = ($1.n != $3.n);
   else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
     $$.element_type = FLOAT_T;
@@ -496,11 +571,11 @@ parameter_declaration
 ;
 
 statement
-: compound_statement
-| expression_statement 
-| selection_statement
-| iteration_statement
-| jump_statement
+: compound_statement {$$ = $1;}
+| expression_statement {$$ = $1;}
+| selection_statement {$$ = $1;}
+| iteration_statement {$$ = $1;}
+| jump_statement {$$ = $1;}
 ;
 
 compound_statement
@@ -529,7 +604,18 @@ expression_statement
 ;
 //{printf("popq %rax\ncmpl $0, %rax\njne L%d\npushq $1\njmp L%d\nL%d:\npushq $0\nL%d:\n",nlabel,nlabel+1,nlabel,nlabel+1); }
 selection_statement
-: IF '(' expression ')' statement {}  
+: IF '(' expression ')' statement 
+{
+    std::stringstream s;
+	s << "popq %%rax\n";
+	s << "cmp %%rax, $0\n";
+	s << "je .L" << nlabel << "\n";
+	s << *$5.code;
+	s << ".L" << nlabel << ":\n";
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	nlabel++;
+}  
 | IF '(' expression ')' statement ELSE statement 
 ;
 
