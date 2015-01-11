@@ -45,6 +45,8 @@
 %type <t> expression_statement
 %type <t> iteration_statement
 %type <t> statement
+%type <t> jump_statement
+%type <t> function_definition
 %type <lt> declarator_list
 %type <lt> declaration_list
 %type <lt> statement_list
@@ -502,7 +504,7 @@ iteration_statement
 jump_statement
 : RETURN ';' {
  std::string s("movl $1, -8(%%rbp)\n");
- $$.code = new std::string(s.str());
+ $$.code = new std::string(s);
  vec.push_back($$.code);
 }
 | RETURN expression ';' {
