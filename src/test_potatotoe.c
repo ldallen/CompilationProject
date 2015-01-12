@@ -1,11 +1,6 @@
 int main()
 {
-	float x;
-	float y;
-	x++;
-	x++;
-	y--;
-	if(y>x)
-	  x++;
+	int y[10];
+  int * x = y;
   return 0;
 }

@@ -1042,8 +1042,11 @@ expression
 : IDENTIFIER '=' comparison_expression {
   type_t local_identifier = VariableStack[current_function + " "+$1];
   $$ = local_identifier;
-  if ((local_identifier.element_type == INT_T)&&(local_identifier.element_type == INT_T)){
-    $$.element_type = INT_T;
+  if($$.kind != -1){
+  perror("invalid operation");
+  exit(EXIT_FAILURE);
+  }
+  else if ((local_identifier.element_type == INT_T)&&($3.element_type == INT_T)){
     std::stringstream s;
     s << *$3.code;
     s << "popq %rax\n";
@@ -1057,11 +1060,37 @@ expression
   else if ((local_identifier.element_type == FLOAT_T)&&($3.element_type == INT_T)){
     $$.element_type = FLOAT_T;} // idem pour float
   else if ((local_identifier.element_type == FLOAT_T)&&($3.element_type == FLOAT_T)){ //idem pour float
-    $$.element_type = FLOAT_T;
     std::stringstream s;
     s << "popq %rax\nmovq %rax " << -local_identifier.addre << "(%rbp)\npushq %rax\n";
     $$.code = new std::string(s.str());
     vec.push_back($$.code);
+  }
+  else if(local_identifier.element_type == INTSTAR_T || local_identifier.element_type == FLOATSTAR_T) 
+  {
+	 if($3.element_type == local_identifier.element_type && $3.kind == -1) // egalite entre pointeurs
+	 {
+	    std::stringstream s;
+		s << *$3.code;
+		s << "popq %rax\n";
+		s << "movq %rax, " << -local_identifier.addre << "(%rbp)\n";
+		s << "pushq %rax\n";
+		$$.code = new std::string(s.str());
+		vec.push_back($$.code);
+	 }
+	 else if(($3.kind = 0) && ($3.element_type == local_identifier.element_type + 1)) //pointeur egal vecteur
+	 {
+	  std::stringstream s;
+	  s << "popq %rax\nmovq %rax " << -local_identifier.addre << "(%rbp)\npushq %rax\n";
+	  $$.code = new std::string(s.str());
+	  vec.push_back($$.code);
+	 }
+	 else
+	 {
+	 
+		perror("invalid operation");
+		exit(EXIT_FAILURE);
+	 
+	 }
   }
   $$.addre = local_identifier.addre;
  }
