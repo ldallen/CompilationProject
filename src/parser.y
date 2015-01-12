@@ -97,9 +97,7 @@ $$ = $2;
 	type_t local_identifier = VariableStack[current_function + " "+$1];
 	$$ = local_identifier;
 	std::stringstream s;
-	s << "pushq %rbp\n";
 	s << "call " << $1 << "\n";
-	s << "popq %rbp\n";
 	$$.code = new std::string(s.str());
 	} 
 | IDENTIFIER '(' argument_expression_list ')' {
