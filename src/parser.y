@@ -117,14 +117,16 @@ primary_expression
 		exit(EXIT_FAILURE);
 	}
   std::stringstream s;
-  for (int i = $$.element_size - 1; i>=0; i++)
+  for (int i = $$.element_size - 1; i>=0; i--)
   {
 	std::stringstream ss;
 	ss << $1 << " "<< i;
 	
 	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
-		perror("type not valid (argument)");
-		exit(EXIT_FAILURE);
+	
+		printf("type %d -> %d\n", ParameterStack[ss.str()].element_type, temp_appel_param_stack[i].element_type);
+		//perror("type not valid (argument)");
+		//exit(EXIT_FAILURE);
 	}
 	switch(i){   // mise en mémoire des parametres
 		case 0:
