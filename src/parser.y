@@ -217,18 +217,36 @@ primary_expression
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
  }
-| IDENTIFIER '[' expression ']' {
+| IDENTIFIER '[' expression ']' { //changer $$.kind
   type_t local_identifier = VariableStack[current_function + " "+$1];
   $$ = local_identifier; 
-  if(local_identifier.element_type == INT_T) {
-    std::stringstream s;
-    s << *$3.code;
-    s << "popq %rax\nmovq ";
-    s << -local_identifier.addre;
-    s << "(%rbp, %rax, 8), %rax\npushq %rax\n";
-    $$.code = new std::string(s.str());
-    vec.push_back($$.code);
-  }
+	  if(local_identifier.kind == 0)
+	  {
+		  if(local_identifier.element_type == INT_T) {
+			std::stringstream s;
+			s << *$3.code;
+			s << "popq %rax\nmovq -";
+			s << local_identifier.addre;
+			s << "(%rbp, %rax, 8), %rax\npushq %rax\n";
+			$$.code = new std::string(s.str());
+			vec.push_back($$.code);
+			}
+	}
+	else if(local_identifier.kind == -1)
+	{
+		if(local_identifier.element_type == INTSTAR_T) { // a revoir peutr-etre
+			std::stringstream s;
+			s << *$3.code;
+			s << "popq %rax\nimul $8 %rax";
+			s << "movq -"<< local_identifier.addre << "(%rbp), %rbx\n";
+			s << "addq %rax, %rbx\n "; 
+			s << "pushq (%rbx)\n";
+			$$.code = new std::string(s.str());
+			vec.push_back($$.code);
+		
+		}
+	
+	}
   }
 ;
 
@@ -1165,7 +1183,8 @@ expression
 	 else if(($3.kind = 0) && ($3.element_type == local_identifier.element_type + 1)) //pointeur egal vecteur
 	 {
 	  std::stringstream s;
-	  s << "popq %rax\nmovq %rax " << -local_identifier.addre << "(%rbp)\npushq %rax\n";
+	  s << *$3.code;
+	  s << "leaq -" << local_identifier.addre << "(%rbp), -" <<  $3.addre << "(%rbp)\npushq -" << $3.addre << "(%rbp)\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	 }
