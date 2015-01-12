@@ -479,14 +479,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    74,    74,    80,    88,    96,    99,   111,   128,   161,
-     195,   211,   212,   224,   227,   250,   293,   296,   372,   375,
-     450,   528,   531,   619,   707,   794,   881,   968,  1058,  1113,
-    1143,  1149,  1153,  1154,  1165,  1166,  1167,  1171,  1192,  1220,
-    1238,  1270,  1303,  1329,  1358,  1359,  1370,  1374,  1375,  1376,
-    1377,  1378,  1382,  1385,  1388,  1398,  1399,  1410,  1411,  1422,
-    1423,  1433,  1446,  1465,  1480,  1497,  1515,  1519,  1528,  1529,
-    1533,  1534,  1538
+       0,    74,    74,    80,    88,    96,    99,   111,   135,   168,
+     202,   218,   219,   231,   234,   257,   300,   303,   379,   382,
+     457,   535,   538,   626,   714,   801,   888,   975,  1065,  1120,
+    1150,  1156,  1160,  1161,  1172,  1173,  1174,  1178,  1199,  1227,
+    1245,  1277,  1310,  1336,  1365,  1366,  1377,  1381,  1382,  1383,
+    1384,  1385,  1389,  1392,  1395,  1405,  1406,  1417,  1418,  1429,
+    1430,  1440,  1453,  1472,  1488,  1506,  1525,  1529,  1538,  1539,
+    1543,  1544,  1548
 };
 #endif
 
@@ -1440,19 +1440,26 @@ yyreduce:
 		perror("Invalid Operation");
 		exit(EXIT_FAILURE);
 	}
+	
   for (int i = 0; i<(yyval.t).element_size; i++)
   {
+	std::stringstream ss;
+	ss << (yyvsp[-3].str) << " " << i;
+	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
+	printf("call : %s, parameter i\n", (yyvsp[-3].str));
+	
+	}
 		  
   }	
   std::stringstream s;
   s << "call " << (yyvsp[-3].str) << "\n";
   (yyval.t).code = new std::string(s.str());
   }
-#line 1452 "parser.c" /* yacc.c:1646  */
+#line 1459 "parser.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 128 "parser.y" /* yacc.c:1646  */
+#line 135 "parser.y" /* yacc.c:1646  */
     {
   type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-1].str)];
   (yyval.t) = local_identifier;
@@ -1486,11 +1493,11 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 1490 "parser.c" /* yacc.c:1646  */
+#line 1497 "parser.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 161 "parser.y" /* yacc.c:1646  */
+#line 168 "parser.y" /* yacc.c:1646  */
     {
   type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-1].str)];
   (yyval.t) = local_identifier;
@@ -1525,11 +1532,11 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 1529 "parser.c" /* yacc.c:1646  */
+#line 1536 "parser.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 195 "parser.y" /* yacc.c:1646  */
+#line 202 "parser.y" /* yacc.c:1646  */
     {
   type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-3].str)];
   (yyval.t) = local_identifier; 
@@ -1543,17 +1550,17 @@ yyreduce:
     vec.push_back((yyval.t).code);
   }
   }
-#line 1547 "parser.c" /* yacc.c:1646  */
+#line 1554 "parser.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 211 "parser.y" /* yacc.c:1646  */
+#line 218 "parser.y" /* yacc.c:1646  */
     { (yyval.t) = (yyvsp[0].t); temp_appel_param_stack.push_back((yyvsp[0].t)); }
-#line 1553 "parser.c" /* yacc.c:1646  */
+#line 1560 "parser.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 212 "parser.y" /* yacc.c:1646  */
+#line 219 "parser.y" /* yacc.c:1646  */
     { 
   (yyval.t) = (yyvsp[0].t);
   std::stringstream s;
@@ -1563,19 +1570,19 @@ yyreduce:
   vec.push_back((yyval.t).code);
   temp_appel_param_stack.push_back((yyvsp[0].t));	
  }
-#line 1567 "parser.c" /* yacc.c:1646  */
+#line 1574 "parser.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 224 "parser.y" /* yacc.c:1646  */
+#line 231 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
  }
-#line 1575 "parser.c" /* yacc.c:1646  */
+#line 1582 "parser.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 227 "parser.y" /* yacc.c:1646  */
+#line 234 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);	
   if ((yyvsp[0].t).element_type == INT_T)
@@ -1599,11 +1606,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
   }
   }
-#line 1603 "parser.c" /* yacc.c:1646  */
+#line 1610 "parser.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 250 "parser.y" /* yacc.c:1646  */
+#line 257 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
   if ((yyvsp[0].t).element_type == INT_T)
@@ -1644,19 +1651,19 @@ yyreduce:
     nlabel += 2;
   }
   }
-#line 1648 "parser.c" /* yacc.c:1646  */
+#line 1655 "parser.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 293 "parser.y" /* yacc.c:1646  */
+#line 300 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
  }
-#line 1656 "parser.c" /* yacc.c:1646  */
+#line 1663 "parser.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 296 "parser.y" /* yacc.c:1646  */
+#line 303 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T)) 
@@ -1730,19 +1737,19 @@ yyreduce:
       vec.push_back((yyval.t).code);
     }
   }
-#line 1734 "parser.c" /* yacc.c:1646  */
+#line 1741 "parser.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 372 "parser.y" /* yacc.c:1646  */
+#line 379 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
  }
-#line 1742 "parser.c" /* yacc.c:1646  */
+#line 1749 "parser.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 375 "parser.y" /* yacc.c:1646  */
+#line 382 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
@@ -1818,11 +1825,11 @@ yyreduce:
       vec.push_back((yyval.t).code);
     }
   }
-#line 1822 "parser.c" /* yacc.c:1646  */
+#line 1829 "parser.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 450 "parser.y" /* yacc.c:1646  */
+#line 457 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
@@ -1898,19 +1905,19 @@ yyreduce:
       vec.push_back((yyval.t).code);
     }
   }
-#line 1902 "parser.c" /* yacc.c:1646  */
+#line 1909 "parser.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 528 "parser.y" /* yacc.c:1646  */
+#line 535 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t)=(yyvsp[0].t);
  }
-#line 1910 "parser.c" /* yacc.c:1646  */
+#line 1917 "parser.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 531 "parser.y" /* yacc.c:1646  */
+#line 538 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t)=(yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
@@ -1921,7 +1928,7 @@ yyreduce:
       s << *(yyvsp[0].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jl .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -1999,11 +2006,11 @@ yyreduce:
     nlabel++;
   }
   }
-#line 2003 "parser.c" /* yacc.c:1646  */
+#line 2010 "parser.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 619 "parser.y" /* yacc.c:1646  */
+#line 626 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t)=(yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
@@ -2014,7 +2021,7 @@ yyreduce:
       s << *(yyvsp[0].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jg .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -2092,11 +2099,11 @@ yyreduce:
     nlabel++;
   }
   }
-#line 2096 "parser.c" /* yacc.c:1646  */
+#line 2103 "parser.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 708 "parser.y" /* yacc.c:1646  */
+#line 715 "parser.y" /* yacc.c:1646  */
     {	(yyval.t) = (yyvsp[-2].t);	
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
@@ -2105,7 +2112,7 @@ yyreduce:
       s << *(yyvsp[0].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jle .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -2183,11 +2190,11 @@ yyreduce:
     nlabel++;
   }
 }
-#line 2187 "parser.c" /* yacc.c:1646  */
+#line 2194 "parser.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 795 "parser.y" /* yacc.c:1646  */
+#line 802 "parser.y" /* yacc.c:1646  */
     {	(yyval.t)=(yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
@@ -2196,7 +2203,7 @@ yyreduce:
       s << *(yyvsp[0].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jge .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -2274,11 +2281,11 @@ yyreduce:
     nlabel++;
   }
 }
-#line 2278 "parser.c" /* yacc.c:1646  */
+#line 2285 "parser.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 882 "parser.y" /* yacc.c:1646  */
+#line 889 "parser.y" /* yacc.c:1646  */
     {	(yyval.t)=(yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
@@ -2287,7 +2294,7 @@ yyreduce:
       s << *(yyvsp[0].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "je .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -2365,11 +2372,11 @@ yyreduce:
     nlabel++;
   }
 }
-#line 2369 "parser.c" /* yacc.c:1646  */
+#line 2376 "parser.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 969 "parser.y" /* yacc.c:1646  */
+#line 976 "parser.y" /* yacc.c:1646  */
     {	(yyval.t)=(yyvsp[-2].t);
   if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
@@ -2378,7 +2385,7 @@ yyreduce:
       s << *(yyvsp[0].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jne .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -2456,11 +2463,11 @@ yyreduce:
     nlabel++;
   }
 }
-#line 2460 "parser.c" /* yacc.c:1646  */
+#line 2467 "parser.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 1058 "parser.y" /* yacc.c:1646  */
+#line 1065 "parser.y" /* yacc.c:1646  */
     {
   type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-2].str)];
   (yyval.t) = local_identifier;
@@ -2516,11 +2523,11 @@ yyreduce:
   }
   (yyval.t).addre = local_identifier.addre;
  }
-#line 2520 "parser.c" /* yacc.c:1646  */
+#line 2527 "parser.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 1114 "parser.y" /* yacc.c:1646  */
+#line 1121 "parser.y" /* yacc.c:1646  */
     {	
   type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-5].str)];
   (yyval.t) = local_identifier;
@@ -2550,31 +2557,31 @@ yyreduce:
     }
   (yyval.t).addre = local_identifier.addre;
 }
-#line 2554 "parser.c" /* yacc.c:1646  */
+#line 2561 "parser.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 1143 "parser.y" /* yacc.c:1646  */
+#line 1150 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
   }
-#line 2562 "parser.c" /* yacc.c:1646  */
+#line 2569 "parser.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 1149 "parser.y" /* yacc.c:1646  */
+#line 1156 "parser.y" /* yacc.c:1646  */
     { (yyval.t) = (yyvsp[-1].t);}
-#line 2568 "parser.c" /* yacc.c:1646  */
+#line 2575 "parser.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 1153 "parser.y" /* yacc.c:1646  */
+#line 1160 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t) ;}
-#line 2574 "parser.c" /* yacc.c:1646  */
+#line 2581 "parser.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 1154 "parser.y" /* yacc.c:1646  */
+#line 1161 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
   std::stringstream s;
@@ -2583,29 +2590,29 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   }
-#line 2587 "parser.c" /* yacc.c:1646  */
+#line 2594 "parser.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 1165 "parser.y" /* yacc.c:1646  */
+#line 1172 "parser.y" /* yacc.c:1646  */
     {bt = VOID_T;}
-#line 2593 "parser.c" /* yacc.c:1646  */
+#line 2600 "parser.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 1166 "parser.y" /* yacc.c:1646  */
+#line 1173 "parser.y" /* yacc.c:1646  */
     {bt = INT_T;}
-#line 2599 "parser.c" /* yacc.c:1646  */
+#line 2606 "parser.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 1167 "parser.y" /* yacc.c:1646  */
+#line 1174 "parser.y" /* yacc.c:1646  */
     {bt = FLOAT_T;}
-#line 2605 "parser.c" /* yacc.c:1646  */
+#line 2612 "parser.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 1171 "parser.y" /* yacc.c:1646  */
+#line 1178 "parser.y" /* yacc.c:1646  */
     { 
   if(current_function != "") //variable
   {
@@ -2627,11 +2634,11 @@ yyreduce:
       temp_param_stack.insert(std::pair<std::string, type_t>((yyvsp[0].str),(yyval.t)));
   }
  }
-#line 2631 "parser.c" /* yacc.c:1646  */
+#line 2638 "parser.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 1192 "parser.y" /* yacc.c:1646  */
+#line 1199 "parser.y" /* yacc.c:1646  */
     { 
   if(current_function != "") //variable
   {
@@ -2660,11 +2667,11 @@ yyreduce:
 		temp_param_stack.insert(std::pair<std::string, type_t>((yyvsp[0].str),(yyval.t)));
   }
   }
-#line 2664 "parser.c" /* yacc.c:1646  */
+#line 2671 "parser.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 1220 "parser.y" /* yacc.c:1646  */
+#line 1227 "parser.y" /* yacc.c:1646  */
     {
   if(current_function != "") //variable
   {
@@ -2683,11 +2690,11 @@ yyreduce:
 	exit(EXIT_FAILURE);
   }
  }
-#line 2687 "parser.c" /* yacc.c:1646  */
+#line 2694 "parser.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 1238 "parser.y" /* yacc.c:1646  */
+#line 1245 "parser.y" /* yacc.c:1646  */
     {
   if(current_function != "")
   {
@@ -2720,11 +2727,11 @@ yyreduce:
   vec.clear();
   current_function = (yyvsp[-3].str);
 }
-#line 2724 "parser.c" /* yacc.c:1646  */
+#line 2731 "parser.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 1270 "parser.y" /* yacc.c:1646  */
+#line 1277 "parser.y" /* yacc.c:1646  */
     {
   if(current_function != "")
   {
@@ -2758,11 +2765,11 @@ yyreduce:
   vec.clear();
   current_function = (yyvsp[-3].str);
 }
-#line 2762 "parser.c" /* yacc.c:1646  */
+#line 2769 "parser.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 1303 "parser.y" /* yacc.c:1646  */
+#line 1310 "parser.y" /* yacc.c:1646  */
     {
   if(current_function != "")
   {
@@ -2789,11 +2796,11 @@ yyreduce:
   VariableStack.insert(std::pair<std::string, type_t>((yyvsp[-2].str),(yyval.t))); 
   current_function = (yyvsp[-2].str);
   }
-#line 2793 "parser.c" /* yacc.c:1646  */
+#line 2800 "parser.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 1329 "parser.y" /* yacc.c:1646  */
+#line 1336 "parser.y" /* yacc.c:1646  */
     {
   if(current_function != "")
   {
@@ -2820,17 +2827,17 @@ yyreduce:
   VariableStack.insert(std::pair<std::string, type_t>((yyvsp[-2].str),(yyval.t)));
   current_function = (yyvsp[-2].str);
   }
-#line 2824 "parser.c" /* yacc.c:1646  */
+#line 2831 "parser.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 1358 "parser.y" /* yacc.c:1646  */
+#line 1365 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2830 "parser.c" /* yacc.c:1646  */
+#line 2837 "parser.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 1359 "parser.y" /* yacc.c:1646  */
+#line 1366 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
   std::stringstream s;
@@ -2839,63 +2846,63 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   }
-#line 2843 "parser.c" /* yacc.c:1646  */
+#line 2850 "parser.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 1370 "parser.y" /* yacc.c:1646  */
+#line 1377 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2849 "parser.c" /* yacc.c:1646  */
+#line 2856 "parser.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 1374 "parser.y" /* yacc.c:1646  */
+#line 1381 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2855 "parser.c" /* yacc.c:1646  */
+#line 2862 "parser.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 1375 "parser.y" /* yacc.c:1646  */
+#line 1382 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2861 "parser.c" /* yacc.c:1646  */
+#line 2868 "parser.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 1376 "parser.y" /* yacc.c:1646  */
+#line 1383 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2867 "parser.c" /* yacc.c:1646  */
+#line 2874 "parser.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 1377 "parser.y" /* yacc.c:1646  */
+#line 1384 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2873 "parser.c" /* yacc.c:1646  */
+#line 2880 "parser.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 1378 "parser.y" /* yacc.c:1646  */
+#line 1385 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2879 "parser.c" /* yacc.c:1646  */
+#line 2886 "parser.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 1382 "parser.y" /* yacc.c:1646  */
+#line 1389 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t).code = new std::string("");vec.push_back((yyval.t).code);
  }
-#line 2887 "parser.c" /* yacc.c:1646  */
+#line 2894 "parser.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 1385 "parser.y" /* yacc.c:1646  */
+#line 1392 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[-1].t);
   }
-#line 2895 "parser.c" /* yacc.c:1646  */
+#line 2902 "parser.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 1388 "parser.y" /* yacc.c:1646  */
+#line 1395 "parser.y" /* yacc.c:1646  */
     { (yyval.t) = (yyvsp[-1].t);
    std::stringstream s;
    s << *(yyvsp[-2].t).code;
@@ -2903,17 +2910,17 @@ yyreduce:
    (yyval.t).code = new std::string(s.str());
    vec.push_back((yyval.t).code);
   }
-#line 2907 "parser.c" /* yacc.c:1646  */
+#line 2914 "parser.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 1398 "parser.y" /* yacc.c:1646  */
+#line 1405 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2913 "parser.c" /* yacc.c:1646  */
+#line 2920 "parser.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 1399 "parser.y" /* yacc.c:1646  */
+#line 1406 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
   std::stringstream s;
@@ -2922,17 +2929,17 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 2926 "parser.c" /* yacc.c:1646  */
+#line 2933 "parser.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 1410 "parser.y" /* yacc.c:1646  */
+#line 1417 "parser.y" /* yacc.c:1646  */
     {(yyval.t) = (yyvsp[0].t);}
-#line 2932 "parser.c" /* yacc.c:1646  */
+#line 2939 "parser.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 1411 "parser.y" /* yacc.c:1646  */
+#line 1418 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[0].t);
   std::stringstream s;
@@ -2941,11 +2948,11 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 2945 "parser.c" /* yacc.c:1646  */
+#line 2952 "parser.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 1423 "parser.y" /* yacc.c:1646  */
+#line 1430 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t) = (yyvsp[-1].t);
   std::stringstream s;
@@ -2954,16 +2961,16 @@ yyreduce:
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 2958 "parser.c" /* yacc.c:1646  */
+#line 2965 "parser.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 1434 "parser.y" /* yacc.c:1646  */
+#line 1441 "parser.y" /* yacc.c:1646  */
     {	
   std::stringstream s;
   s << *(yyvsp[-2].t).code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "cmpq %rax, $0\n";
   s << "je .L" << nlabel << "\n";
   s << *(yyvsp[0].t).code;
   s << ".L" << nlabel << ":\n";
@@ -2971,11 +2978,11 @@ yyreduce:
   vec.push_back((yyval.t).code);
   nlabel++;
 }
-#line 2975 "parser.c" /* yacc.c:1646  */
+#line 2982 "parser.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 1447 "parser.y" /* yacc.c:1646  */
+#line 1454 "parser.y" /* yacc.c:1646  */
     {	
   std::stringstream s;
   s << *(yyvsp[-4].t).code;
@@ -2991,17 +2998,18 @@ yyreduce:
   vec.push_back((yyval.t).code); 
   nlabel += 2;
 }
-#line 2995 "parser.c" /* yacc.c:1646  */
+#line 3002 "parser.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 1466 "parser.y" /* yacc.c:1646  */
+#line 1473 "parser.y" /* yacc.c:1646  */
     {	
   std::stringstream s;
   s << ".L" << nlabel << ":\n";
   s << *(yyvsp[-2].t).code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "movq $0 $rbx\n";
+  s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << *(yyvsp[0].t).code;
   s << "jmp .L" << nlabel << "\n";
@@ -3010,18 +3018,19 @@ yyreduce:
   vec.push_back((yyval.t).code);
   nlabel += 2;
 }
-#line 3014 "parser.c" /* yacc.c:1646  */
+#line 3022 "parser.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 1481 "parser.y" /* yacc.c:1646  */
+#line 1489 "parser.y" /* yacc.c:1646  */
     {	
   std::stringstream s;
   s << *(yyvsp[-4].t).code;
   s << ".L" << nlabel << ":\n";
   s << *(yyvsp[-3].t).code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "movq $0 $rbx\n";
+  s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << *(yyvsp[0].t).code;
   s << *(yyvsp[-2].t).code;
@@ -3031,18 +3040,19 @@ yyreduce:
   vec.push_back((yyval.t).code);
   nlabel += 2;
 }
-#line 3035 "parser.c" /* yacc.c:1646  */
+#line 3044 "parser.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 1498 "parser.y" /* yacc.c:1646  */
+#line 1507 "parser.y" /* yacc.c:1646  */
     {	
   std::stringstream s;
   s << ".L" << nlabel << ":\n";
   s << *(yyvsp[-5].t).code;
   s << *(yyvsp[-2].t).code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "movq $0 $rbx\n";
+  s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << "jmp .L" << nlabel << "\n";
   s << ".L" << nlabel+1 << ":\n";
@@ -3050,55 +3060,55 @@ yyreduce:
   vec.push_back((yyval.t).code);
   nlabel += 2;
 }
-#line 3054 "parser.c" /* yacc.c:1646  */
+#line 3064 "parser.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 1515 "parser.y" /* yacc.c:1646  */
+#line 1525 "parser.y" /* yacc.c:1646  */
     {
   (yyval.t).code = new std::string("movq $1, -8(%rbp)\n");
   vec.push_back((yyval.t).code);
  }
-#line 3063 "parser.c" /* yacc.c:1646  */
+#line 3073 "parser.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 1519 "parser.y" /* yacc.c:1646  */
+#line 1529 "parser.y" /* yacc.c:1646  */
     {
   std::stringstream s;
   s << "popq %rax\nmovq %rax, " << -(yyvsp[-1].t).addre << "(%rbp)\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 3074 "parser.c" /* yacc.c:1646  */
+#line 3084 "parser.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 1528 "parser.y" /* yacc.c:1646  */
+#line 1538 "parser.y" /* yacc.c:1646  */
     {}
-#line 3080 "parser.c" /* yacc.c:1646  */
+#line 3090 "parser.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 1529 "parser.y" /* yacc.c:1646  */
+#line 1539 "parser.y" /* yacc.c:1646  */
     {}
-#line 3086 "parser.c" /* yacc.c:1646  */
+#line 3096 "parser.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 1533 "parser.y" /* yacc.c:1646  */
+#line 1543 "parser.y" /* yacc.c:1646  */
     {}
-#line 3092 "parser.c" /* yacc.c:1646  */
+#line 3102 "parser.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 1534 "parser.y" /* yacc.c:1646  */
+#line 1544 "parser.y" /* yacc.c:1646  */
     {}
-#line 3098 "parser.c" /* yacc.c:1646  */
+#line 3108 "parser.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 1538 "parser.y" /* yacc.c:1646  */
+#line 1548 "parser.y" /* yacc.c:1646  */
     {
   std::stringstream s;
   s<< *(yyvsp[-1].t).code;
@@ -3113,11 +3123,11 @@ yyreduce:
   current_function = "";
   nfunc++;
  }
-#line 3117 "parser.c" /* yacc.c:1646  */
+#line 3127 "parser.c" /* yacc.c:1646  */
     break;
 
 
-#line 3121 "parser.c" /* yacc.c:1646  */
+#line 3131 "parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3345,7 +3355,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1554 "parser.y" /* yacc.c:1906  */
+#line 1564 "parser.y" /* yacc.c:1906  */
 
 #include <cstdio>
 #include <string>

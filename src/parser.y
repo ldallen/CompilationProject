@@ -116,8 +116,15 @@ primary_expression
 		perror("Invalid Operation");
 		exit(EXIT_FAILURE);
 	}
+	
   for (int i = 0; i<$$.element_size; i++)
   {
+	std::stringstream ss;
+	ss << $1 << " " << i;
+	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
+	printf("call : %s, parameter i\n", $1);
+	
+	}
 		  
   }	
   std::stringstream s;
@@ -538,7 +545,7 @@ comparison_expression
       s << *$3.code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jl .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -626,7 +633,7 @@ comparison_expression
       s << *$3.code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jg .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -713,7 +720,7 @@ comparison_expression
       s << *$3.code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jle .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -800,7 +807,7 @@ comparison_expression
       s << *$3.code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jge .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -887,7 +894,7 @@ comparison_expression
       s << *$3.code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "je .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -974,7 +981,7 @@ comparison_expression
       s << *$3.code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
-      s << "cmp %rax, %rbx\n";
+      s << "cmpq %rax, %rbx\n";
       s << "jne .L" << nlabel << "\n";
       s << "movq $1, %rbp\n";
       s << ".L" << nlabel << ":\n";
@@ -1435,7 +1442,7 @@ selection_statement
   std::stringstream s;
   s << *$3.code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "cmpq %rax, $0\n";
   s << "je .L" << nlabel << "\n";
   s << *$5.code;
   s << ".L" << nlabel << ":\n";
@@ -1468,7 +1475,8 @@ iteration_statement
   s << ".L" << nlabel << ":\n";
   s << *$3.code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "movq $0 $rbx\n";
+  s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << *$5.code;
   s << "jmp .L" << nlabel << "\n";
@@ -1484,7 +1492,8 @@ iteration_statement
   s << ".L" << nlabel << ":\n";
   s << *$4.code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "movq $0 $rbx\n";
+  s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << *$7.code;
   s << *$5.code;
@@ -1501,7 +1510,8 @@ iteration_statement
   s << *$2.code;
   s << *$5.code;
   s << "popq %rax\n";
-  s << "cmp %rax, $0\n";
+  s << "movq $0 $rbx\n";
+  s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << "jmp .L" << nlabel << "\n";
   s << ".L" << nlabel+1 << ":\n";
