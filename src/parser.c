@@ -88,7 +88,7 @@
     int yyerror ();
     int addr = 0;
     int nlabel = 0;
-    int nfunc = 0;
+    int nfunc = 2;
     string current_function;
     vector<std::string*> vec;
     map<std::string, type_t> VariableStack;
@@ -2741,12 +2741,77 @@ void printCode (std::string* code) {
 	}
 	vec.clear();
 }
+void print_printint(){
+    std::stringstream s;
+    s << ".section	.rodata\n";
+	s << ".LC0:\n";
+	s << ".string	\"%d\\n\"\n";
+	s << ".text\n";
+	s << ".globl	printint\n";
+	s << ".type	printint, @function\n";
+	s << "printint:\n";
+	s << ".LFB0:\n";
+	s << ".cfi_startproc\n";
+	s << "pushq	%rbp\n";
+	s << ".cfi_def_cfa_offset 16\n";
+	s << ".cfi_offset 6, -16\n";
+	s << "movq	%rsp, %rbp\n";
+	s << ".cfi_def_cfa_register 6\n";
+	s << "subq	$16, %rsp\n";
+	s << "movq	%rdi, -8(%rbp)\n";
+	s << "movq	-8(%rbp), %rax\n";
+	s << "movq	%rax, %rsi\n";
+	s << "movq	$.LC0, %rdi\n";
+	s << "movq	$0, %rax\n";
+	s << "call	printf\n";
+	s << "leave\n";
+	s << ".cfi_def_cfa 7, 8\n";
+	s << "ret\n";
+	s << ".cfi_endproc\n";
+	s << ".LFE0:\n";
+	s << ".size	printint, .-printint\n";
+	printf("%s", s.str().c_str());
+}
+
+void print_printfloat(){
+ std::stringstream s;
+	s << ".section	.rodata\n";
+	s << ".LC1:\n";
+	s << ".string	\"%f\\n\"\n";
+	s << ".text\n";
+	s << ".globl	printfloat\n";
+	s << ".type	printfloat, @function\n";
+	s << "printfloat:\n";
+	s << ".LFB1:\n";
+	s << ".cfi_startproc\n";
+	s << "pushq	%rbp\n";
+	s << ".cfi_def_cfa_offset 16\n";
+	s << ".cfi_offset 6, -16\n";
+	s << "movq	%rsp, %rbp\n";
+	s << ".cfi_def_cfa_register 6\n";
+	s << "subq	$16, %rsp\n";
+	s << "movss	%xmm0, -8(%rbp)\n";
+	s << "movss	-8(%rbp), %xmm0\n";
+	s << "cvtps2pd	%xmm0, %xmm0\n";
+	s << "movq	$.LC1, %rdi\n";
+	s << "movq	$1, %rax\n";
+	s << "call	printf\n";
+	s << "leave\n";
+	s << ".cfi_def_cfa 7, 8\n";
+	s << "ret\n";
+	s << ".cfi_endproc\n";
+	s << ".LFE1:\n";
+	s << ".size	printfloat, .-printfloat\n";
+	printf("%s", s.str().c_str());
+}
 
 
 int main (int argc, char *argv[]) {
     FILE *input = NULL;
     if (argc==2) {
-    printf(".file	\"%s\"\n.text\n",argv[1]);
+    printf(".file	\"%s\"\n",argv[1]);
+	print_printint();
+	print_printfloat();
 	input = fopen (argv[1], "r");
 	file_name = strdup (argv[1]);
 	if (input) {
