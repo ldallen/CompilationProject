@@ -117,7 +117,7 @@ primary_expression
 		exit(EXIT_FAILURE);
 	}
   std::stringstream s;
-  for (int i = 0; i<$$.element_size; i++)
+  for (int i = $$.element_size - 1; i>=0; i++)
   {
 	std::stringstream ss;
 	ss << $1 << " "<< i;
@@ -126,7 +126,7 @@ primary_expression
 		perror("type not valid (argument)");
 		exit(EXIT_FAILURE);
 	}
-	switch($$.element_size - i){
+	switch(i){   // mise en mémoire des parametres
 		case 0:
 		s <<"pushq %rax\nmovq	%rax, %rcx\n";
 		break;		
@@ -137,11 +137,11 @@ primary_expression
 		s <<"pushq %rax\nmovq	%rax, %r8d\n";
 		break;		
 		case 3:
-		s <<"pushq %rax\nmovq	%rax, %r9x\n";		
+		s <<"pushq %rax\nmovq	%rax, %r9d\n";		
 		break;		
 		default:
-		int adre = 32 + 8*(i-4);
-		s <<"pushq %rax\nmovq	%rax, "<< adre <<"(%rsp)\n";
+		int local_addre = 32 + 8*(i-4);
+		s <<"pushq %rax\nmovq	%rax, "<< local_addre <<"(%rsp)\n";
 		break;
 	}	  
   }	
@@ -271,6 +271,10 @@ unary_expression
     $$.code = new std::string(s.str());
     vec.push_back($$.code);
   }
+  else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 | '!' unary_expression {
   $$ = $2;
@@ -311,6 +315,10 @@ unary_expression
     vec.push_back($$.code); 
     nlabel += 2;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 ;
 
@@ -390,6 +398,10 @@ multiplicative_expression
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
+      else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 ;
 
@@ -471,6 +483,10 @@ additive_expression
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
+      else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 | additive_expression '-' multiplicative_expression {
   $$ = $1;
@@ -546,6 +562,10 @@ additive_expression
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
+      else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 ;
 
@@ -640,6 +660,10 @@ comparison_expression
     vec.push_back($$.code);
     nlabel++;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 | additive_expression '>' additive_expression {
   $$=$1;
@@ -728,6 +752,10 @@ comparison_expression
     vec.push_back($$.code);
     nlabel++;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   }
 | additive_expression LE_OP additive_expression
 {	$$ = $1;	
@@ -815,6 +843,10 @@ comparison_expression
     vec.push_back($$.code);
     nlabel++;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
 }
 | additive_expression GE_OP additive_expression
 {	$$=$1;
@@ -902,6 +934,10 @@ comparison_expression
     vec.push_back($$.code);
     nlabel++;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
 }
 | additive_expression EQ_OP additive_expression
 {	$$=$1;
@@ -989,6 +1025,10 @@ comparison_expression
     vec.push_back($$.code);
     nlabel++;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
 }
 | additive_expression NE_OP additive_expression
 {	$$=$1;
@@ -1076,6 +1116,10 @@ comparison_expression
     vec.push_back($$.code);
     nlabel++;
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
 }
 ;
 
@@ -1133,6 +1177,10 @@ expression
 	 
 	 }
   }
+    else{
+		perror("Irregular Operation\n");
+		exit(EXIT_FAILURE);
+	}
   $$.addre = local_identifier.addre;
  }
 | IDENTIFIER '[' expression ']' '=' comparison_expression 
@@ -1270,8 +1318,18 @@ declarator
   $$.element_type = bt; 
   $$.kind = 1; 
   $$.element_size = temp_param_stack.size();
-  $$.code = new std::string("");
-  vec.push_back($$.code);
+     std::stringstream s;
+  s << ".globl	" << $1 << "\n";
+  s << ".type	" << $1 << ", @function\n";
+  s << $1 <<":\n";
+  s << ".LFB" << nfunc << ":\n";
+  s << ".cfi_startproc\n";
+  s << "pushq	%rbp\n";
+  s << ".cfi_def_cfa_offset 16\n";
+  s << ".cfi_offset 6, -16\n";
+  s << "movq	%rsp, %rbp\n";
+  s << ".cfi_def_cfa_register 6\n";
+
   //$$.function_parameters = $3; 
   VariableStack.insert(std::pair<std::string, type_t>($1, $$)); 
   int i = 0;
@@ -1288,9 +1346,28 @@ declarator
 	  ss2 <<" ";
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
+	  	switch(i){
+		case 0:
+		s <<"movq	%rcx, -8(%rbp)\n";  // adresses de récupération
+		break;		
+		case 1:
+		s <<"movq	%rdx, -16(%rbp)\n";			
+		break;			
+		case 2:
+		s <<"movq	%r8d, -32(%rbp)\n";
+		break;		
+		case 3:
+		s <<"movq	%r9d, -40(%rbp)\n";		
+		break;		
+		default:
+
+		break;
+	}
+	  VariableStack[ss.str()].addre = 8*i;
 	  i++;
-  }
-  vec.clear();
+  } 
+  $$.code = new std::string(s.str());
+  vec.push_back($$.code);
   temp_param_stack.clear();
   current_function = $1;
 }
@@ -1304,9 +1381,18 @@ declarator
   $$.element_type = bt; 
   $$.kind = 1; 
   $$.element_size = temp_param_stack.size();
-  $$.code = new std::string("");
-  vec.push_back($$.code); 
-  //$$.function_parameters = $4;
+   std::stringstream s;
+  s << ".globl	" << $2 << "\n";
+  s << ".type	" << $2 << ", @function\n";
+  s << $2 <<":\n";
+  s << ".LFB" << nfunc << ":\n";
+  s << ".cfi_startproc\n";
+  s << "pushq	%rbp\n";
+  s << ".cfi_def_cfa_offset 16\n";
+  s << ".cfi_offset 6, -16\n";
+  s << "movq	%rsp, %rbp\n";
+  s << ".cfi_def_cfa_register 6\n";
+
   VariableStack.insert(std::pair<std::string, type_t>($2,$$)); 
   int i = 0;
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
@@ -1322,9 +1408,28 @@ declarator
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second));
 
+	switch(i){
+		case 0:
+		s <<"movq	%rcx, -8(%rbp)\n";
+		break;		
+		case 1:
+		s <<"movq	%rdx, -16(%rbp)\n";			
+		break;			
+		case 2:
+		s <<"movq	%r8d, -32(%rbp)\n";
+		break;		
+		case 3:
+		s <<"movq	%r9d, -40(%rbp)\n";		
+		break;		
+		default:
+
+		break;
+	}
+	  VariableStack[ss.str()].addre = 8*i;
 	  i++;
   }
-  vec.clear();
+  $$.code = new std::string(s.str());
+  vec.push_back($$.code); 
   temp_param_stack.clear();
   current_function = $2;
 } 
