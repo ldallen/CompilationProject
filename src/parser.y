@@ -1215,7 +1215,7 @@ declarator
 | '*' IDENTIFIER '(' parameter_list ')' {
   if(current_function == "")
   {
-	perror("A fucntion cannot be defined inside another");
+	perror("A function cannot be defined inside another");
 	exit(EXIT_FAILURE);
   }
   addr = 0;
@@ -1240,6 +1240,11 @@ declarator
   current_function = $2;
 } 
 | IDENTIFIER '(' ')' {
+  if(current_function == "")
+  {
+	perror("A function cannot be defined inside another");
+	exit(EXIT_FAILURE);
+  }
   addr = 0;
   $$.element_type = bt;
   $$.kind = 1;
@@ -1263,7 +1268,7 @@ declarator
 | '*' IDENTIFIER '(' ')' {
   if(current_function == "")
   {
-	perror("A fucntion cannot be defined inside another");
+	perror("A function cannot be defined inside another");
 	exit(EXIT_FAILURE);
   }
   addr = 0;
