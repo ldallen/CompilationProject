@@ -26,8 +26,9 @@
   string current_function;
   vector<std::string*> vec;
   map<std::string, type_t> VariableStack;
-  map<std::string, int> ParameterPosition;
-  map<std::string, type_t> temp_param_stack;
+  map<std::string, type_t> ParameterStack; //pour comparer à l'appel
+  map<std::string, type_t> temp_param_stack; //pour la déclaration
+  vector<type_t> temp_appel_param_stack; //pour l'appel
   %}
 
 %token <str> IDENTIFIER 
@@ -96,15 +97,29 @@ primary_expression
   $$ = $2;
   }
 | IDENTIFIER '(' ')' {
-  type_t local_identifier = VariableStack[current_function + " "+$1];
+  type_t local_identifier = VariableStack[$1];
   $$ = local_identifier;
+    if($$.kind != 1)
+	{
+		perror("Invalid Operation");
+		exit(EXIT_FAILURE);
+	}
   std::stringstream s;
   s << "call " << $1 << "\n";
   $$.code = new std::string(s.str());
   } 
 | IDENTIFIER '(' argument_expression_list ')' {
-  type_t local_identifier = VariableStack[current_function + " "+$1];
+  type_t local_identifier = VariableStack[$1];
   $$ = local_identifier;
+  if($$.kind != 1)
+	{
+		perror("Invalid Operation");
+		exit(EXIT_FAILURE);
+	}
+  for (int i = 0; i<$$.element_size; i++)
+  {
+		  
+  }	
   std::stringstream s;
   s << "call " << $1 << "\n";
   $$.code = new std::string(s.str());
@@ -193,15 +208,16 @@ primary_expression
 ;
 
 argument_expression_list
-: expression { $$ = $1;}
+: expression { $$ = $1; temp_appel_param_stack.push_back($1); }
 | argument_expression_list ',' expression { 
   $$ = $3;
   std::stringstream s;
   s << *$1.code;
   s << *$3.code;
   $$.code = new std::string(s.str());
-  vec.push_back($$.code);	
-  } // Il faut retenir la position de l'argument dans la fonction 
+  vec.push_back($$.code);
+  temp_appel_param_stack.push_back($3);	
+ }
 ;
 
 unary_expression
@@ -1220,6 +1236,11 @@ declarator
   }
  }
 | IDENTIFIER '(' parameter_list ')' {
+  if(current_function != "")
+  {
+	perror("A function cannot be defined inside another");
+	exit(EXIT_FAILURE);
+  }
   addr = 0;
   $$.element_type = bt; 
   $$.kind = 1; 
@@ -1230,19 +1251,24 @@ declarator
   VariableStack.insert(std::pair<std::string, type_t>($1, $$)); 
   int i = 0;
   std::stringstream ss;
+  std::stringstream ss2;
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
   {
   	  ss << $1;
 	  ss << " ";
 	  ss << it->first;
-	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second));
-	  ParameterPosition.insert(std::pair<std::string, int>(ss.str(),i));
+	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second)); //on le stock comme une variable normale pour y acceder dans la fonction concernee
+	  ss2 << $1;
+	  ss2 <<" ";
+	  ss2 << i;
+	  ParameterStack.insert(std::pair<std::string, type_t>(ss.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
 	  i++;
   }
+  vec.clear();
   current_function = $1;
 }
 | '*' IDENTIFIER '(' parameter_list ')' {
-  if(current_function == "")
+  if(current_function != "")
   {
 	perror("A function cannot be defined inside another");
 	exit(EXIT_FAILURE);
@@ -1257,19 +1283,25 @@ declarator
   VariableStack.insert(std::pair<std::string, type_t>($2,$$)); 
   int i = 0;
   std::stringstream ss;
+  std::stringstream ss2;
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
   {
 	  ss << $2;
 	  ss << " ";
 	  ss << it->first;
 	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second));
-	  ParameterPosition.insert(std::pair<std::string, int>(ss.str(),i));
+	  ss2 << $2;
+	  ss2 <<" ";
+	  ss2 << i;
+	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second));
+
 	  i++;
   }
+  vec.clear();
   current_function = $2;
 } 
 | IDENTIFIER '(' ')' {
-  if(current_function == "")
+  if(current_function != "")
   {
 	perror("A function cannot be defined inside another");
 	exit(EXIT_FAILURE);
@@ -1295,7 +1327,7 @@ declarator
   current_function = $1;
   }
 | '*' IDENTIFIER '(' ')' {
-  if(current_function == "")
+  if(current_function != "")
   {
 	perror("A function cannot be defined inside another");
 	exit(EXIT_FAILURE);
