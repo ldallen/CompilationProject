@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include<map>
+#include <map>
 #include "type.h"
   using namespace std;
   extern int yylineno;
@@ -116,18 +116,36 @@ primary_expression
 		perror("Invalid Operation");
 		exit(EXIT_FAILURE);
 	}
-	
+  std::stringstream s;
   for (int i = 0; i<$$.element_size; i++)
   {
 	std::stringstream ss;
-	ss << $1 << " " << i;
-	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
-	printf("call : %s, parameter i\n", $1);
+	ss << $1 << " "<< i;
 	
+	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
+		perror("type not valid (argument)");
+		exit(EXIT_FAILURE);
 	}
-		  
+	switch($$.element_size - i){
+		case 0:
+		s <<"pushq %rax\nmovq	%rax, %rcx\n";
+		break;		
+		case 1:
+		s <<"pushq %rax\nmovq	%rax, %rdx\n";			
+		break;			
+		case 2:
+		s <<"pushq %rax\nmovq	%rax, %r8d\n";
+		break;		
+		case 3:
+		s <<"pushq %rax\nmovq	%rax, %r9x\n";		
+		break;		
+		default:
+		int adre = 32 + 8*(i-4);
+		s <<"pushq %rax\nmovq	%rax, "<< adre <<"(%rsp)\n";
+		break;
+	}	  
   }	
-  std::stringstream s;
+
   s << "call " << $1 << "\n";
   $$.code = new std::string(s.str());
   }
@@ -1257,10 +1275,11 @@ declarator
   //$$.function_parameters = $3; 
   VariableStack.insert(std::pair<std::string, type_t>($1, $$)); 
   int i = 0;
-  std::stringstream ss;
-  std::stringstream ss2;
+
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
   {
+      std::stringstream ss;
+      std::stringstream ss2;
   	  ss << $1;
 	  ss << " ";
 	  ss << it->first;
@@ -1268,10 +1287,11 @@ declarator
 	  ss2 << $1;
 	  ss2 <<" ";
 	  ss2 << i;
-	  ParameterStack.insert(std::pair<std::string, type_t>(ss.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
+	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
 	  i++;
   }
   vec.clear();
+  temp_param_stack.clear();
   current_function = $1;
 }
 | '*' IDENTIFIER '(' parameter_list ')' {
@@ -1289,10 +1309,10 @@ declarator
   //$$.function_parameters = $4;
   VariableStack.insert(std::pair<std::string, type_t>($2,$$)); 
   int i = 0;
-  std::stringstream ss;
-  std::stringstream ss2;
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
   {
+      std::stringstream ss;
+      std::stringstream ss2;
 	  ss << $2;
 	  ss << " ";
 	  ss << it->first;
@@ -1305,6 +1325,7 @@ declarator
 	  i++;
   }
   vec.clear();
+  temp_param_stack.clear();
   current_function = $2;
 } 
 | IDENTIFIER '(' ')' {

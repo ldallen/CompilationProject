@@ -1,19 +1,19 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Bison interface for Yacc-like parsers in C
-
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
-
+   
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
+   
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,52 +26,46 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
 
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    IDENTIFIER = 258,
-    ICONSTANT = 259,
-    FCONSTANT = 260,
-    INC_OP = 261,
-    DEC_OP = 262,
-    LE_OP = 263,
-    GE_OP = 264,
-    EQ_OP = 265,
-    NE_OP = 266,
-    INT = 267,
-    FLOAT = 268,
-    VOID = 269,
-    IF = 270,
-    ELSE = 271,
-    WHILE = 272,
-    RETURN = 273,
-    FOR = 274,
-    DO = 275
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     IDENTIFIER = 258,
+     ICONSTANT = 259,
+     FCONSTANT = 260,
+     INC_OP = 261,
+     DEC_OP = 262,
+     LE_OP = 263,
+     GE_OP = 264,
+     EQ_OP = 265,
+     NE_OP = 266,
+     INT = 267,
+     FLOAT = 268,
+     VOID = 269,
+     IF = 270,
+     ELSE = 271,
+     WHILE = 272,
+     RETURN = 273,
+     FOR = 274,
+     DO = 275
+   };
 #endif
 
-/* Value type.  */
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
-union YYSTYPE
+typedef union YYSTYPE
 {
-#line 63 "parser.y" /* yacc.c:1909  */
+
+/* Line 2068 of yacc.c  */
+#line 63 "parser.y"
 
   type_t t;
   type_t lt[1000];
@@ -79,15 +73,16 @@ union YYSTYPE
   int n;
   float f;
 
-#line 83 "parser.tab.h" /* yacc.c:1909  */
-};
+
+
+/* Line 2068 of yacc.c  */
+#line 80 "parser.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
-
 extern YYSTYPE yylval;
 
-int yyparse (void);
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
