@@ -26,6 +26,8 @@
   string current_function;
   vector<std::string*> vec;
   map<std::string, type_t> VariableStack;
+  map<std::string, int> ParameterPosition;
+  map<std::string, type_t> temp_param_stack;
   %}
 
 %token <str> IDENTIFIER 
@@ -1122,68 +1124,126 @@ type_name
 
 declarator
 : IDENTIFIER  { 
-  if (bt != VOID_T){ 
-    addr += 8; $$.addre = addr;
+  if(current_function != "") //variable
+  {
+	  if (bt != VOID_T){ 
+		addr += 8; $$.addre = addr;
+	  }
+	  $$.element_type = bt;
+	  $$.kind = -1 ;
+	  $$.code = new std::string("");
+	  vec.push_back($$.code);
+	  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
+		}
+	else {  //parametre de fonction
+  
+  	  $$.element_type = bt;
+	  $$.kind = -1 ;
+	  $$.code = new std::string("");
+	  vec.push_back($$.code);
+      temp_param_stack.insert(std::pair<std::string, type_t>($1,$$));
   }
-  $$.element_type = bt;
-  $$.kind = -1 ;
-  $$.code = new std::string("");
-  vec.push_back($$.code);
-  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
  }
 | '*' IDENTIFIER { 
-  if(bt == VOID_T)
-    {
-      perror("void* not allowed"); exit(0);
-    } 
-  else
-    {
-      addr += 8;
-      $$.addre = addr;
-      $$.element_type = (type)(bt+1); 
-      $$.kind = -1;
-      $$.code = new std::string("");
-      vec.push_back($$.code);
-      VariableStack.insert ( std::pair<std::string, type_t>($2,$$) );
-    }
+  if(current_function != "") //variable
+  {
+	  if(bt == VOID_T)
+		{
+		  perror("void* not allowed"); exit(0);
+		} 
+	  else
+		{
+		  addr += 8;
+		  $$.addre = addr;
+		  $$.element_type = (type)(bt+1); 
+		  $$.kind = -1;
+		  $$.code = new std::string("");
+		  vec.push_back($$.code);
+		  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+$2,$$) );
+		}
+	}
+	else {  //parametre de fonction
+  
+  		$$.addre = addr;
+  		$$.element_type = (type)(bt+1); 
+		$$.kind = -1;
+  		$$.code = new std::string("");
+		vec.push_back($$.code);
+		temp_param_stack.insert(std::pair<std::string, type_t>($2,$$));
+  }
   }
 | IDENTIFIER '[' ICONSTANT ']' {
-  $$.element_type = bt; 
-  $$.kind = 0;
-  $$.element_size = $3; 
-  addr += 8*$3 ; 
-  $$.addre = addr; 
-  $$.code = new std::string(""); 
-  vec.push_back($$.code); 
-  VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
+  if(current_function != "") //variable
+  {
+	  $$.element_type = bt; 
+	  $$.kind = 0;
+	  $$.element_size = $3; 
+	  addr += 8*$3 ; 
+	  $$.addre = addr; 
+	  $$.code = new std::string(""); 
+	  vec.push_back($$.code); 
+	  VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
   }
+  else {  //parametre de fonction
+  
+	perror("array can't be given as a parameter");
+	exit(EXIT_FAILURE);
+  }
+ }
 | IDENTIFIER '(' parameter_list ')' {
   addr = 0;
   $$.element_type = bt; 
   $$.kind = 1; 
-  $$.element_size = nliste; 
+  $$.element_size = temp_param_stack.size();
   $$.code = new std::string("");
   vec.push_back($$.code);
   //$$.function_parameters = $3; 
   VariableStack.insert(std::pair<std::string, type_t>($1, $$)); 
-  current_function = $1;
+  int i = 0;
+  std::stringstream ss;
+  for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
+  {
+  	  ss << $1;
+	  ss << " ";
+	  ss << it->first;
+	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second));
+	  ParameterPosition.insert(std::pair<std::string, int>(ss.str(),i));
+	  i++;
   }
+  current_function = $1;
+}
 | '*' IDENTIFIER '(' parameter_list ')' {
+  if(current_function == "")
+  {
+	perror("A fucntion cannot be defined inside another");
+	exit(EXIT_FAILURE);
+  }
   addr = 0;
   $$.element_type = bt; 
   $$.kind = 1; 
-  $$.element_size = nliste;
+  $$.element_size = temp_param_stack.size();
   $$.code = new std::string("");
   vec.push_back($$.code); 
   //$$.function_parameters = $4;
   VariableStack.insert(std::pair<std::string, type_t>($2,$$)); 
+  int i = 0;
+  std::stringstream ss;
+  for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
+  {
+	  ss << $2;
+	  ss << " ";
+	  ss << it->first;
+	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second));
+	  ParameterPosition.insert(std::pair<std::string, int>(ss.str(),i));
+	  i++;
+  }
   current_function = $2;
-  } 
+} 
 | IDENTIFIER '(' ')' {
   addr = 0;
   $$.element_type = bt;
   $$.kind = 1;
-  $$.element_size = 0;	
+  $$.element_size = 0;
   std::stringstream s;
   s << ".globl	" << $1 << "\n";
   s << ".type	" << $1 << ", @function\n";
@@ -1197,13 +1257,19 @@ declarator
   s << ".cfi_def_cfa_register 6\n";
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
-  VariableStack.insert(std::pair<std::string, type_t>($1,$$)); current_function = $1;
+  VariableStack.insert(std::pair<std::string, type_t>($1,$$)); 
+  current_function = $1;
   }
 | '*' IDENTIFIER '(' ')' {
+  if(current_function == "")
+  {
+	perror("A fucntion cannot be defined inside another");
+	exit(EXIT_FAILURE);
+  }
   addr = 0;
   $$.element_type = bt;
   $$.kind = 1;
-  $$.element_size = 0;	
+  $$.element_size = 0;
   std::stringstream s;
   s << ".globl	" << $2 << "\n";
   s << ".type	" << $2 << ", @function\n";
@@ -1217,7 +1283,8 @@ declarator
   s << ".cfi_def_cfa_register 6\n";
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
-  VariableStack.insert(std::pair<std::string, type_t>($2,$$)); current_function = $2;
+  VariableStack.insert(std::pair<std::string, type_t>($2,$$));
+  current_function = $2;
   }
 ;
 
@@ -1392,19 +1459,13 @@ jump_statement
 ;
 
 program
-: external_declaration { $$ = $1;}
-| program external_declaration { $$ = $1;
-   std::stringstream s;
-   s << *$1.code;
-   s << *$2.code;
-   $$.code = new std::string(s.str());
-   vec.push_back($$.code);
- }
+: external_declaration {}
+| program external_declaration {}
 ;
 
 external_declaration
-: function_definition  {$$ = $1;}
-| declaration {$$ = $1;}
+: function_definition  {}
+| declaration {}
 ;
 
 function_definition
@@ -1419,6 +1480,7 @@ function_definition
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
   printCode($$.code);
+  current_function = "";
   nfunc++;
  }
 ;
