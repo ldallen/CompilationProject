@@ -228,9 +228,9 @@ unary_expression
       s << *$2.code;
       s << "popq %rax\n";
       s << "cmpq $0, %rax\n";
-      s << "jne L" << nlabel << "\n";
+      s << "jne .L" << nlabel << "\n";
       s << "pushq $1\n";
-      s << "jmp L" << (nlabel+1) << "\n";
+      s << "jmp .L" << (nlabel+1) << "\n";
       s << ".L" << nlabel << ":\n";
       s << "pushq $0\n";
       s << ".L"<< (nlabel+1) <<":\n";
@@ -246,9 +246,9 @@ unary_expression
     s << "movss %rax, %xmm0\n";
     s << "movss %rbx, %xmm1\n";
     s << "cmpeqss %xmm0, %xmm1\n";
-    s << "jne L" << nlabel << "\n";
+    s << "jne .L" << nlabel << "\n";
     s << "pushq $1\n";
-    s << "jmp L" << (nlabel+1) << "\n";
+    s << "jmp .L" << (nlabel+1) << "\n";
     s << ".L" << nlabel << ":\n";
     s << "pushq $0\n";
     s << ".L"<< (nlabel+1) <<":\n";
@@ -1184,12 +1184,71 @@ selection_statement
 	nlabel++;
 }  
 | IF '(' expression ')' statement ELSE statement 
+{	
+  std::stringstream s;
+  s << *$3.code;
+  s << "popq %rax\n";
+  s << "cmpq $0, %rax\n";
+  s << "je .L" << nlabel << "\n";
+  s << *$5.code;
+  s << "jmp .L" << (nlabel+1) << "\n";
+  s << ".L" << nlabel << ":\n";
+  s << *$7.code;
+  s << ".L"<< (nlabel+1) <<":\n";
+  $$.code = new std::string(s.str());
+  vec.push_back($$.code); 
+  nlabel += 2;
+}  
 ;
 
 iteration_statement
 : WHILE '(' expression ')' statement 
+{	
+	std::stringstream s;
+    s << ".L" << nlabel << ":\n";
+    s << *$3.code;
+    s << "popq %rax\n";
+	s << "cmp %rax, $0\n";
+	s << "je .L" << nlabel+1 << "\n";
+	s << *$5.code;
+	s << "jmp .L" << nlabel << "\n";
+	s << ".L" << nlabel+1 << ":\n";
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	nlabel += 2;
+}  
 | FOR '(' expression_statement expression_statement expression ')' statement 
+{	
+	std::stringstream s;
+    s << *$3.code;
+    s << ".L" << nlabel << ":\n";
+    s << *$4.code;
+	s << "popq %rax\n";
+	s << "cmp %rax, $0\n";
+	s << "je .L" << nlabel+1 << "\n";
+	s << *$7.code;
+	s << *$5.code;
+	s << "jmp .L" << nlabel << "\n";
+	s << ".L" << nlabel+1 << ":\n";
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	nlabel += 2;
+}  
 | DO  statement  WHILE '(' expression ')' ';' 
+{	
+	std::stringstream s;
+    s << ".L" << nlabel << ":\n";
+    s << *$2.code;
+    s << *$5.code;
+    s << "popq %rax\n";
+	s << "cmp %rax, $0\n";
+	s << "je .L" << nlabel+1 << "\n";
+	s << "jmp .L" << nlabel << "\n";
+	s << ".L" << nlabel+1 << ":\n";
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	nlabel += 2;
+}  
 ;
 
 jump_statement
