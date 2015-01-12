@@ -635,8 +635,14 @@ current_function = $2;
 	std::stringstream s;
 	s << ".globl	" << $2 << "\n";
 	s << ".type	" << $2 << ", @function\n";
-	s << $2 << ":\n.LFB" << nfunc << ":\n.cfi_startproc\npushq	%rbp\n";
-	s << ".cfi_def_cfa_offset 16\n.cfi_offset 6, -16\nmovq	%rsp, %rbp\n.cfi_def_cfa_register 6\n";
+	s << $2 << ":\n";
+	s << ".LFB" << nfunc << ":\n";
+	s << ".cfi_startproc\n";
+	s << "pushq	%rbp\n";
+	s << ".cfi_def_cfa_offset 16\n"
+	s << ".cfi_offset 6, -16\n";
+	s << "movq	%rsp, %rbp\n";
+	s << ".cfi_def_cfa_register 6\n";
 	$$.code = new std::string(s.str());
 	vec.push_back($$.code);
 	VariableStack.insert(std::pair<std::string, type_t>($2,$$)); current_function = $2;
