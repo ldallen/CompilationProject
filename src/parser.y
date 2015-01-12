@@ -52,7 +52,7 @@
 %type <t> function_definition
 %type <lt> declarator_list
 %type <lt> declaration_list
-%type <lt> statement_list
+%type <t> statement_list
 %type <lt> parameter_list
 %union {
   type_t t;
@@ -114,7 +114,7 @@ $$ = $2;
 	type_t local_identifier = VariableStack[current_function + " "+$1];
 	$$ = local_identifier;
 	std::stringstream s;
-	s << "subq $1 " ;
+	s << "subq $1, " ;
 	s << -local_identifier.addre;
 	s << "(%rbp)\npushq ";
 	s << -local_identifier.addre;
@@ -127,6 +127,7 @@ $$ = $2;
 	$$ = local_identifier; 
 	if(local_identifier.element_type == INT_T) {
 	std::stringstream s;
+	s << *$3.code;
 	s << "popq %rax\nmovq ";
 	s << -local_identifier.addre;
 	s << "(%rbp, %rax, 8), %rax\npushq %rax\n";
@@ -599,9 +600,13 @@ statement
 ;
 
 compound_statement
-: '{' '}'
-| '{' statement_list '}' 
-| '{' declaration_list statement_list '}' 
+: '{' '}' {
+	$$.code = new std::string("");
+	}
+| '{' statement_list '}' {
+	$$ = $2;
+	} 
+| '{' declaration_list statement_list '}' { $$ = $3;} 
 ;
 
 declaration_list
@@ -610,8 +615,15 @@ declaration_list
 ;
 
 statement_list
-: statement {$$[0] = $1; sliste = 1;}
-| statement_list statement {$$[pliste++] = $2;}
+: statement {$$ = $1;}
+| statement_list statement {
+	$$ = $2;
+	std::stringstream s;
+    s << *$1.code;
+    s << *$2.code;
+    $$.code = new std::string(s.str());
+	vec.push_back($$.code);
+    }
 ;
 
 expression_statement
