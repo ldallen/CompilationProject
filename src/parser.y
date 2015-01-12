@@ -105,8 +105,6 @@ $$ = $2;
 | IDENTIFIER '(' argument_expression_list ')' {
 	type_t local_identifier = VariableStack[current_function + " "+$1];
 	$$ = local_identifier;
-	$$.function_parameters = $3;
-	VariableStack.insert(std::pair<std::string, type_t>($2,$$));
 	std::stringstream s;
 	s << "call " << $1 << "\n";
 	$$.code = new std::string(s.str());
@@ -623,10 +621,10 @@ current_function = $2;
 	s << ".type	" << $1 << ", @function\n";
 	s << $1 <<":\n";
 	s << ".LFB" << nfunc << ":\n";
-	s << .cfi_startproc\n";
+	s << ".cfi_startproc\n";
 	s << "pushq	%rbp\n";
 	s << ".cfi_def_cfa_offset 16\n";
-	s << ".cfi_offset 6, -16\n
+	s << ".cfi_offset 6, -16\n";
 	s << "movq	%rsp, %rbp\n";
 	s << ".cfi_def_cfa_register 6\n";
 	$$.code = new std::string(s.str());
@@ -645,7 +643,7 @@ current_function = $2;
 	s << ".LFB" << nfunc << ":\n";
 	s << ".cfi_startproc\n";
 	s << "pushq	%rbp\n";
-	s << ".cfi_def_cfa_offset 16\n"
+	s << ".cfi_def_cfa_offset 16\n";
 	s << ".cfi_offset 6, -16\n";
 	s << "movq	%rsp, %rbp\n";
 	s << ".cfi_def_cfa_register 6\n";
