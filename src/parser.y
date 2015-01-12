@@ -34,6 +34,8 @@
 %token INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
 %token INT FLOAT VOID
 %token IF ELSE WHILE RETURN FOR DO
+%type <t> program
+%type <t> external_declaration
 %type <t> declarator
 %type <t> parameter_declaration
 %type <t> expression
@@ -50,10 +52,11 @@
 %type <t> statement
 %type <t> jump_statement
 %type <t> function_definition
-%type <lt> declarator_list
-%type <lt> declaration_list
+%type <t> argument_expression_list
+%type <t> declarator_list
+%type <t> declaration_list
 %type <t> statement_list
-%type <lt> parameter_list
+%type <t> parameter_list
 %union {
   type_t t;
   type_t lt[1000];
@@ -102,7 +105,7 @@ $$ = $2;
 	type_t local_identifier = VariableStack[current_function + " "+$1];
 	$$ = local_identifier;
 	std::stringstream s;
-	s << "addq $1 ";
+	s << "addq $1, ";
 	s << -local_identifier.addre;
 	s << "(%rbp)\npushq ";
 	s << -local_identifier.addre;
@@ -138,8 +141,15 @@ $$ = $2;
 ;
 
 argument_expression_list
-: expression {}
-| argument_expression_list ',' expression {} // Il faut retenir la position de l'argument dans la fonction 
+: expression { $$ = $1;}
+| argument_expression_list ',' expression { 
+	$$ = $3;
+	std::stringstream s;
+	s << *$1.code;
+	s << *$3.code;
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);	
+	} // Il faut retenir la position de l'argument dans la fonction 
 ;
 
 unary_expression
@@ -304,9 +314,9 @@ comparison_expression
 	  s << "popq %rbx\n";
 	  s << "cmp %rax, %rbx\n";
 	  s << "jl .L" << nlabel << "\n";
-	  s << "movq $1 %rbp\n";
+	  s << "movq $1, %rbp\n";
 	  s << ".L" << nlabel << ":\n";
-	  s << "movq $0 %rbp\n";
+	  s << "movq $0, %rbp\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	  nlabel++;
@@ -330,9 +340,9 @@ comparison_expression
 	  s << "popq %rbx\n";
 	  s << "cmp %rax, %rbx\n";
 	  s << "jg .L" << nlabel << "\n";
-	  s << "movq $1 %rbp\n";
+	  s << "movq $1, %rbp\n";
 	  s << ".L" << nlabel << ":\n";
-	  s << "movq $0 %rbp\n";
+	  s << "movq $0, %rbp\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	  nlabel++;
@@ -355,9 +365,9 @@ if (($1.element_type == INT_T)&&($3.element_type == INT_T))
 	  s << "popq %rbx\n";
 	  s << "cmp %rax, %rbx\n";
 	  s << "jle .L" << nlabel << "\n";
-	  s << "movq $1 %rbp\n";
+	  s << "movq $1, %rbp\n";
 	  s << ".L" << nlabel << ":\n";
-	  s << "movq $0 %rbp\n";
+	  s << "movq $0, %rbp\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	  nlabel++;
@@ -380,9 +390,9 @@ if (($1.element_type == INT_T)&&($3.element_type == INT_T))
 	  s << "popq %rbx\n";
 	  s << "cmp %rax, %rbx\n";
 	  s << "jge .L" << nlabel << "\n";
-	  s << "movq $1 %rbp\n";
+	  s << "movq $1, %rbp\n";
 	  s << ".L" << nlabel << ":\n";
-	  s << "movq $0 %rbp\n";
+	  s << "movq $0, %rbp\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	  nlabel++;
@@ -409,9 +419,9 @@ if (($1.element_type == INT_T)&&($3.element_type == INT_T))
 	  s << "popq %rbx\n";
 	  s << "cmp %rax, %rbx\n";
 	  s << "je .L" << nlabel << "\n";
-	  s << "movq $1 %rbp\n";
+	  s << "movq $1, %rbp\n";
 	  s << ".L" << nlabel << ":\n";
-	  s << "movq $0 %rbp\n";
+	  s << "movq $0, %rbp\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	  nlabel++;
@@ -434,9 +444,9 @@ if (($1.element_type == INT_T)&&($3.element_type == INT_T))
 	  s << "popq %rbx\n";
 	  s << "cmp %rax, %rbx\n";
 	  s << "jne .L" << nlabel << "\n";
-	  s << "movq $1 %rbp\n";
+	  s << "movq $1, %rbp\n";
 	  s << ".L" << nlabel << ":\n";
-	  s << "movq $0 %rbp\n";
+	  s << "movq $0, %rbp\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	  nlabel++;
@@ -459,7 +469,7 @@ expression
      std::stringstream s;
      s << *$3.code;
 	 s << "popq %rax\n";
-	 s << "movl %rax " << -local_identifier.addre << "(%rbp)\n";
+	 s << "movq %rax, " << -local_identifier.addre << "(%rbp)\n";
 	 s << "pushq %rax\n";
 	 $$.code = new std::string(s.str());
 	 vec.push_back($$.code);
@@ -471,7 +481,7 @@ expression
  else if ((local_identifier.element_type == FLOAT_T)&&($3.element_type == FLOAT_T)){ //idem pour float
    $$.element_type = FLOAT_T;
    std::stringstream s;
-   s << "popq %rax\nmovl %rax " << -local_identifier.addre << "(%rbp)\npushq %rax\n";
+   s << "popq %rax\nmovq %rax " << -local_identifier.addre << "(%rbp)\npushq %rax\n";
    $$.code = new std::string(s.str());
    vec.push_back($$.code);
  }
@@ -513,12 +523,19 @@ expression
 ;
 
 declaration
-: type_name declarator_list ';' 
+: type_name declarator_list ';' { $$ = $2;}
 ;
 
 declarator_list
-: declarator {$$[0].element_type = $1.element_type ; dliste =1;}
-| declarator_list ',' declarator {$$[dliste++].element_type = $3.element_type;}
+: declarator {$$ = $1 ;}
+| declarator_list ',' declarator {
+	$$ = $3;
+	std::stringstream s;
+	s << *$1.code;
+	s << *$3.code;
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	}
 ;
 
 type_name
@@ -534,6 +551,8 @@ declarator
   }
   $$.element_type = bt;
   $$.kind = -1 ;
+  $$.code = new std::string("");
+  vec.push_back($$.code);
   VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
   }
 | '*' IDENTIFIER { 
@@ -547,21 +566,51 @@ declarator
       $$.addre = addr;
       $$.element_type = (type)(bt+1); 
       $$.kind = -1;
+      $$.code = new std::string("");
+      vec.push_back($$.code);
       VariableStack.insert ( std::pair<std::string, type_t>($2,$$) );
     }
 }
-| IDENTIFIER '[' ICONSTANT ']' {$$.element_type = bt; $$.kind = 0;
-   $$.element_size = $3; addr += 8*$3 ; $$.addre = addr; VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+$1,$$) );}
-| IDENTIFIER '(' parameter_list ')' {addr = 0;$$.element_type = bt; $$.kind = 1; 
-$$.element_size = nliste; $$.function_parameters = $3; VariableStack.insert(std::pair<std::string, type_t>($1, $$)); current_function = $1;}
-| '*' IDENTIFIER '(' parameter_list ')' {addr = 0;$$.element_type = bt; $$.kind = 1; 
-$$.element_size = nliste; $$.function_parameters = $4;VariableStack.insert(std::pair<std::string, type_t>($2,$$)); current_function = $2;} 
+| IDENTIFIER '[' ICONSTANT ']' {
+$$.element_type = bt; 
+$$.kind = 0;
+   $$.element_size = $3; 
+   addr += 8*$3 ; 
+   $$.addre = addr; 
+   $$.code = new std::string(""); 
+   vec.push_back($$.code); 
+   VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
+   }
+| IDENTIFIER '(' parameter_list ')' {
+addr = 0;
+$$.element_type = bt; 
+$$.kind = 1; 
+$$.element_size = nliste; 
+$$.code = new std::string("");
+vec.push_back($$.code);
+//$$.function_parameters = $3; 
+VariableStack.insert(std::pair<std::string, type_t>($1, $$)); 
+current_function = $1;
+}
+| '*' IDENTIFIER '(' parameter_list ')' {
+addr = 0;
+$$.element_type = bt; 
+$$.kind = 1; 
+$$.element_size = nliste;
+$$.code = new std::string("");
+vec.push_back($$.code); 
+//$$.function_parameters = $4;
+VariableStack.insert(std::pair<std::string, type_t>($2,$$)); 
+current_function = $2;
+} 
 | IDENTIFIER '(' ')' {
 	addr = 0;
 	$$.element_type = bt;
 	$$.kind = 1;
 	$$.element_size = 0;	
 	std::stringstream s;
+	s << ".globl	" << $1 << "\n";
+	s << ".type	" << $1 << ", @function\n";
 	s << $1 <<":\n.LFB" << nfunc << ":\n.cfi_startproc\npushq	%rbp\n";
 	s << ".cfi_def_cfa_offset 16\n.cfi_offset 6, -16\nmovq	%rsp, %rbp\n.cfi_def_cfa_register 6\n";
 	$$.code = new std::string(s.str());
@@ -574,6 +623,8 @@ $$.element_size = nliste; $$.function_parameters = $4;VariableStack.insert(std::
 	$$.kind = 1;
 	$$.element_size = 0;	
 	std::stringstream s;
+	s << ".globl	" << $2 << "\n";
+	s << ".type	" << $2 << ", @function\n";
 	s << $2 << ":\n.LFB" << nfunc << ":\n.cfi_startproc\npushq	%rbp\n";
 	s << ".cfi_def_cfa_offset 16\n.cfi_offset 6, -16\nmovq	%rsp, %rbp\n.cfi_def_cfa_register 6\n";
 	$$.code = new std::string(s.str());
@@ -583,8 +634,15 @@ $$.element_size = nliste; $$.function_parameters = $4;VariableStack.insert(std::
 ;
 
 parameter_list
-: parameter_declaration {$$[0] = $1; nliste=1;}
-| parameter_list ',' parameter_declaration {$$[nliste++] = $3;}
+: parameter_declaration {$$ = $1;}
+| parameter_list ',' parameter_declaration {
+	$$ = $3;
+	std::stringstream s;
+	s << *$1.code;
+	s << *$3.code;
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	}
 ;
 
 parameter_declaration
@@ -601,17 +659,30 @@ statement
 
 compound_statement
 : '{' '}' {
-	$$.code = new std::string("");
+	$$.code = new std::string("");vec.push_back($$.code);
 	}
 | '{' statement_list '}' {
 	$$ = $2;
 	} 
-| '{' declaration_list statement_list '}' { $$ = $3;} 
+| '{' declaration_list statement_list '}' { $$ = $3;
+	std::stringstream s;
+	s << *$2.code;
+	s << *$3.code;
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	} 
 ;
 
 declaration_list
-: declaration {$$[0] = $1; pliste = 1;}
-| declaration_list declaration {$$[pliste++] = $2;}
+: declaration {$$ = $1;}
+| declaration_list declaration {
+	$$ = $2;
+	std::stringstream s;
+	s << *$1.code;
+	s << *$2.code;
+	$$.code = new std::string(s.str());
+	vec.push_back($$.code);
+	}
 ;
 
 statement_list
@@ -662,32 +733,42 @@ iteration_statement
 
 jump_statement
 : RETURN ';' {
- $$.code = new std::string("movl $1, -8(%rbp)\n");
+ $$.code = new std::string("movq $1, -8(%rbp)\n");
  vec.push_back($$.code);
 }
 | RETURN expression ';' {
  std::stringstream s;
- s << "popq %rax\nmovl %rax, " << -$2.addre << "(%rbp)\n";
+ s << "popq %rax\nmovq %rax, " << -$2.addre << "(%rbp)\n";
  $$.code = new std::string(s.str());
  vec.push_back($$.code);
 }
 ;
 
 program
-: external_declaration
-| program external_declaration
+: external_declaration { $$ = $1;}
+| program external_declaration { $$ = $1;
+								 std::stringstream s;
+								 s << *$1.code;
+								 s << *$2.code;
+								 $$.code = new std::string(s.str());
+								 vec.push_back($$.code);
+								 }
 ;
 
 external_declaration
-: function_definition
-| declaration
+: function_definition  {$$ = $1;}
+| declaration {$$ = $1;}
 ;
 
 function_definition
 : type_name declarator compound_statement {
  std::stringstream s;
+ s<< *$2.code;
  s << *$3.code;
  s << ".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
+ s << ".size	";
+ s << current_function;
+ s << ", .-" << current_function << "\n"; 
  $$.code = new std::string(s.str());
  vec.push_back($$.code);
  printCode($$.code);
