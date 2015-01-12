@@ -96,10 +96,20 @@ $$ = $2;
 | IDENTIFIER '(' ')' {
 	type_t local_identifier = VariableStack[current_function + " "+$1];
 	$$ = local_identifier;
+	std::stringstream s;
+	s << "pushq %rbp\n";
+	s << "call " << $1 << "\n";
+	s << "popq %rbp\n";
+	$$.code = new std::string(s.str());
 	} 
 | IDENTIFIER '(' argument_expression_list ')' {
 	type_t local_identifier = VariableStack[current_function + " "+$1];
 	$$ = local_identifier;
+	$$.function_parameters = $3;
+	VariableStack.insert(std::pair<std::string, type_t>($2,$$));
+	std::stringstream s;
+	s << "call " << $1 << "\n";
+	$$.code = new std::string(s.str());
 	}
 | IDENTIFIER INC_OP {
 	type_t local_identifier = VariableStack[current_function + " "+$1];
