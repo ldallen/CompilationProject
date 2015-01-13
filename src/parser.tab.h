@@ -63,7 +63,8 @@ extern int yydebug;
      WHILE = 272,
      RETURN = 273,
      FOR = 274,
-     DO = 275
+     DO = 275,
+     PRAGMA = 276
    };
 #endif
 
@@ -82,7 +83,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 86 "parser.tab.h"
+#line 87 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
