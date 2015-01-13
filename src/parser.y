@@ -74,7 +74,9 @@ primary_expression
 : IDENTIFIER {
   type_t local_identifier = VariableStack[current_function + " "+$1];
   $$ = local_identifier;
-  $$.code = new std::string("pushq %rbp\n");
+  std::stringstream s;
+  s << "pushq -"<< local_identifier.addre <<"(%rbp)\n";
+  $$.code = new std::string(s.str());
   vec.push_back($$.code);
  }
 | ICONSTANT {
@@ -1400,7 +1402,8 @@ declarator
 
 		break;
 	}
-	  VariableStack[ss.str()].addre = 8*i;
+	addr+=8;
+	  VariableStack[ss.str()].addre = 8*(i+1);
 	  i++;
   } 
   $$.code = new std::string(s.str());
@@ -1468,8 +1471,9 @@ declarator
 
 		break;
 	}
-	  VariableStack[ss.str()].addre = 8*(i+1);
 	  addr+=8;
+	  VariableStack[ss.str()].addre = 8*(i+1);
+
 	  i++;
   }
   $$.code = new std::string(s.str());
