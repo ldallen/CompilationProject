@@ -22,7 +22,7 @@
   int yyerror ();
   int addr = 0;
   int nlabel = 0;
-  int nfunc = 2;
+  int nfunc = 0;
   string current_function;
   vector<std::string*> vec;
   map<std::string, type_t> VariableStack;
@@ -117,6 +117,7 @@ primary_expression
 		exit(EXIT_FAILURE);
 	}
   std::stringstream s;
+  s << *$3.code;
   for (int i = $$.element_size - 1; i>=0; i--)
   {
 	std::stringstream ss;
@@ -129,20 +130,28 @@ primary_expression
 	}
 	switch(i){   // mise en mémoire des parametres
 		case 0:
-		s <<"pushq %rax\nmovq	%rax, %rcx\n";
+		s <<"popq %rax\nmovq	%rax, %rdi\n";
 		break;		
 		case 1:
-		s <<"pushq %rax\nmovq	%rax, %rdx\n";			
-		break;			
+		s <<"popq %rax\nmovq	%rax, %rsi\n";	
 		case 2:
-		s <<"pushq %rax\nmovq	%rax, %r8d\n";
+		s <<"popq %rax\nmovq	%rax, %rdx\n";
 		break;		
 		case 3:
-		s <<"pushq %rax\nmovq	%rax, %r9d\n";		
+		s <<"popq %rax\nmovq	%rax, %rcx\n";			
+		break;			
+		case 4:
+		s <<"popq %rax\nmovq	%rax, %r8\n";
+		break;		
+		case 5:
+		s <<"popq %rax\nmovq	%rax, %r9\n";		
+		break;	
+		case 6:
+		s <<"popq %rax\nmovq	%rax, (%rsp)\n";		
 		break;		
 		default:
-		int local_addre = 32 + 8*(i-4);
-		s <<"pushq %rax\nmovq	%rax, "<< local_addre <<"(%rsp)\n";
+		int local_addre = 8*(i-5);
+		s <<"popq %rax\nmovq	%rax, "<< local_addre <<"(%rsp)\n";
 		break;
 	}	  
   }	
@@ -1187,7 +1196,8 @@ expression
 	 {
 	  std::stringstream s;
 	  s << *$3.code;
-	  s << "leaq -" << local_identifier.addre << "(%rbp), -" <<  $3.addre << "(%rbp)\npushq -" << $3.addre << "(%rbp)\n";
+	  s << "leaq -" << local_identifier.addre << "(%rbp), %rax\n";
+	  s << "movq %rax, -" <<  $3.addre << "(%rbp)\npushq -" << $3.addre << "(%rbp)\n";
 	  $$.code = new std::string(s.str());
 	  vec.push_back($$.code);
 	 }
@@ -1367,18 +1377,24 @@ declarator
 	  ss2 <<" ";
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
-	  	switch(i){
+	switch(i){
 		case 0:
-		s <<"movq	%rcx, -8(%rbp)\n";  // adresses de récupération
+		s <<"movq	%rdi, -8(%rbp)\n";
 		break;		
 		case 1:
-		s <<"movq	%rdx, -16(%rbp)\n";			
-		break;			
+		s <<"movq	%rsi, -16(%rbp)\n";	
+		break;
 		case 2:
-		s <<"movq	%r8d, -32(%rbp)\n";
+		s <<"movq	%rdx, -24(%rbp)\n";
 		break;		
 		case 3:
-		s <<"movq	%r9d, -40(%rbp)\n";		
+		s <<"movq	%rcx, -32(%rbp)\n";			
+		break;			
+		case 4:
+		s <<"movq	%r8, -40(%rbp)\n";
+		break;		
+		case 5:
+		s <<"movq	%r9, -48(%rbp)\n";		
 		break;		
 		default:
 
@@ -1431,22 +1447,29 @@ declarator
 
 	switch(i){
 		case 0:
-		s <<"movq	%rcx, -8(%rbp)\n";
+		s <<"movq	%rdi, -8(%rbp)\n";
 		break;		
 		case 1:
-		s <<"movq	%rdx, -16(%rbp)\n";			
-		break;			
+		s <<"movq	%rsi, -16(%rbp)\n";	
+		break;
 		case 2:
-		s <<"movq	%r8d, -32(%rbp)\n";
+		s <<"movq	%rdx, -24(%rbp)\n";
 		break;		
 		case 3:
-		s <<"movq	%r9d, -40(%rbp)\n";		
+		s <<"movq	%rcx, -32(%rbp)\n";			
+		break;			
+		case 4:
+		s <<"movq	%r8, -40(%rbp)\n";
+		break;		
+		case 5:
+		s <<"movq	%r9, -48(%rbp)\n";		
 		break;		
 		default:
 
 		break;
 	}
-	  VariableStack[ss.str()].addre = 8*i;
+	  VariableStack[ss.str()].addre = 8*(i+1);
+	  addr+=8;
 	  i++;
   }
   $$.code = new std::string(s.str());
@@ -1670,12 +1693,13 @@ iteration_statement
 
 jump_statement
 : RETURN ';' {
-  $$.code = new std::string("movq $1, -8(%rbp)\n");
+  $$.code = new std::string("");
   vec.push_back($$.code);
  }
-| RETURN expression ';' {
+| RETURN expression ';' { 
   std::stringstream s;
-  s << "popq %rax\nmovq %rax, " << -$2.addre << "(%rbp)\n";
+  s << *$2.code;
+  s << "popq %rax\n";
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
  }
@@ -1696,7 +1720,7 @@ function_definition
   std::stringstream s;
   s<< *$2.code;
   s << *$3.code;
-  s << ".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
+  s << "popq	%rbp\n.cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
   s << ".size	";
   s << current_function;
   s << ", .-" << current_function << "\n"; 
@@ -1797,13 +1821,42 @@ void print_printfloat(){
   printf("%s", s.str().c_str());
 }
 
+void print_malloc_int(){
+std::stringstream s;
+s << "malloc_int:\n";
+s << ".LFB2:\n";
+s << ".cfi_startproc\n";
+s << "pushq %rbp\n";
+s << ".cfi_def_cfa_offset 16\n";
+s << ".cfi_offset 6, -16\n";
+s << "movq %rsp, %rbp\n";
+s << ".cfi_def_cfa_register 6\n";
+s << "subq $32, %rsp\n";
+s << "movq %rdi, -20(%rbp)\n";
+s << "movq $4, %rdi\n";
+s << "call malloc\n";
+s << "movq %rax, -8(%rbp)\n";
+s << "movq -8(%rbp), %rax\n";
+s << "movq -20(%rbp), %rdx\n";
+s << "movq %rdx, (%rax)\n";
+s << "movq -8(%rbp), %rax\n";
+s << "leave\n";
+s << ".cfi_def_cfa 7, 8\n";
+s << "ret\n";
+s << ".cfi_endproc\n";
+s << ".LFE2:\n";
+s << ".size malloc_int, .-malloc_int\n";
+printf("%s", s.str().c_str());
+} 
+
 
 int main (int argc, char *argv[]) {
   FILE *input = NULL;
   if (argc==2) {
     printf(".file	\"%s\"\n",argv[1]);
-    print_printint();
-    print_printfloat();
+    //print_printint();nfunc++;
+    //print_printfloat();nfunc++;
+    //print_malloc_int();nfunc++;
     input = fopen (argv[1], "r");
     file_name = strdup (argv[1]);
     if (input) {
