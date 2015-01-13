@@ -120,7 +120,7 @@ primary_expression
 	}
   std::stringstream s;
   s << *$3.code;
-  for (int i = $$.element_size - 1; i>=0; i--)
+  for (int i = $$.element_size - 1; i>=0; --i)
   {
 	std::stringstream ss;
 	ss << $1 << " "<< i;
@@ -135,7 +135,8 @@ primary_expression
 		s <<"popq %rax\nmovq	%rax, %rdi\n";
 		break;		
 		case 1:
-		s <<"popq %rax\nmovq	%rax, %rsi\n";	
+		s <<"popq %rax\nmovq	%rax, %rsi\n";
+		break;	
 		case 2:
 		s <<"popq %rax\nmovq	%rax, %rdx\n";
 		break;		
@@ -148,7 +149,7 @@ primary_expression
 		case 5:
 		s <<"popq %rax\nmovq	%rax, %r9\n";		
 		break;	
-		case 6:
+		case 6:   //incorect
 		s <<"popq %rax\nmovq	%rax, (%rsp)\n";		
 		break;		
 		default:
@@ -315,7 +316,8 @@ unary_expression
       std::stringstream s;
       s << *$2.code;
       s << "popq %rax\n";
-      s << "cmpq $0, %rax\n";
+      s << "movq $0, %rbx\n";
+      s << "cmpq %rbx, %rax\n";
       s << "jne L" << nlabel << "\n";
       s << "pushq $1\n";
       s << "jmp L" << (nlabel+1) << "\n";
@@ -617,12 +619,14 @@ comparison_expression
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jl .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $0\n";
+      s << "jmp .L" << (nlabel + 1) << "\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $1\n";
+      s << ".L" << (nlabel+1) << ":\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
-      nlabel++;
+      nlabel+= 2;
     }
   else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T)){
     $$.element_type = FLOAT_T;
@@ -709,9 +713,9 @@ comparison_expression
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jg .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $1\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $0\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
       nlabel++;
@@ -800,9 +804,9 @@ comparison_expression
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jle .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $1\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $0\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
       nlabel++;
@@ -891,9 +895,9 @@ comparison_expression
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jge .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $1\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $0\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
       nlabel++;
@@ -1073,9 +1077,9 @@ comparison_expression
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jne .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
-      s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $1\n";
+	  s << ".L" << nlabel << ":\n";
+      s << "pushq $2\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
       nlabel++;
@@ -1617,7 +1621,8 @@ selection_statement
   std::stringstream s;
   s << *$3.code;
   s << "popq %rax\n";
-  s << "cmpq %rax, $0\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rax, %rbx\n";
   s << "je .L" << nlabel << "\n";
   s << *$5.code;
   s << ".L" << nlabel << ":\n";
@@ -1630,7 +1635,8 @@ selection_statement
   std::stringstream s;
   s << *$3.code;
   s << "popq %rax\n";
-  s << "cmpq $0, %rax\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rbx, %rax\n";
   s << "je .L" << nlabel << "\n";
   s << *$5.code;
   s << "jmp .L" << (nlabel+1) << "\n";
