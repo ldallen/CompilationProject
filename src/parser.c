@@ -1,19 +1,19 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison implementation for Yacc-like parsers in C
-
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
-
+   
+      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
+   
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,7 +26,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "2.7"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -62,7 +62,8 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "parser.y" /* yacc.c:339  */
+/* Line 371 of yacc.c  */
+#line 1 "parser.y"
 
 #include <cstdio>
 #include <cstdlib>
@@ -87,7 +88,7 @@
   int yyerror ();
   int addr = 0;
   int nlabel = 0;
-  int nfunc = 2;
+  int nfunc = 0;
   string current_function;
   vector<std::string*> vec;
   map<std::string, type_t> VariableStack;
@@ -95,14 +96,14 @@
   map<std::string, type_t> temp_param_stack; //pour la déclaration
   vector<type_t> temp_appel_param_stack; //pour l'appel
   
+/* Line 371 of yacc.c  */
+#line 101 "parser.c"
 
-#line 100 "parser.c" /* yacc.c:339  */
-
-# ifndef YY_NULLPTR
+# ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+#   define YY_NULL nullptr
 #  else
-#   define YY_NULLPTR 0
+#   define YY_NULL 0
 #  endif
 # endif
 
@@ -118,7 +119,7 @@
    by #include "parser.tab.h".  */
 #ifndef YY_YY_PARSER_TAB_H_INCLUDED
 # define YY_YY_PARSER_TAB_H_INCLUDED
-/* Debug traces.  */
+/* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
@@ -126,38 +127,39 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    IDENTIFIER = 258,
-    ICONSTANT = 259,
-    FCONSTANT = 260,
-    INC_OP = 261,
-    DEC_OP = 262,
-    LE_OP = 263,
-    GE_OP = 264,
-    EQ_OP = 265,
-    NE_OP = 266,
-    INT = 267,
-    FLOAT = 268,
-    VOID = 269,
-    IF = 270,
-    ELSE = 271,
-    WHILE = 272,
-    RETURN = 273,
-    FOR = 274,
-    DO = 275
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     IDENTIFIER = 258,
+     ICONSTANT = 259,
+     FCONSTANT = 260,
+     INC_OP = 261,
+     DEC_OP = 262,
+     LE_OP = 263,
+     GE_OP = 264,
+     EQ_OP = 265,
+     NE_OP = 266,
+     INT = 267,
+     FLOAT = 268,
+     VOID = 269,
+     IF = 270,
+     ELSE = 271,
+     WHILE = 272,
+     RETURN = 273,
+     FOR = 274,
+     DO = 275
+   };
 #endif
 
-/* Value type.  */
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
-union YYSTYPE
+typedef union YYSTYPE
 {
-#line 63 "parser.y" /* yacc.c:355  */
+/* Line 387 of yacc.c  */
+#line 63 "parser.y"
 
   type_t t;
   type_t lt[1000];
@@ -165,22 +167,37 @@ union YYSTYPE
   int n;
   float f;
 
-#line 169 "parser.c" /* yacc.c:355  */
-};
+
+/* Line 387 of yacc.c  */
+#line 173 "parser.c"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
-
 extern YYSTYPE yylval;
 
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void *YYPARSE_PARAM);
+#else
+int yyparse ();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
 int yyparse (void);
+#else
+int yyparse ();
+#endif
+#endif /* ! YYPARSE_PARAM */
 
 #endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 184 "parser.c" /* yacc.c:358  */
+/* Line 390 of yacc.c  */
+#line 201 "parser.c"
 
 #ifdef short
 # undef short
@@ -194,8 +211,11 @@ typedef unsigned char yytype_uint8;
 
 #ifdef YYTYPE_INT8
 typedef YYTYPE_INT8 yytype_int8;
-#else
+#elif (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 typedef signed char yytype_int8;
+#else
+typedef short int yytype_int8;
 #endif
 
 #ifdef YYTYPE_UINT16
@@ -215,7 +235,8 @@ typedef short int yytype_int16;
 #  define YYSIZE_T __SIZE_TYPE__
 # elif defined size_t
 #  define YYSIZE_T size_t
-# elif ! defined YYSIZE_T
+# elif ! defined YYSIZE_T && (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
@@ -237,33 +258,6 @@ typedef short int yytype_int16;
 # endif
 #endif
 
-#ifndef YY_ATTRIBUTE
-# if (defined __GNUC__                                               \
-      && (2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)))  \
-     || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
-#  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
-# else
-#  define YY_ATTRIBUTE(Spec) /* empty */
-# endif
-#endif
-
-#ifndef YY_ATTRIBUTE_PURE
-# define YY_ATTRIBUTE_PURE   YY_ATTRIBUTE ((__pure__))
-#endif
-
-#ifndef YY_ATTRIBUTE_UNUSED
-# define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
-#endif
-
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
-# else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
-# endif
-#endif
-
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
 # define YYUSE(E) ((void) (E))
@@ -271,25 +265,23 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
-/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
-    _Pragma ("GCC diagnostic push") \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
-    _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
-    _Pragma ("GCC diagnostic pop")
+/* Identity function, used to suppress warnings about constant conditions.  */
+#ifndef lint
+# define YYID(N) (N)
 #else
-# define YY_INITIAL_VALUE(Value) Value
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
+static int
+YYID (int yyi)
+#else
+static int
+YYID (yyi)
+    int yyi;
 #endif
-#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END
+{
+  return yyi;
+}
 #endif
-#ifndef YY_INITIAL_VALUE
-# define YY_INITIAL_VALUE(Value) /* Nothing. */
-#endif
-
 
 #if ! defined yyoverflow || YYERROR_VERBOSE
 
@@ -308,7 +300,8 @@ typedef short int yytype_int16;
 #    define alloca _alloca
 #   else
 #    define YYSTACK_ALLOC alloca
-#    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS
+#    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 #     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
       /* Use EXIT_SUCCESS as a witness for stdlib.h.  */
 #     ifndef EXIT_SUCCESS
@@ -320,8 +313,8 @@ typedef short int yytype_int16;
 # endif
 
 # ifdef YYSTACK_ALLOC
-   /* Pacify GCC's 'empty if-body' warning.  */
-#  define YYSTACK_FREE(Ptr) do { /* empty */; } while (0)
+   /* Pacify GCC's `empty if-body' warning.  */
+#  define YYSTACK_FREE(Ptr) do { /* empty */; } while (YYID (0))
 #  ifndef YYSTACK_ALLOC_MAXIMUM
     /* The OS might guarantee only one guard page at the bottom of the stack,
        and a page size can be as small as 4096 bytes.  So we cannot safely
@@ -337,7 +330,7 @@ typedef short int yytype_int16;
 #  endif
 #  if (defined __cplusplus && ! defined EXIT_SUCCESS \
        && ! ((defined YYMALLOC || defined malloc) \
-             && (defined YYFREE || defined free)))
+	     && (defined YYFREE || defined free)))
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   ifndef EXIT_SUCCESS
 #    define EXIT_SUCCESS 0
@@ -345,13 +338,15 @@ typedef short int yytype_int16;
 #  endif
 #  ifndef YYMALLOC
 #   define YYMALLOC malloc
-#   if ! defined malloc && ! defined EXIT_SUCCESS
+#   if ! defined malloc && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 void *malloc (YYSIZE_T); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 #  ifndef YYFREE
 #   define YYFREE free
-#   if ! defined free && ! defined EXIT_SUCCESS
+#   if ! defined free && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
@@ -361,7 +356,7 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-         || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+	 || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
@@ -386,16 +381,16 @@ union yyalloc
    elements in the stack, and YYPTR gives the new location of the
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
-# define YYSTACK_RELOCATE(Stack_alloc, Stack)                           \
-    do                                                                  \
-      {                                                                 \
-        YYSIZE_T yynewbytes;                                            \
-        YYCOPY (&yyptr->Stack_alloc, Stack, yysize);                    \
-        Stack = &yyptr->Stack_alloc;                                    \
-        yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
-        yyptr += yynewbytes / sizeof (*yyptr);                          \
-      }                                                                 \
-    while (0)
+# define YYSTACK_RELOCATE(Stack_alloc, Stack)				\
+    do									\
+      {									\
+	YYSIZE_T yynewbytes;						\
+	YYCOPY (&yyptr->Stack_alloc, Stack, yysize);			\
+	Stack = &yyptr->Stack_alloc;					\
+	yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
+	yyptr += yynewbytes / sizeof (*yyptr);				\
+      }									\
+    while (YYID (0))
 
 #endif
 
@@ -414,7 +409,7 @@ union yyalloc
           for (yyi = 0; yyi < (Count); yyi++)   \
             (Dst)[yyi] = (Src)[yyi];            \
         }                                       \
-      while (0)
+      while (YYID (0))
 #  endif
 # endif
 #endif /* !YYCOPY_NEEDED */
@@ -430,19 +425,17 @@ union yyalloc
 #define YYNNTS  25
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  72
-/* YYNSTATES -- Number of states.  */
+/* YYNRULES -- Number of states.  */
 #define YYNSTATES  140
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
+/* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   275
 
-#define YYTRANSLATE(YYX)                                                \
+#define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
-/* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
+/* YYTRANSLATE[YYLEX] -- Bison symbol number corresponding to YYLEX.  */
 static const yytype_uint8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -476,17 +469,61 @@ static const yytype_uint8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+/* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
+   YYRHS.  */
+static const yytype_uint8 yyprhs[] =
+{
+       0,     0,     3,     5,     7,     9,    13,    17,    22,    25,
+      28,    33,    35,    39,    41,    44,    47,    49,    53,    55,
+      59,    63,    65,    69,    73,    77,    81,    85,    89,    93,
+     100,   102,   106,   108,   112,   114,   116,   118,   120,   123,
+     128,   133,   139,   143,   148,   150,   154,   157,   159,   161,
+     163,   165,   167,   170,   174,   179,   181,   184,   186,   189,
+     191,   194,   200,   208,   214,   222,   230,   233,   237,   239,
+     242,   244,   246
+};
+
+/* YYRHS -- A `-1'-separated list of the rules' RHS.  */
+static const yytype_int8 yyrhs[] =
+{
+      58,     0,    -1,     3,    -1,     4,    -1,     5,    -1,    21,
+      43,    22,    -1,     3,    21,    22,    -1,     3,    21,    38,
+      22,    -1,     3,     6,    -1,     3,     7,    -1,     3,    23,
+      43,    24,    -1,    43,    -1,    38,    25,    43,    -1,    37,
+      -1,    26,    39,    -1,    27,    39,    -1,    39,    -1,    40,
+      28,    39,    -1,    40,    -1,    41,    29,    40,    -1,    41,
+      26,    40,    -1,    41,    -1,    41,    30,    41,    -1,    41,
+      31,    41,    -1,    41,     8,    41,    -1,    41,     9,    41,
+      -1,    41,    10,    41,    -1,    41,    11,    41,    -1,     3,
+      32,    42,    -1,     3,    23,    43,    24,    32,    42,    -1,
+      42,    -1,    46,    45,    33,    -1,    47,    -1,    45,    25,
+      47,    -1,    14,    -1,    12,    -1,    13,    -1,     3,    -1,
+      28,     3,    -1,     3,    23,     4,    24,    -1,     3,    21,
+      48,    22,    -1,    28,     3,    21,    48,    22,    -1,     3,
+      21,    22,    -1,    28,     3,    21,    22,    -1,    49,    -1,
+      48,    25,    49,    -1,    46,    47,    -1,    51,    -1,    54,
+      -1,    55,    -1,    56,    -1,    57,    -1,    34,    35,    -1,
+      34,    53,    35,    -1,    34,    52,    53,    35,    -1,    44,
+      -1,    52,    44,    -1,    50,    -1,    53,    50,    -1,    33,
+      -1,    43,    33,    -1,    15,    21,    43,    22,    50,    -1,
+      15,    21,    43,    22,    50,    16,    50,    -1,    17,    21,
+      43,    22,    50,    -1,    19,    21,    54,    54,    43,    22,
+      50,    -1,    20,    50,    17,    21,    43,    22,    33,    -1,
+      18,    33,    -1,    18,    43,    33,    -1,    59,    -1,    58,
+      59,    -1,    60,    -1,    44,    -1,    46,    47,    51,    -1
+};
+
+/* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    74,    74,    80,    88,    96,    99,   111,   153,   186,
-     220,   254,   255,   267,   270,   297,   344,   347,   427,   430,
-     509,   591,   594,   686,   778,   869,   960,  1051,  1145,  1205,
-    1235,  1241,  1245,  1246,  1257,  1258,  1259,  1263,  1284,  1312,
-    1330,  1393,  1455,  1481,  1510,  1511,  1522,  1526,  1527,  1528,
-    1529,  1530,  1534,  1537,  1540,  1550,  1551,  1562,  1563,  1574,
-    1575,  1585,  1598,  1617,  1633,  1651,  1670,  1674,  1683,  1684,
-    1688,  1689,  1693
+       0,    74,    74,    82,    90,    98,   101,   113,   168,   191,
+     215,   249,   250,   262,   265,   290,   335,   338,   405,   408,
+     476,   547,   550,   644,   736,   827,   918,  1009,  1103,  1164,
+    1194,  1200,  1204,  1205,  1216,  1217,  1218,  1222,  1243,  1271,
+    1289,  1360,  1430,  1456,  1485,  1486,  1497,  1501,  1502,  1503,
+    1504,  1505,  1509,  1512,  1515,  1525,  1526,  1537,  1538,  1549,
+    1550,  1560,  1574,  1594,  1610,  1628,  1647,  1651,  1661,  1662,
+    1666,  1667,  1671
 };
 #endif
 
@@ -507,13 +544,13 @@ static const char *const yytname[] =
   "statement", "compound_statement", "declaration_list", "statement_list",
   "expression_statement", "selection_statement", "iteration_statement",
   "jump_statement", "program", "external_declaration",
-  "function_definition", YY_NULLPTR
+  "function_definition", YY_NULL
 };
 #endif
 
 # ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
+/* YYTOKNUM[YYLEX-NUM] -- Internal token number corresponding to
+   token YYLEX-NUM.  */
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
@@ -523,39 +560,35 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -68
-
-#define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-68)))
-
-#define YYTABLE_NINF -1
-
-#define yytable_value_is_error(Yytable_value) \
-  0
-
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
-static const yytype_int16 yypact[] =
+/* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+static const yytype_uint8 yyr1[] =
 {
-      40,   -68,   -68,   -68,   -68,     3,   126,   -68,   -68,     9,
-      10,   -22,   -16,   -68,   -68,   165,    16,    28,     3,   -68,
-      90,   -68,   -68,     3,   -10,   -68,    37,   189,   -68,    56,
-     -68,   -68,    48,    49,   159,    50,    63,   178,   193,   193,
-     -68,   -68,   -68,   -68,    44,   207,   -68,    -8,   -68,     3,
-     -68,   -68,   140,    24,   -68,   -68,   -68,   -68,   -68,   -68,
-      40,   -68,   -68,    -3,   -68,   -68,   186,   178,   193,   178,
-     178,   -68,    41,   167,    59,    51,   106,   -68,   -68,   193,
-     193,   193,   193,   193,   193,   193,   193,   193,   -68,   -68,
-     -68,   115,   -68,   -68,   -68,   -68,   -68,     1,   -68,    76,
-     -68,    79,    84,   -68,   167,    93,   -68,   178,   -68,     7,
-       7,     7,     7,    44,    44,     7,     7,   -68,   -68,   178,
-      83,    63,    63,   178,   178,    97,   -68,   193,   112,   -68,
-     100,   109,   -68,   -68,    63,    63,   104,   -68,   -68,   -68
+       0,    36,    37,    37,    37,    37,    37,    37,    37,    37,
+      37,    38,    38,    39,    39,    39,    40,    40,    41,    41,
+      41,    42,    42,    42,    42,    42,    42,    42,    43,    43,
+      43,    44,    45,    45,    46,    46,    46,    47,    47,    47,
+      47,    47,    47,    47,    48,    48,    49,    50,    50,    50,
+      50,    50,    51,    51,    51,    52,    52,    53,    53,    54,
+      54,    55,    55,    56,    56,    56,    57,    57,    58,    58,
+      59,    59,    60
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+/* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
+static const yytype_uint8 yyr2[] =
+{
+       0,     2,     1,     1,     1,     3,     3,     4,     2,     2,
+       4,     1,     3,     1,     2,     2,     1,     3,     1,     3,
+       3,     1,     3,     3,     3,     3,     3,     3,     3,     6,
+       1,     3,     1,     3,     1,     1,     1,     1,     2,     4,
+       4,     5,     3,     4,     1,     3,     2,     1,     1,     1,
+       1,     1,     2,     3,     4,     1,     2,     1,     2,     1,
+       2,     5,     7,     5,     7,     7,     2,     3,     1,     2,
+       1,     1,     3
+};
+
+/* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE doesn't specify something else to do.  Zero
+   means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
        0,    35,    36,    34,    71,     0,     0,    68,    70,    37,
@@ -574,15 +607,7 @@ static const yytype_uint8 yydefact[] =
        0,     0,    10,    29,     0,     0,     0,    62,    64,    65
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int16 yypgoto[] =
-{
-     -68,   -68,   -68,   -31,   -20,   141,   -67,   -32,    -6,   -68,
-       4,    -2,   119,    87,   -36,   139,   -68,   113,   -64,   -68,
-     -68,   -68,   -68,   150,   -68
-};
-
-  /* YYDEFGOTO[NTERM-NUM].  */
+/* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
       -1,    42,    97,    43,    44,    45,    46,    47,     4,    11,
@@ -590,9 +615,39 @@ static const yytype_int8 yydefgoto[] =
       56,    57,     6,     7,     8
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+   STATE-NUM.  */
+#define YYPACT_NINF -68
+static const yytype_int16 yypact[] =
+{
+      40,   -68,   -68,   -68,   -68,     3,   126,   -68,   -68,     9,
+      10,   -22,   -16,   -68,   -68,   165,    16,    28,     3,   -68,
+      90,   -68,   -68,     3,   -10,   -68,    37,   189,   -68,    56,
+     -68,   -68,    48,    49,   159,    50,    63,   178,   193,   193,
+     -68,   -68,   -68,   -68,    44,   207,   -68,    -8,   -68,     3,
+     -68,   -68,   140,    24,   -68,   -68,   -68,   -68,   -68,   -68,
+      40,   -68,   -68,    -3,   -68,   -68,   186,   178,   193,   178,
+     178,   -68,    41,   167,    59,    51,   106,   -68,   -68,   193,
+     193,   193,   193,   193,   193,   193,   193,   193,   -68,   -68,
+     -68,   115,   -68,   -68,   -68,   -68,   -68,     1,   -68,    76,
+     -68,    79,    84,   -68,   167,    93,   -68,   178,   -68,     7,
+       7,     7,     7,    44,    44,     7,     7,   -68,   -68,   178,
+      83,    63,    63,   178,   178,    97,   -68,   193,   112,   -68,
+     100,   109,   -68,   -68,    63,    63,   104,   -68,   -68,   -68
+};
+
+/* YYPGOTO[NTERM-NUM].  */
+static const yytype_int16 yypgoto[] =
+{
+     -68,   -68,   -68,   -31,   -20,   141,   -67,   -32,    -6,   -68,
+       4,    -2,   119,    87,   -36,   139,   -68,   113,   -64,   -68,
+     -68,   -68,   -68,   150,   -68
+};
+
+/* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
+   positive, shift that token.  If negative, reduce the rule which
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
+#define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
       74,   100,    72,    18,     5,    75,     9,    77,    78,   104,
@@ -620,6 +675,12 @@ static const yytype_uint8 yytable[] =
       39,   109,   110,   111,   112,     0,     0,   115,   116,     0,
        0,     0,     0,    84,     0,     0,    85,    86,    87
 };
+
+#define yypact_value_is_default(Yystate) \
+  (!!((Yystate) == (-68)))
+
+#define yytable_value_is_error(Yytable_value) \
+  YYID (0)
 
 static const yytype_int16 yycheck[] =
 {
@@ -649,8 +710,8 @@ static const yytype_int16 yycheck[] =
       -1,    -1,    -1,    26,    -1,    -1,    29,    30,    31
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
+   symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
        0,    12,    13,    14,    44,    46,    58,    59,    60,     3,
@@ -669,42 +730,30 @@ static const yytype_uint8 yystos[] =
       43,    43,    24,    42,    16,    22,    22,    50,    50,    33
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static const yytype_uint8 yyr1[] =
-{
-       0,    36,    37,    37,    37,    37,    37,    37,    37,    37,
-      37,    38,    38,    39,    39,    39,    40,    40,    41,    41,
-      41,    42,    42,    42,    42,    42,    42,    42,    43,    43,
-      43,    44,    45,    45,    46,    46,    46,    47,    47,    47,
-      47,    47,    47,    47,    48,    48,    49,    50,    50,    50,
-      50,    50,    51,    51,    51,    52,    52,    53,    53,    54,
-      54,    55,    55,    56,    56,    56,    57,    57,    58,    58,
-      59,    59,    60
-};
+#define yyerrok		(yyerrstatus = 0)
+#define yyclearin	(yychar = YYEMPTY)
+#define YYEMPTY		(-2)
+#define YYEOF		0
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
-static const yytype_uint8 yyr2[] =
-{
-       0,     2,     1,     1,     1,     3,     3,     4,     2,     2,
-       4,     1,     3,     1,     2,     2,     1,     3,     1,     3,
-       3,     1,     3,     3,     3,     3,     3,     3,     3,     6,
-       1,     3,     1,     3,     1,     1,     1,     1,     2,     4,
-       4,     5,     3,     4,     1,     3,     2,     1,     1,     1,
-       1,     1,     2,     3,     4,     1,     2,     1,     2,     1,
-       2,     5,     7,     5,     7,     7,     2,     3,     1,     2,
-       1,     1,     3
-};
+#define YYACCEPT	goto yyacceptlab
+#define YYABORT		goto yyabortlab
+#define YYERROR		goto yyerrorlab
 
 
-#define yyerrok         (yyerrstatus = 0)
-#define yyclearin       (yychar = YYEMPTY)
-#define YYEMPTY         (-2)
-#define YYEOF           0
+/* Like YYERROR except do call yyerror.  This remains here temporarily
+   to ease the transition to the new meaning of YYERROR, for GCC.
+   Once GCC version 2 has supplanted version 1, this can go.  However,
+   YYFAIL appears to be in use.  Nevertheless, it is formally deprecated
+   in Bison 2.4.2's NEWS entry, where a plan to phase it out is
+   discussed.  */
 
-#define YYACCEPT        goto yyacceptlab
-#define YYABORT         goto yyabortlab
-#define YYERROR         goto yyerrorlab
-
+#define YYFAIL		goto yyerrlab
+#if defined YYFAIL
+  /* This is here to suppress warnings from the GCC cpp's
+     -Wunused-macros.  Normally we don't worry about that warning, but
+     some users do, and we want to make it easy for users to remove
+     YYFAIL uses, which will produce warnings from Bison 2.5.  */
+#endif
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
@@ -721,15 +770,27 @@ do                                                              \
   else                                                          \
     {                                                           \
       yyerror (YY_("syntax error: cannot back up")); \
-      YYERROR;                                                  \
-    }                                                           \
-while (0)
+      YYERROR;							\
+    }								\
+while (YYID (0))
 
 /* Error token number */
-#define YYTERROR        1
-#define YYERRCODE       256
+#define YYTERROR	1
+#define YYERRCODE	256
 
 
+/* This macro is provided for backward compatibility. */
+#ifndef YY_LOCATION_PRINT
+# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+#endif
+
+
+/* YYLEX -- calling `yylex' with the right arguments.  */
+#ifdef YYLEX_PARAM
+# define YYLEX yylex (YYLEX_PARAM)
+#else
+# define YYLEX yylex ()
+#endif
 
 /* Enable debugging if requested.  */
 #if YYDEBUG
@@ -739,36 +800,40 @@ while (0)
 #  define YYFPRINTF fprintf
 # endif
 
-# define YYDPRINTF(Args)                        \
-do {                                            \
-  if (yydebug)                                  \
-    YYFPRINTF Args;                             \
-} while (0)
+# define YYDPRINTF(Args)			\
+do {						\
+  if (yydebug)					\
+    YYFPRINTF Args;				\
+} while (YYID (0))
 
-/* This macro is provided for backward compatibility. */
-#ifndef YY_LOCATION_PRINT
-# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-#endif
-
-
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
-do {                                                                      \
-  if (yydebug)                                                            \
-    {                                                                     \
-      YYFPRINTF (stderr, "%s ", Title);                                   \
-      yy_symbol_print (stderr,                                            \
-                  Type, Value); \
-      YYFPRINTF (stderr, "\n");                                           \
-    }                                                                     \
-} while (0)
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)			  \
+do {									  \
+  if (yydebug)								  \
+    {									  \
+      YYFPRINTF (stderr, "%s ", Title);					  \
+      yy_symbol_print (stderr,						  \
+		  Type, Value); \
+      YYFPRINTF (stderr, "\n");						  \
+    }									  \
+} while (YYID (0))
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*--------------------------------.
+| Print this symbol on YYOUTPUT.  |
+`--------------------------------*/
 
+/*ARGSUSED*/
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static void
 yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+#else
+static void
+yy_symbol_value_print (yyoutput, yytype, yyvaluep)
+    FILE *yyoutput;
+    int yytype;
+    YYSTYPE const * const yyvaluep;
+#endif
 {
   FILE *yyo = yyoutput;
   YYUSE (yyo);
@@ -777,8 +842,14 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
     YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+# else
+  YYUSE (yyoutput);
 # endif
-  YYUSE (yytype);
+  switch (yytype)
+    {
+      default:
+        break;
+    }
 }
 
 
@@ -786,11 +857,22 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 | Print this symbol on YYOUTPUT.  |
 `--------------------------------*/
 
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static void
 yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+#else
+static void
+yy_symbol_print (yyoutput, yytype, yyvaluep)
+    FILE *yyoutput;
+    int yytype;
+    YYSTYPE const * const yyvaluep;
+#endif
 {
-  YYFPRINTF (yyoutput, "%s %s (",
-             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
+  if (yytype < YYNTOKENS)
+    YYFPRINTF (yyoutput, "token %s (", yytname[yytype]);
+  else
+    YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
 
   yy_symbol_value_print (yyoutput, yytype, yyvaluep);
   YYFPRINTF (yyoutput, ")");
@@ -801,8 +883,16 @@ yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
 | TOP (included).                                                   |
 `------------------------------------------------------------------*/
 
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static void
 yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
+#else
+static void
+yy_stack_print (yybottom, yytop)
+    yytype_int16 *yybottom;
+    yytype_int16 *yytop;
+#endif
 {
   YYFPRINTF (stderr, "Stack now");
   for (; yybottom <= yytop; yybottom++)
@@ -813,42 +903,49 @@ yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
   YYFPRINTF (stderr, "\n");
 }
 
-# define YY_STACK_PRINT(Bottom, Top)                            \
-do {                                                            \
-  if (yydebug)                                                  \
-    yy_stack_print ((Bottom), (Top));                           \
-} while (0)
+# define YY_STACK_PRINT(Bottom, Top)				\
+do {								\
+  if (yydebug)							\
+    yy_stack_print ((Bottom), (Top));				\
+} while (YYID (0))
 
 
 /*------------------------------------------------.
 | Report that the YYRULE is going to be reduced.  |
 `------------------------------------------------*/
 
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
+yy_reduce_print (YYSTYPE *yyvsp, int yyrule)
+#else
+static void
+yy_reduce_print (yyvsp, yyrule)
+    YYSTYPE *yyvsp;
+    int yyrule;
+#endif
 {
-  unsigned long int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
+  unsigned long int yylno = yyrline[yyrule];
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
-             yyrule - 1, yylno);
+	     yyrule - 1, yylno);
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
-      yy_symbol_print (stderr,
-                       yystos[yyssp[yyi + 1 - yynrhs]],
-                       &(yyvsp[(yyi + 1) - (yynrhs)])
-                                              );
+      yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
+		       &(yyvsp[(yyi + 1) - (yynrhs)])
+		       		       );
       YYFPRINTF (stderr, "\n");
     }
 }
 
-# define YY_REDUCE_PRINT(Rule)          \
-do {                                    \
-  if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule); \
-} while (0)
+# define YY_REDUCE_PRINT(Rule)		\
+do {					\
+  if (yydebug)				\
+    yy_reduce_print (yyvsp, Rule); \
+} while (YYID (0))
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
@@ -862,7 +959,7 @@ int yydebug;
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
-#ifndef YYINITDEPTH
+#ifndef	YYINITDEPTH
 # define YYINITDEPTH 200
 #endif
 
@@ -885,8 +982,15 @@ int yydebug;
 #   define yystrlen strlen
 #  else
 /* Return the length of YYSTR.  */
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static YYSIZE_T
 yystrlen (const char *yystr)
+#else
+static YYSIZE_T
+yystrlen (yystr)
+    const char *yystr;
+#endif
 {
   YYSIZE_T yylen;
   for (yylen = 0; yystr[yylen]; yylen++)
@@ -902,8 +1006,16 @@ yystrlen (const char *yystr)
 #  else
 /* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
    YYDEST.  */
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static char *
 yystpcpy (char *yydest, const char *yysrc)
+#else
+static char *
+yystpcpy (yydest, yysrc)
+    char *yydest;
+    const char *yysrc;
+#endif
 {
   char *yyd = yydest;
   const char *yys = yysrc;
@@ -933,27 +1045,27 @@ yytnamerr (char *yyres, const char *yystr)
       char const *yyp = yystr;
 
       for (;;)
-        switch (*++yyp)
-          {
-          case '\'':
-          case ',':
-            goto do_not_strip_quotes;
+	switch (*++yyp)
+	  {
+	  case '\'':
+	  case ',':
+	    goto do_not_strip_quotes;
 
-          case '\\':
-            if (*++yyp != '\\')
-              goto do_not_strip_quotes;
-            /* Fall through.  */
-          default:
-            if (yyres)
-              yyres[yyn] = *yyp;
-            yyn++;
-            break;
+	  case '\\':
+	    if (*++yyp != '\\')
+	      goto do_not_strip_quotes;
+	    /* Fall through.  */
+	  default:
+	    if (yyres)
+	      yyres[yyn] = *yyp;
+	    yyn++;
+	    break;
 
-          case '"':
-            if (yyres)
-              yyres[yyn] = '\0';
-            return yyn;
-          }
+	  case '"':
+	    if (yyres)
+	      yyres[yyn] = '\0';
+	    return yyn;
+	  }
     do_not_strip_quotes: ;
     }
 
@@ -976,11 +1088,11 @@ static int
 yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 yytype_int16 *yyssp, int yytoken)
 {
-  YYSIZE_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
+  YYSIZE_T yysize0 = yytnamerr (YY_NULL, yytname[yytoken]);
   YYSIZE_T yysize = yysize0;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
-  const char *yyformat = YY_NULLPTR;
+  const char *yyformat = YY_NULL;
   /* Arguments of yyformat. */
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
   /* Number of reported tokens (one for the "unexpected", one per
@@ -988,6 +1100,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
   int yycount = 0;
 
   /* There are many possibilities here to consider:
+     - Assume YYFAIL is not used.  It's too flawed to consider.  See
+       <http://lists.gnu.org/archive/html/bison-patches/2009-12/msg00024.html>
+       for details.  YYERROR is fine as it does not invoke this
+       function.
      - If this state is a consistent state with a default action, then
        the only way this function was invoked is if the default action
        is an error action.  In that case, don't check for expected
@@ -1037,7 +1153,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                   }
                 yyarg[yycount++] = yytname[yyx];
                 {
-                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
+                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
                   if (! (yysize <= yysize1
                          && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
                     return 2;
@@ -1104,17 +1220,31 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
+/*ARGSUSED*/
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 static void
 yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
+#else
+static void
+yydestruct (yymsg, yytype, yyvaluep)
+    const char *yymsg;
+    int yytype;
+    YYSTYPE *yyvaluep;
+#endif
 {
   YYUSE (yyvaluep);
+
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
-  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
-  YY_IGNORE_MAYBE_UNINITIALIZED_END
+  switch (yytype)
+    {
+
+      default:
+        break;
+    }
 }
 
 
@@ -1123,8 +1253,18 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
 /* The lookahead symbol.  */
 int yychar;
 
+
+#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END
+#endif
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
+#endif
+
 /* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval;
+YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
+
 /* Number of syntax errors so far.  */
 int yynerrs;
 
@@ -1133,16 +1273,35 @@ int yynerrs;
 | yyparse.  |
 `----------*/
 
+#ifdef YYPARSE_PARAM
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
+int
+yyparse (void *YYPARSE_PARAM)
+#else
+int
+yyparse (YYPARSE_PARAM)
+    void *YYPARSE_PARAM;
+#endif
+#else /* ! YYPARSE_PARAM */
+#if (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
 int
 yyparse (void)
+#else
+int
+yyparse ()
+
+#endif
+#endif
 {
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
     int yyerrstatus;
 
     /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
+       `yyss': related to states.
+       `yyvs': related to semantic values.
 
        Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
@@ -1210,23 +1369,23 @@ yyparse (void)
 
 #ifdef yyoverflow
       {
-        /* Give user a chance to reallocate the stack.  Use copies of
-           these so that the &'s don't force the real ones into
-           memory.  */
-        YYSTYPE *yyvs1 = yyvs;
-        yytype_int16 *yyss1 = yyss;
+	/* Give user a chance to reallocate the stack.  Use copies of
+	   these so that the &'s don't force the real ones into
+	   memory.  */
+	YYSTYPE *yyvs1 = yyvs;
+	yytype_int16 *yyss1 = yyss;
 
-        /* Each stack pointer address is followed by the size of the
-           data in use in that stack, in bytes.  This used to be a
-           conditional around just the two extra args, but that might
-           be undefined if yyoverflow is a macro.  */
-        yyoverflow (YY_("memory exhausted"),
-                    &yyss1, yysize * sizeof (*yyssp),
-                    &yyvs1, yysize * sizeof (*yyvsp),
-                    &yystacksize);
+	/* Each stack pointer address is followed by the size of the
+	   data in use in that stack, in bytes.  This used to be a
+	   conditional around just the two extra args, but that might
+	   be undefined if yyoverflow is a macro.  */
+	yyoverflow (YY_("memory exhausted"),
+		    &yyss1, yysize * sizeof (*yyssp),
+		    &yyvs1, yysize * sizeof (*yyvsp),
+		    &yystacksize);
 
-        yyss = yyss1;
-        yyvs = yyvs1;
+	yyss = yyss1;
+	yyvs = yyvs1;
       }
 #else /* no yyoverflow */
 # ifndef YYSTACK_RELOCATE
@@ -1234,22 +1393,22 @@ yyparse (void)
 # else
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        goto yyexhaustedlab;
+	goto yyexhaustedlab;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
-        yystacksize = YYMAXDEPTH;
+	yystacksize = YYMAXDEPTH;
 
       {
-        yytype_int16 *yyss1 = yyss;
-        union yyalloc *yyptr =
-          (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
-        if (! yyptr)
-          goto yyexhaustedlab;
-        YYSTACK_RELOCATE (yyss_alloc, yyss);
-        YYSTACK_RELOCATE (yyvs_alloc, yyvs);
+	yytype_int16 *yyss1 = yyss;
+	union yyalloc *yyptr =
+	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
+	if (! yyptr)
+	  goto yyexhaustedlab;
+	YYSTACK_RELOCATE (yyss_alloc, yyss);
+	YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
-        if (yyss1 != yyssa)
-          YYSTACK_FREE (yyss1);
+	if (yyss1 != yyssa)
+	  YYSTACK_FREE (yyss1);
       }
 # endif
 #endif /* no yyoverflow */
@@ -1258,10 +1417,10 @@ yyparse (void)
       yyvsp = yyvs + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-                  (unsigned long int) yystacksize));
+		  (unsigned long int) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
-        YYABORT;
+	YYABORT;
     }
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
@@ -1290,7 +1449,7 @@ yybackup:
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
-      yychar = yylex ();
+      yychar = YYLEX;
     }
 
   if (yychar <= YYEOF)
@@ -1355,7 +1514,7 @@ yyreduce:
   yylen = yyr2[yyn];
 
   /* If YYLEN is nonzero, implement the default value of the action:
-     '$$ = $1'.
+     `$$ = $1'.
 
      Otherwise, the following line sets YYVAL to garbage.
      This behavior is undocumented and Bison
@@ -1369,54 +1528,57 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 74 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 74 "parser.y"
     {
-  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[0].str)];
+  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[(1) - (1)].str)];
   (yyval.t) = local_identifier;
-  (yyval.t).code = new std::string("pushq %rbp\n");
+  std::stringstream s;
+  s << "pushq -"<< local_identifier.addre <<"(%rbp)\n";
+  (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 1380 "parser.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 80 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 82 "parser.y"
     {
   std::stringstream s;
-  s << "pushq $" << (yyvsp[0].n) << "\n";
+  s << "pushq $" << (yyvsp[(1) - (1)].n) << "\n";
   (yyval.t).code = new std::string(s.str());
   (yyval.t).element_type = INT_T;
   (yyval.t).kind = -1;
   vec.push_back((yyval.t).code);
   }
-#line 1393 "parser.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 88 "parser.y" /* yacc.c:1646  */
-    {
+/* Line 1792 of yacc.c  */
+#line 90 "parser.y"
+    { //non correct
   std::stringstream s;
-  s << "pushq $" << (yyvsp[0].f) << "\n";
+  s << "pushq $" << (yyvsp[(1) - (1)].f) << "\n";
   (yyval.t).code = new std::string(s.str());
   (yyval.t).element_type = FLOAT_T;
   (yyval.t).kind = -1;
   vec.push_back((yyval.t).code);
   }
-#line 1406 "parser.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 96 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 98 "parser.y"
     {
-  (yyval.t) = (yyvsp[-1].t);
+  (yyval.t) = (yyvsp[(2) - (3)].t);
   }
-#line 1414 "parser.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 99 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 101 "parser.y"
     {
-  type_t local_identifier = VariableStack[(yyvsp[-2].str)];
+  type_t local_identifier = VariableStack[(yyvsp[(1) - (3)].str)];
   (yyval.t) = local_identifier;
     if((yyval.t).kind != 1)
 	{
@@ -1424,16 +1586,16 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
   std::stringstream s;
-  s << "call " << (yyvsp[-2].str) << "\n";
+  s << "call " << (yyvsp[(1) - (3)].str) << "\n";
   (yyval.t).code = new std::string(s.str());
   }
-#line 1431 "parser.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 111 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 113 "parser.y"
     {
-  type_t local_identifier = VariableStack[(yyvsp[-3].str)];
+  type_t local_identifier = VariableStack[(yyvsp[(1) - (4)].str)];
   (yyval.t) = local_identifier;
   if((yyval.t).kind != 1)
 	{
@@ -1441,45 +1603,58 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
   std::stringstream s;
-  for (int i = (yyval.t).element_size - 1; i>=0; i++)
+  s << *(yyvsp[(3) - (4)].t).code;
+  for (int i = (yyval.t).element_size - 1; i>=0; --i)
   {
 	std::stringstream ss;
-	ss << (yyvsp[-3].str) << " "<< i;
-	
+	ss << (yyvsp[(1) - (4)].str) << " "<< i;
 	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
-		perror("type not valid (argument)");
-		exit(EXIT_FAILURE);
+	
+		
+		//perror("type not valid (argument)");
+		//exit(EXIT_FAILURE);
 	}
 	switch(i){   // mise en mémoire des parametres
 		case 0:
-		s <<"pushq %rax\nmovq	%rax, %rcx\n";
+		s <<"popq %rax\nmovq	%rax, %rdi\n";
 		break;		
 		case 1:
-		s <<"pushq %rax\nmovq	%rax, %rdx\n";			
-		break;			
+		s <<"popq %rax\nmovq	%rax, %rsi\n";
+		break;	
 		case 2:
-		s <<"pushq %rax\nmovq	%rax, %r8d\n";
+		s <<"popq %rax\nmovq	%rax, %rdx\n";
 		break;		
 		case 3:
-		s <<"pushq %rax\nmovq	%rax, %r9d\n";		
+		s <<"popq %rax\nmovq	%rax, %rcx\n";			
+		break;			
+		case 4:
+		s <<"popq %rax\nmovq	%rax, %r8\n";
+		break;		
+		case 5:
+		s <<"popq %rax\nmovq	%rax, %r9\n";		
+		break;	
+		case 6:   //incorect
+		s <<"popq %rax\nmovq	%rax, (%rsp)\n";		
 		break;		
 		default:
-		int local_addre = 32 + 8*(i-4);
-		s <<"pushq %rax\nmovq	%rax, "<< local_addre <<"(%rsp)\n";
+		int local_addre = 8*(i-5);
+		s <<"popq %rax\nmovq	%rax, "<< local_addre <<"(%rsp)\n";
 		break;
 	}	  
   }	
 
-  s << "call " << (yyvsp[-3].str) << "\n";
+  s << "call " << (yyvsp[(1) - (4)].str) <<"\n";
+	s << "pushq %rax\n";
   (yyval.t).code = new std::string(s.str());
+  temp_appel_param_stack.clear();
   }
-#line 1477 "parser.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 153 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 168 "parser.y"
     {
-  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-1].str)];
+  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[(1) - (2)].str)];
   (yyval.t) = local_identifier;
   std::stringstream s;
   if(local_identifier.element_type == INT_T){
@@ -1490,34 +1665,24 @@ yyreduce:
     s << "(%rbp)\n";
   }
   else if (local_identifier.element_type == FLOAT_T){
-    s << "fld1\n";
-    s << "fstp DWORD %xmm0\n";
-    //s << "fld st0\n";
-    //s << "movss st0, %xmm0\n";
-    /*s << "movss ";
-      s << -local_identifier.addre;
-      s << "(%rbp)";
-      s << ", %xmm1\n";*/
-    s << "fstp QWORD %xmm1\n";
-    s << "addss %xmm0, %xmm1\n";
-    /*s << "movss %xmm1, ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";
-      s << "pushq ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";*/
-    s << "fld QWORD %xmm1\n" ;
+	s << "movq " << -local_identifier.addre << "(%rbp), %rax\n";
+    s << "movq %rax, %xmm0\n";
+	s << "movq " << "$1" << ", %rbx\n";
+	s << "movq %rbx, %xmm1\n";
+	s << "addss %xmm1,%xmm0\n";
+	s << "movq %xmm0,%rax\n";
+	s << "pushq %rax\n";
   }
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 1515 "parser.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 186 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 191 "parser.y"
     {
-  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-1].str)];
+  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[(1) - (2)].str)];
   (yyval.t) = local_identifier;
   std::stringstream s;
   if(local_identifier.element_type == INT_T){
@@ -1529,40 +1694,30 @@ yyreduce:
     s << "(%rbp)\n";
   }
   else if(local_identifier.element_type == FLOAT_T){
-    s << "fld1\n";
-    s << "fstp QWORD %xmm0\n";
-    //s << "movq $1, %rax\n";
-    //s << "movss st0, %xmm0\n";
-    /*s << "movss ";
-      s << -local_identifier.addre;
-      s << "(%rbp)";*/
-    s << "fstp QWORD %xmm1\n";
-    //s << ", %xmm1\n";
-    s << "subss %xmm0, %xmm1\n";
-    /*s << "movss %xmm1, ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";*/
-    /*s << "pushq ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";*/
-    s << "fld QWORD %xmm1\n";
+    s << "movq " << -local_identifier.addre << "(%rbp), %rax\n";
+    s << "movq %rax, %xmm0\n";
+	s << "movq " << "$1" << ", %rbx\n";
+	s << "movq %rbx, %xmm1\n";
+	s << "subss %xmm1,%xmm0\n";
+	s << "movq %xmm0,%rax\n";
+	s << "pushq %rax\n";
   }
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 1554 "parser.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 220 "parser.y" /* yacc.c:1646  */
-    { //changer $$.kind
-  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-3].str)];
+/* Line 1792 of yacc.c  */
+#line 215 "parser.y"
+    {
+  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[(1) - (4)].str)];
   (yyval.t) = local_identifier; 
 	  if(local_identifier.kind == 0)
 	  {
 		  if(local_identifier.element_type == INT_T) {
 			std::stringstream s;
-			s << *(yyvsp[-1].t).code;
+			s << *(yyvsp[(3) - (4)].t).code;
 			s << "popq %rax\nmovq -";
 			s << local_identifier.addre;
 			s << "(%rbp, %rax, 8), %rax\npushq %rax\n";
@@ -1574,7 +1729,7 @@ yyreduce:
 	{
 		if(local_identifier.element_type == INTSTAR_T) { // a revoir peutr-etre
 			std::stringstream s;
-			s << *(yyvsp[-1].t).code;
+			s << *(yyvsp[(3) - (4)].t).code;
 			s << "popq %rax\nimul $8 %rax";
 			s << "movq -"<< local_identifier.addre << "(%rbp), %rbx\n";
 			s << "addq %rax, %rbx\n "; 
@@ -1586,79 +1741,78 @@ yyreduce:
 	
 	}
   }
-#line 1590 "parser.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 254 "parser.y" /* yacc.c:1646  */
-    { (yyval.t) = (yyvsp[0].t); temp_appel_param_stack.push_back((yyvsp[0].t)); }
-#line 1596 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 249 "parser.y"
+    { (yyval.t) = (yyvsp[(1) - (1)].t); temp_appel_param_stack.push_back((yyvsp[(1) - (1)].t)); }
     break;
 
   case 12:
-#line 255 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 250 "parser.y"
     { 
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(3) - (3)].t);
   std::stringstream s;
-  s << *(yyvsp[-2].t).code;
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(1) - (3)].t).code;
+  s << *(yyvsp[(3) - (3)].t).code;
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
-  temp_appel_param_stack.push_back((yyvsp[0].t));	
+  temp_appel_param_stack.push_back((yyvsp[(3) - (3)].t));	
  }
-#line 1610 "parser.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 267 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 262 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(1) - (1)].t);
  }
-#line 1618 "parser.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 270 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 265 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);	
-  if ((yyvsp[0].t).element_type == INT_T)
+  (yyval.t) = (yyvsp[(2) - (2)].t);	
+  if ((yyvsp[(2) - (2)].t).element_type == INT_T)
     { 
       std::stringstream s;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(2) - (2)].t).code;
       s << "popq %rax\n";
       s << "neg %rax\npushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if ((yyvsp[0].t).element_type == FLOAT_T){
+  else if ((yyvsp[(2) - (2)].t).element_type == FLOAT_T){
     std::stringstream s;
-    s << *(yyvsp[0].t).code;
-    s << "fstp QWORD %xmm0\n"; 
-    //s << "popq %rax\n";
-    s << "negss %xmm0\n";
-    //s << "pushq %rax\n";
-    s << "fld QWORD %xmm0\n";
-    (yyval.t).code = new std::string(s.str());
-    vec.push_back((yyval.t).code);
+    s << *(yyvsp[(2) - (2)].t).code;
+    s << "popq %rax";
+    s << "movq %rax, %xmm0\n";
+	s << "negss %xmm0\n";
+	s << "movq %xmm0,%rax\n";
+	s << "pushq %rax\n";
   }
   else{
 		perror("Irregular Operation\n");
 		exit(EXIT_FAILURE);
 	}
   }
-#line 1650 "parser.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 297 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 290 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
-  if ((yyvsp[0].t).element_type == INT_T)
+  (yyval.t) = (yyvsp[(2) - (2)].t);
+  if ((yyvsp[(2) - (2)].t).element_type == INT_T)
     {   
       std::stringstream s;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(2) - (2)].t).code;
       s << "popq %rax\n";
-      s << "cmpq $0, %rax\n";
+      s << "movq $0, %rbx\n";
+      s << "cmpq %rbx, %rax\n";
       s << "jne L" << nlabel << "\n";
       s << "pushq $1\n";
       s << "jmp L" << (nlabel+1) << "\n";
@@ -1669,25 +1823,22 @@ yyreduce:
       vec.push_back((yyval.t).code); 
       nlabel += 2;
     }
-  else if ((yyvsp[0].t).element_type == FLOAT_T){
+  else if ((yyvsp[(2) - (2)].t).element_type == FLOAT_T){
     std::stringstream s;
-    s << *(yyvsp[0].t).code;
-    /*s << "popq %rax\n";
-      s << "movq $0, %rbx\n\n";
-      s << "movss %rax, %xmm0\n";
-      s << "movss %rbx, %xmm1\n";*/
-    s << "fldz\n";
-    s << "fstp QWORD %xmm0";
-    s << "fstp QWORD %xmm1";
+    s << *(yyvsp[(2) - (2)].t).code;
+    s << "popq %rax";
+    s << "movq %rax, %xmm0\n";
+    s << "movq " << "$1" << ", %rbx\n";
+    s << "movq %rbx, %xmm1\n";
     s << "cmpeqss %xmm0, %xmm1\n";
     s << "jne L" << nlabel << "\n";
-    s << "fld1\n";
+    s << "pushq $1\n";
     s << "jmp L" << (nlabel+1) << "\n";
     s << ".L" << nlabel << ":\n";
-    s << "fldz\n";
+    s << "pushq $0\n";
     s << ".L"<< (nlabel+1) <<":\n";
     (yyval.t).code = new std::string(s.str());
-    vec.push_back((yyval.t).code); 
+    vec.push_back((yyval.t).code);
     nlabel += 2;
   }
     else{
@@ -1695,27 +1846,27 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
   }
-#line 1699 "parser.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 344 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 335 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(1) - (1)].t);
  }
-#line 1707 "parser.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 347 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 338 "parser.y"
     {
-  (yyval.t) = (yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T)) 
+  (yyval.t) = (yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)) 
     {
       (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "imul %rbx, %rax\n";
@@ -1723,89 +1874,76 @@ yyreduce:
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
     {
       (yyval.t).element_type = FLOAT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
-      //s << "popq %rbx\n";
-      s << "fild QWORD %rax\n";
-      s << "fstp QWORD %xmm0\n";
-      //s << "movss %rbx, %xmm0\n";
-      s << "fstp QWORD %xmm1\n"; 
-      s << "mulss %xmm0, %xmm1\n";
-      //s << "movss %xmm1, %rax\n";
-      s << "fld QWORD %xmm1\n";
-      //s << "pushq %rax\n";
+      s << "movq %rax, %xmm0\n";
+      s << "popq %rbx\n";
+	  s << "movq %rbx, %xmm1\n";
+	  s << "mulss %xmm1,%xmm0\n";
+	  s << "movq %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = FLOAT_T;
-      (yyval.t).element_type = FLOAT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      //s << "popq %rax\n";
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
-      s << "fild QWORD %rax";
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n"; 
-      /*s << "movss %rbx, %xmm0\n";
-	s << "movss %rax, %xmm1\n";*/
-      s << "mulss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
-    }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T))
-    {
-      (yyval.t).element_type = FLOAT_T;
-      std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      /*s << "popq %rax\n";
-	s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "mulss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n" ;
+      s << "movq %rax, %xmm0\n";
+      s << "popq %rbx\n";
+	  s << "movq %rbx, %xmm1\n";
+	  s << "mulss %xmm1,%xmm0\n";
+	  s << "movq %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-      else{
-		perror("Irregular Operation\n");
-		exit(EXIT_FAILURE);
-	}
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
+    {
+      (yyval.t).element_type = FLOAT_T;
+      std::stringstream s;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+      s << "popq %rax\n";
+      s << "movq %rax, %xmm0\n";
+      s << "popq %rbx\n";
+	  s << "movq %rbx, %xmm1\n";
+	  s << "mulss %xmm1,%xmm0\n";
+	  s << "movq %xmm0,%rax\n";
+	  s << "pushq %rax\n";
+      (yyval.t).code = new std::string(s.str());
+      vec.push_back((yyval.t).code);
+    }
   }
-#line 1789 "parser.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 427 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 405 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(1) - (1)].t);
  }
-#line 1797 "parser.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 430 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 408 "parser.y"
     {
-  (yyval.t) = (yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+  (yyval.t) = (yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "addq %rbx, %rax\n";
@@ -1813,83 +1951,72 @@ yyreduce:
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
     {
       (yyval.t).element_type = FLOAT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      s << "popq %rax\n";
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fild QWORD %rax\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "addss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n" ;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "addss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = FLOAT_T;
-      std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      s << "popq %rax\n";
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fild QWORD %rax\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n" ;
-      s << "addss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+     std::stringstream s;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "addss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
     {
       (yyval.t).element_type = FLOAT_T;
-      std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      /*s << "popq %rax\n";
-	s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm1\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "addss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+     std::stringstream s;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "addss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-      else{
-		perror("Irregular Operation\n");
+    else{
+		perror("irregular operation");
 		exit(EXIT_FAILURE);
-	}
+    }
   }
-#line 1881 "parser.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 509 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 476 "parser.y"
     {
-  (yyval.t) = (yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+  (yyval.t) = (yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "subq %rbx, %rax\n";
@@ -1897,62 +2024,51 @@ yyreduce:
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
     {
       (yyval.t).element_type = FLOAT_T;
-      std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      s << "popq %rax\n";
-      s << "fild QWORD %rax\n" ;
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "subss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+     std::stringstream s;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "subss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = FLOAT_T;
-      std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      s << "popq %rax\n";
-      s << "fild QWORD %rax\n";
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm1\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "subss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n" ;
+     std::stringstream s;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "subss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T))
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T))
     {
       (yyval.t).element_type = FLOAT_T;
-      std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
-      /*s << "popq %rax\n";
-	s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "subss %xmm0, %xmm1\n";
-      //s << "movss %xmm1, %rax\n";
-      //s << "pushq %rax\n";
-      s << "fld QWORD %xmm1\n";
+     std::stringstream s;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "subss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
@@ -1961,43 +2077,45 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
   }
-#line 1965 "parser.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 591 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 547 "parser.y"
     {
-  (yyval.t)=(yyvsp[0].t);
+  (yyval.t)=(yyvsp[(1) - (1)].t);
  }
-#line 1973 "parser.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 594 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 550 "parser.y"
     {
-  (yyval.t)=(yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+  (yyval.t)=(yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jl .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $0\n";
+      s << "jmp .L" << (nlabel + 1) << "\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $1\n";
+      s << ".L" << (nlabel+1) << ":\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
-      nlabel++;
+      nlabel+= 2;
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2016,11 +2134,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2039,11 +2157,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     /*s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2066,35 +2184,35 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
   }
-#line 2070 "parser.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 686 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 644 "parser.y"
     {
-  (yyval.t)=(yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+  (yyval.t)=(yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     {
       (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jg .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $1\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $0\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
       nlabel++;
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2113,11 +2231,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2136,11 +2254,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     /*s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2163,33 +2281,33 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
   }
-#line 2167 "parser.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 779 "parser.y" /* yacc.c:1646  */
-    {	(yyval.t) = (yyvsp[-2].t);	
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+/* Line 1792 of yacc.c  */
+#line 737 "parser.y"
+    {	(yyval.t) = (yyvsp[(1) - (3)].t);	
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jle .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $1\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $0\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
       nlabel++;
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2208,11 +2326,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2231,11 +2349,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     /*s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2258,33 +2376,33 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
 }
-#line 2262 "parser.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 870 "parser.y" /* yacc.c:1646  */
-    {	(yyval.t)=(yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+/* Line 1792 of yacc.c  */
+#line 828 "parser.y"
+    {	(yyval.t)=(yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jge .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
+      s << "pushq $1\n";
       s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $0\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
       nlabel++;
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2303,11 +2421,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2326,11 +2444,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     /*s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2353,17 +2471,17 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
 }
-#line 2357 "parser.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 961 "parser.y" /* yacc.c:1646  */
-    {	(yyval.t)=(yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+/* Line 1792 of yacc.c  */
+#line 919 "parser.y"
+    {	(yyval.t)=(yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
@@ -2375,11 +2493,11 @@ yyreduce:
       vec.push_back((yyval.t).code);
       nlabel++;
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2398,11 +2516,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2421,11 +2539,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     /*s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2448,33 +2566,33 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
 }
-#line 2452 "parser.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 1052 "parser.y" /* yacc.c:1646  */
-    {	(yyval.t)=(yyvsp[-2].t);
-  if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T))
+/* Line 1792 of yacc.c  */
+#line 1010 "parser.y"
+    {	(yyval.t)=(yyvsp[(1) - (3)].t);
+  if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T))
     { (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-2].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(1) - (3)].t).code;
+      s << *(yyvsp[(3) - (3)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jne .L" << nlabel << "\n";
-      s << "movq $1, %rbp\n";
-      s << ".L" << nlabel << ":\n";
-      s << "movq $0, %rbp\n";
+      s << "pushq $1\n";
+	  s << ".L" << nlabel << ":\n";
+      s << "pushq $2\n";
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
       nlabel++;
     }
-  else if (((yyvsp[-2].t).element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2493,11 +2611,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     /*s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2516,11 +2634,11 @@ yyreduce:
     vec.push_back((yyval.t).code);
     nlabel++;
   }
-  else if (((yyvsp[-2].t).element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if (((yyvsp[(1) - (3)].t).element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     (yyval.t).element_type = FLOAT_T;
     std::stringstream s;
-    s << *(yyvsp[-2].t).code;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(1) - (3)].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     /*s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movss %rax, %xmm0\n";
@@ -2543,32 +2661,32 @@ yyreduce:
 		exit(EXIT_FAILURE);
 	}
 }
-#line 2547 "parser.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 1145 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1103 "parser.y"
     {
-  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-2].str)];
+  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[(1) - (3)].str)];
   (yyval.t) = local_identifier;
   if((yyval.t).kind != -1){
   perror("invalid operation");
   exit(EXIT_FAILURE);
   }
-  else if ((local_identifier.element_type == INT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if ((local_identifier.element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     std::stringstream s;
-    s << *(yyvsp[0].t).code;
+    s << *(yyvsp[(3) - (3)].t).code;
     s << "popq %rax\n";
     s << "movq %rax, " << -local_identifier.addre << "(%rbp)\n";
     s << "pushq %rax\n";
     (yyval.t).code = new std::string(s.str());
     vec.push_back((yyval.t).code);
   }
-  else if ((local_identifier.element_type == INT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){
+  else if ((local_identifier.element_type == INT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){
     perror("int = float not allowed");}
-  else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[0].t).element_type == INT_T)){
+  else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == INT_T)){
     (yyval.t).element_type = FLOAT_T;} // idem pour float
-  else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[0].t).element_type == FLOAT_T)){ //idem pour float
+  else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[(3) - (3)].t).element_type == FLOAT_T)){ //idem pour float
     std::stringstream s;
     s << "popq %rax\nmovq %rax " << -local_identifier.addre << "(%rbp)\npushq %rax\n";
     (yyval.t).code = new std::string(s.str());
@@ -2576,27 +2694,28 @@ yyreduce:
   }
   else if(local_identifier.element_type == INTSTAR_T || local_identifier.element_type == FLOATSTAR_T) 
   {
-	 if((yyvsp[0].t).element_type == local_identifier.element_type && (yyvsp[0].t).kind == -1) // egalite entre pointeurs
+  
+	 if((yyvsp[(3) - (3)].t).element_type == local_identifier.element_type && (yyvsp[(3) - (3)].t).kind == -1) // egalite entre pointeurs
 	 {
 	    std::stringstream s;
-		s << *(yyvsp[0].t).code;
+		s << *(yyvsp[(3) - (3)].t).code;
 		s << "popq %rax\n";
 		s << "movq %rax, " << -local_identifier.addre << "(%rbp)\n";
 		s << "pushq %rax\n";
 		(yyval.t).code = new std::string(s.str());
 		vec.push_back((yyval.t).code);
 	 }
-	 else if(((yyvsp[0].t).kind = 0) && ((yyvsp[0].t).element_type == local_identifier.element_type + 1)) //pointeur egal vecteur
+	 else if(((yyvsp[(3) - (3)].t).kind == 0) && ((yyvsp[(3) - (3)].t).element_type == local_identifier.element_type - 1)) //pointeur egal vecteur
 	 {
 	  std::stringstream s;
-	  s << *(yyvsp[0].t).code;
-	  s << "leaq -" << local_identifier.addre << "(%rbp), -" <<  (yyvsp[0].t).addre << "(%rbp)\npushq -" << (yyvsp[0].t).addre << "(%rbp)\n";
+	  s << *(yyvsp[(3) - (3)].t).code;
+	  s << "leaq -" << local_identifier.addre << "(%rbp), %rax\n";
+	  s << "movq %rax, -" <<  (yyvsp[(3) - (3)].t).addre << "(%rbp)\npushq -" << (yyvsp[(3) - (3)].t).addre << "(%rbp)\n";
 	  (yyval.t).code = new std::string(s.str());
 	  vec.push_back((yyval.t).code);
 	 }
 	 else
 	 {
-	 
 		perror("invalid operation");
 		exit(EXIT_FAILURE);
 	 
@@ -2608,20 +2727,20 @@ yyreduce:
 	}
   (yyval.t).addre = local_identifier.addre;
  }
-#line 2612 "parser.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 1206 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1165 "parser.y"
     {	
-  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[-5].str)];
+  type_t local_identifier = VariableStack[current_function + " "+(yyvsp[(1) - (6)].str)];
   (yyval.t) = local_identifier;
-  if((yyvsp[-3].t).element_type == INT_T){
-    if ((local_identifier.element_type == INT_T)&&((yyvsp[-3].t).element_type == INT_T)){
+  if((yyvsp[(3) - (6)].t).element_type == INT_T){
+    if ((local_identifier.element_type == INT_T)&&((yyvsp[(3) - (6)].t).element_type == INT_T)){
       (yyval.t).element_type = INT_T;
       std::stringstream s;
-      s << *(yyvsp[-3].t).code;
-      s << *(yyvsp[0].t).code;
+      s << *(yyvsp[(3) - (6)].t).code;
+      s << *(yyvsp[(6) - (6)].t).code;
       s << "popq %rax\n";
       s << "popq %rbx\n";
       s << "movq %rax, " << -local_identifier.addre << "(%rbp, %rbx, 8)\n";
@@ -2629,11 +2748,11 @@ yyreduce:
       (yyval.t).code = new std::string(s.str());
       vec.push_back((yyval.t).code);
     }
-    else if ((local_identifier.element_type == INT_T)&&((yyvsp[-3].t).element_type == FLOAT_T))
+    else if ((local_identifier.element_type == INT_T)&&((yyvsp[(3) - (6)].t).element_type == FLOAT_T))
       {perror("int[int] = float not allowed"); exit(0);}
-    else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[-3].t).element_type == INT_T))
+    else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[(3) - (6)].t).element_type == INT_T))
       (yyval.t).element_type = FLOAT_T;
-    else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[-3].t).element_type == FLOAT_T))
+    else if ((local_identifier.element_type == FLOAT_T)&&((yyvsp[(3) - (6)].t).element_type == FLOAT_T))
       (yyval.t).element_type = FLOAT_T;
   }
   else
@@ -2642,62 +2761,62 @@ yyreduce:
     }
   (yyval.t).addre = local_identifier.addre;
 }
-#line 2646 "parser.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 1235 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1194 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(1) - (1)].t);
   }
-#line 2654 "parser.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 1241 "parser.y" /* yacc.c:1646  */
-    { (yyval.t) = (yyvsp[-1].t);}
-#line 2660 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1200 "parser.y"
+    { (yyval.t) = (yyvsp[(2) - (3)].t);}
     break;
 
   case 32:
-#line 1245 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t) ;}
-#line 2666 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1204 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t) ;}
     break;
 
   case 33:
-#line 1246 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1205 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(3) - (3)].t);
   std::stringstream s;
-  s << *(yyvsp[-2].t).code;
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(1) - (3)].t).code;
+  s << *(yyvsp[(3) - (3)].t).code;
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   }
-#line 2679 "parser.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 1257 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1216 "parser.y"
     {bt = VOID_T;}
-#line 2685 "parser.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 1258 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1217 "parser.y"
     {bt = INT_T;}
-#line 2691 "parser.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 1259 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1218 "parser.y"
     {bt = FLOAT_T;}
-#line 2697 "parser.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 1263 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1222 "parser.y"
     { 
   if(current_function != "") //variable
   {
@@ -2706,24 +2825,24 @@ yyreduce:
 	  }
 	  (yyval.t).element_type = bt;
 	  (yyval.t).kind = -1 ;
-	  (yyval.t).code = new std::string("");
+	  (yyval.t).code = new std::string("pushq %rax\n");
 	  vec.push_back((yyval.t).code);
-	  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+(yyvsp[0].str),(yyval.t)) );
+	  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+(yyvsp[(1) - (1)].str),(yyval.t)) );
 		}
 	else {  //parametre de fonction
   
   	  (yyval.t).element_type = bt;
 	  (yyval.t).kind = -1 ;
-	  (yyval.t).code = new std::string("");
+	  (yyval.t).code = new std::string("pushq %rax\n");
 	  vec.push_back((yyval.t).code);
-      temp_param_stack.insert(std::pair<std::string, type_t>((yyvsp[0].str),(yyval.t)));
+      temp_param_stack.insert(std::pair<std::string, type_t>((yyvsp[(1) - (1)].str),(yyval.t)));
   }
  }
-#line 2723 "parser.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 1284 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1243 "parser.y"
     { 
   if(current_function != "") //variable
   {
@@ -2737,9 +2856,9 @@ yyreduce:
 		  (yyval.t).addre = addr;
 		  (yyval.t).element_type = (type)(bt+1); 
 		  (yyval.t).kind = -1;
-		  (yyval.t).code = new std::string("");
+		  (yyval.t).code = new std::string("pushq %rax\n");
 		  vec.push_back((yyval.t).code);
-		  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+(yyvsp[0].str),(yyval.t)) );
+		  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+(yyvsp[(2) - (2)].str),(yyval.t)) );
 		}
 	}
 	else {  //parametre de fonction
@@ -2747,27 +2866,27 @@ yyreduce:
   		(yyval.t).addre = addr;
   		(yyval.t).element_type = (type)(bt+1); 
 		(yyval.t).kind = -1;
-  		(yyval.t).code = new std::string("");
+  		(yyval.t).code = new std::string("pushq %rax\n");
 		vec.push_back((yyval.t).code);
-		temp_param_stack.insert(std::pair<std::string, type_t>((yyvsp[0].str),(yyval.t)));
+		temp_param_stack.insert(std::pair<std::string, type_t>((yyvsp[(2) - (2)].str),(yyval.t)));
   }
   }
-#line 2756 "parser.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 1312 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1271 "parser.y"
     {
   if(current_function != "") //variable
   {
 	  (yyval.t).element_type = bt; 
 	  (yyval.t).kind = 0;
-	  (yyval.t).element_size = (yyvsp[-1].n); 
-	  addr += 8*(yyvsp[-1].n) ; 
+	  (yyval.t).element_size = (yyvsp[(3) - (4)].n); 
+	  addr += 8*(yyvsp[(3) - (4)].n) ; 
 	  (yyval.t).addre = addr; 
-	  (yyval.t).code = new std::string(""); 
+	  (yyval.t).code = new std::string("pushq %rax\n"); 
 	  vec.push_back((yyval.t).code); 
-	  VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+(yyvsp[-3].str),(yyval.t)) );
+	  VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+(yyvsp[(1) - (4)].str),(yyval.t)) );
   }
   else {  //parametre de fonction
   
@@ -2775,11 +2894,11 @@ yyreduce:
 	exit(EXIT_FAILURE);
   }
  }
-#line 2779 "parser.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 1330 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1289 "parser.y"
     {
   if(current_function != "")
   {
@@ -2791,9 +2910,9 @@ yyreduce:
   (yyval.t).kind = 1; 
   (yyval.t).element_size = temp_param_stack.size();
      std::stringstream s;
-  s << ".globl	" << (yyvsp[-3].str) << "\n";
-  s << ".type	" << (yyvsp[-3].str) << ", @function\n";
-  s << (yyvsp[-3].str) <<":\n";
+  s << ".globl	" << (yyvsp[(1) - (4)].str) << "\n";
+  s << ".type	" << (yyvsp[(1) - (4)].str) << ", @function\n";
+  s << (yyvsp[(1) - (4)].str) <<":\n";
   s << ".LFB" << nfunc << ":\n";
   s << ".cfi_startproc\n";
   s << "pushq	%rbp\n";
@@ -2803,51 +2922,59 @@ yyreduce:
   s << ".cfi_def_cfa_register 6\n";
 
   //$$.function_parameters = $3; 
-  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[-3].str), (yyval.t))); 
+  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[(1) - (4)].str), (yyval.t))); 
   int i = 0;
 
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
   {
       std::stringstream ss;
       std::stringstream ss2;
-  	  ss << (yyvsp[-3].str);
+  	  ss << (yyvsp[(1) - (4)].str);
 	  ss << " ";
 	  ss << it->first;
 	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second)); //on le stock comme une variable normale pour y acceder dans la fonction concernee
-	  ss2 << (yyvsp[-3].str);
+	  ss2 << (yyvsp[(1) - (4)].str);
 	  ss2 <<" ";
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
-	  	switch(i){
+	  s << "pushq %rax\n";
+	switch(i){
 		case 0:
-		s <<"movq	%rcx, -8(%rbp)\n";  // adresses de récupération
+		s <<"movq	%rdi, -8(%rbp)\n";
 		break;		
 		case 1:
-		s <<"movq	%rdx, -16(%rbp)\n";			
-		break;			
+		s <<"movq	%rsi, -16(%rbp)\n";	
+		break;
 		case 2:
-		s <<"movq	%r8d, -32(%rbp)\n";
+		s <<"movq	%rdx, -24(%rbp)\n";
 		break;		
 		case 3:
-		s <<"movq	%r9d, -40(%rbp)\n";		
+		s <<"movq	%rcx, -32(%rbp)\n";			
+		break;			
+		case 4:
+		s <<"movq	%r8, -40(%rbp)\n";
+		break;		
+		case 5:
+		s <<"movq	%r9, -48(%rbp)\n";		
 		break;		
 		default:
 
 		break;
 	}
-	  VariableStack[ss.str()].addre = 8*i;
+	addr+=8;
+	  VariableStack[ss.str()].addre = 8*(i+1);
 	  i++;
   } 
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   temp_param_stack.clear();
-  current_function = (yyvsp[-3].str);
+  current_function = (yyvsp[(1) - (4)].str);
 }
-#line 2847 "parser.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 1393 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1360 "parser.y"
     {
   if(current_function != "")
   {
@@ -2859,9 +2986,9 @@ yyreduce:
   (yyval.t).kind = 1; 
   (yyval.t).element_size = temp_param_stack.size();
    std::stringstream s;
-  s << ".globl	" << (yyvsp[-3].str) << "\n";
-  s << ".type	" << (yyvsp[-3].str) << ", @function\n";
-  s << (yyvsp[-3].str) <<":\n";
+  s << ".globl	" << (yyvsp[(2) - (5)].str) << "\n";
+  s << ".type	" << (yyvsp[(2) - (5)].str) << ", @function\n";
+  s << (yyvsp[(2) - (5)].str) <<":\n";
   s << ".LFB" << nfunc << ":\n";
   s << ".cfi_startproc\n";
   s << "pushq	%rbp\n";
@@ -2870,51 +2997,59 @@ yyreduce:
   s << "movq	%rsp, %rbp\n";
   s << ".cfi_def_cfa_register 6\n";
 
-  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[-3].str),(yyval.t))); 
+  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[(2) - (5)].str),(yyval.t))); 
   int i = 0;
   for(map<std::string, type_t>::iterator it=temp_param_stack.begin() ; it!=temp_param_stack.end() ; ++it)
   {
       std::stringstream ss;
       std::stringstream ss2;
-	  ss << (yyvsp[-3].str);
+	  ss << (yyvsp[(2) - (5)].str);
 	  ss << " ";
 	  ss << it->first;
 	  VariableStack.insert(std::pair<std::string, type_t>(ss.str(),it->second));
-	  ss2 << (yyvsp[-3].str);
+	  ss2 << (yyvsp[(2) - (5)].str);
 	  ss2 <<" ";
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second));
-
+    s << "pushq %rax\n";
 	switch(i){
 		case 0:
-		s <<"movq	%rcx, -8(%rbp)\n";
+		s <<"movq	%rdi, -8(%rbp)\n";
 		break;		
 		case 1:
-		s <<"movq	%rdx, -16(%rbp)\n";			
-		break;			
+		s <<"movq	%rsi, -16(%rbp)\n";	
+		break;
 		case 2:
-		s <<"movq	%r8d, -32(%rbp)\n";
+		s <<"movq	%rdx, -24(%rbp)\n";
 		break;		
 		case 3:
-		s <<"movq	%r9d, -40(%rbp)\n";		
+		s <<"movq	%rcx, -32(%rbp)\n";			
+		break;			
+		case 4:
+		s <<"movq	%r8, -40(%rbp)\n";
+		break;		
+		case 5:
+		s <<"movq	%r9, -48(%rbp)\n";		
 		break;		
 		default:
 
 		break;
 	}
-	  VariableStack[ss.str()].addre = 8*i;
+	  addr+=8;
+	  VariableStack[ss.str()].addre = 8*(i+1);
+
 	  i++;
   }
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code); 
   temp_param_stack.clear();
-  current_function = (yyvsp[-3].str);
+  current_function = (yyvsp[(2) - (5)].str);
 }
-#line 2914 "parser.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 1455 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1430 "parser.y"
     {
   if(current_function != "")
   {
@@ -2926,9 +3061,9 @@ yyreduce:
   (yyval.t).kind = 1;
   (yyval.t).element_size = 0;
   std::stringstream s;
-  s << ".globl	" << (yyvsp[-2].str) << "\n";
-  s << ".type	" << (yyvsp[-2].str) << ", @function\n";
-  s << (yyvsp[-2].str) <<":\n";
+  s << ".globl	" << (yyvsp[(1) - (3)].str) << "\n";
+  s << ".type	" << (yyvsp[(1) - (3)].str) << ", @function\n";
+  s << (yyvsp[(1) - (3)].str) <<":\n";
   s << ".LFB" << nfunc << ":\n";
   s << ".cfi_startproc\n";
   s << "pushq	%rbp\n";
@@ -2938,14 +3073,14 @@ yyreduce:
   s << ".cfi_def_cfa_register 6\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
-  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[-2].str),(yyval.t))); 
-  current_function = (yyvsp[-2].str);
+  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[(1) - (3)].str),(yyval.t))); 
+  current_function = (yyvsp[(1) - (3)].str);
   }
-#line 2945 "parser.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 1481 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1456 "parser.y"
     {
   if(current_function != "")
   {
@@ -2957,9 +3092,9 @@ yyreduce:
   (yyval.t).kind = 1;
   (yyval.t).element_size = 0;
   std::stringstream s;
-  s << ".globl	" << (yyvsp[-2].str) << "\n";
-  s << ".type	" << (yyvsp[-2].str) << ", @function\n";
-  s << (yyvsp[-2].str) << ":\n";
+  s << ".globl	" << (yyvsp[(2) - (4)].str) << "\n";
+  s << ".type	" << (yyvsp[(2) - (4)].str) << ", @function\n";
+  s << (yyvsp[(2) - (4)].str) << ":\n";
   s << ".LFB" << nfunc << ":\n";
   s << ".cfi_startproc\n";
   s << "pushq	%rbp\n";
@@ -2969,232 +3104,234 @@ yyreduce:
   s << ".cfi_def_cfa_register 6\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
-  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[-2].str),(yyval.t)));
-  current_function = (yyvsp[-2].str);
+  VariableStack.insert(std::pair<std::string, type_t>((yyvsp[(2) - (4)].str),(yyval.t)));
+  current_function = (yyvsp[(2) - (4)].str);
   }
-#line 2976 "parser.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 1510 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 2982 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1485 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 45:
-#line 1511 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1486 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(3) - (3)].t);
   std::stringstream s;
-  s << *(yyvsp[-2].t).code;
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(1) - (3)].t).code;
+  s << *(yyvsp[(3) - (3)].t).code;
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   }
-#line 2995 "parser.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 1522 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3001 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1497 "parser.y"
+    {(yyval.t) = (yyvsp[(2) - (2)].t);}
     break;
 
   case 47:
-#line 1526 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3007 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1501 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 48:
-#line 1527 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3013 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1502 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 49:
-#line 1528 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3019 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1503 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 50:
-#line 1529 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3025 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1504 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 51:
-#line 1530 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3031 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1505 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 52:
-#line 1534 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1509 "parser.y"
     {
   (yyval.t).code = new std::string("");vec.push_back((yyval.t).code);
  }
-#line 3039 "parser.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 1537 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1512 "parser.y"
     {
-  (yyval.t) = (yyvsp[-1].t);
+  (yyval.t) = (yyvsp[(2) - (3)].t);
   }
-#line 3047 "parser.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 1540 "parser.y" /* yacc.c:1646  */
-    { (yyval.t) = (yyvsp[-1].t);
+/* Line 1792 of yacc.c  */
+#line 1515 "parser.y"
+    { (yyval.t) = (yyvsp[(3) - (4)].t);
    std::stringstream s;
-   s << *(yyvsp[-2].t).code;
-   s << *(yyvsp[-1].t).code;
+   s << *(yyvsp[(2) - (4)].t).code;
+   s << *(yyvsp[(3) - (4)].t).code;
    (yyval.t).code = new std::string(s.str());
    vec.push_back((yyval.t).code);
   }
-#line 3059 "parser.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 1550 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3065 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1525 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 56:
-#line 1551 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1526 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(2) - (2)].t);
   std::stringstream s;
-  s << *(yyvsp[-1].t).code;
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(1) - (2)].t).code;
+  s << *(yyvsp[(2) - (2)].t).code;
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 3078 "parser.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 1562 "parser.y" /* yacc.c:1646  */
-    {(yyval.t) = (yyvsp[0].t);}
-#line 3084 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1537 "parser.y"
+    {(yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 58:
-#line 1563 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1538 "parser.y"
     {
-  (yyval.t) = (yyvsp[0].t);
+  (yyval.t) = (yyvsp[(2) - (2)].t);
   std::stringstream s;
-  s << *(yyvsp[-1].t).code;
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(1) - (2)].t).code;
+  s << *(yyvsp[(2) - (2)].t).code;
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 3097 "parser.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 1575 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1550 "parser.y"
     {
-  (yyval.t) = (yyvsp[-1].t);
+  (yyval.t) = (yyvsp[(1) - (2)].t);
   std::stringstream s;
-  s << *(yyvsp[-1].t).code;
+  s << *(yyvsp[(1) - (2)].t).code;
   s << "popq %rax\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 3110 "parser.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 1586 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1561 "parser.y"
     {	
   std::stringstream s;
-  s << *(yyvsp[-2].t).code;
+  s << *(yyvsp[(3) - (5)].t).code;
   s << "popq %rax\n";
-  s << "cmpq %rax, $0\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rax, %rbx\n";
   s << "je .L" << nlabel << "\n";
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(5) - (5)].t).code;
   s << ".L" << nlabel << ":\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   nlabel++;
 }
-#line 3127 "parser.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 1599 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1575 "parser.y"
     {	
   std::stringstream s;
-  s << *(yyvsp[-4].t).code;
+  s << *(yyvsp[(3) - (7)].t).code;
   s << "popq %rax\n";
-  s << "cmpq $0, %rax\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rbx, %rax\n";
   s << "je .L" << nlabel << "\n";
-  s << *(yyvsp[-2].t).code;
+  s << *(yyvsp[(5) - (7)].t).code;
   s << "jmp .L" << (nlabel+1) << "\n";
   s << ".L" << nlabel << ":\n";
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(7) - (7)].t).code;
   s << ".L"<< (nlabel+1) <<":\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code); 
   nlabel += 2;
 }
-#line 3147 "parser.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 1618 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1595 "parser.y"
     {	
   std::stringstream s;
   s << ".L" << nlabel << ":\n";
-  s << *(yyvsp[-2].t).code;
+  s << *(yyvsp[(3) - (5)].t).code;
   s << "popq %rax\n";
   s << "movq $0 $rbx\n";
   s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
-  s << *(yyvsp[0].t).code;
+  s << *(yyvsp[(5) - (5)].t).code;
   s << "jmp .L" << nlabel << "\n";
   s << ".L" << nlabel+1 << ":\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   nlabel += 2;
 }
-#line 3167 "parser.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 1634 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1611 "parser.y"
     {	
   std::stringstream s;
-  s << *(yyvsp[-4].t).code;
+  s << *(yyvsp[(3) - (7)].t).code;
   s << ".L" << nlabel << ":\n";
-  s << *(yyvsp[-3].t).code;
+  s << *(yyvsp[(4) - (7)].t).code;
   s << "popq %rax\n";
   s << "movq $0 $rbx\n";
   s << "cmpq %rax, $rbx\n";
   s << "je .L" << nlabel+1 << "\n";
-  s << *(yyvsp[0].t).code;
-  s << *(yyvsp[-2].t).code;
+  s << *(yyvsp[(7) - (7)].t).code;
+  s << *(yyvsp[(5) - (7)].t).code;
   s << "jmp .L" << nlabel << "\n";
   s << ".L" << nlabel+1 << ":\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
   nlabel += 2;
 }
-#line 3189 "parser.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 1652 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1629 "parser.y"
     {	
   std::stringstream s;
   s << ".L" << nlabel << ":\n";
-  s << *(yyvsp[-5].t).code;
-  s << *(yyvsp[-2].t).code;
+  s << *(yyvsp[(2) - (7)].t).code;
+  s << *(yyvsp[(5) - (7)].t).code;
   s << "popq %rax\n";
   s << "movq $0 $rbx\n";
   s << "cmpq %rax, $rbx\n";
@@ -3205,59 +3342,61 @@ yyreduce:
   vec.push_back((yyval.t).code);
   nlabel += 2;
 }
-#line 3209 "parser.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 1670 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1647 "parser.y"
     {
-  (yyval.t).code = new std::string("movq $1, -8(%rbp)\n");
+  (yyval.t).code = new std::string("");
   vec.push_back((yyval.t).code);
  }
-#line 3218 "parser.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 1674 "parser.y" /* yacc.c:1646  */
-    {
+/* Line 1792 of yacc.c  */
+#line 1651 "parser.y"
+    { 
   std::stringstream s;
-  s << "popq %rax\nmovq %rax, " << -(yyvsp[-1].t).addre << "(%rbp)\n";
+  s << *(yyvsp[(2) - (3)].t).code;
+  s << "popq %rax\n";
   (yyval.t).code = new std::string(s.str());
   vec.push_back((yyval.t).code);
  }
-#line 3229 "parser.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 1683 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1661 "parser.y"
     {}
-#line 3235 "parser.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 1684 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1662 "parser.y"
     {}
-#line 3241 "parser.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 1688 "parser.y" /* yacc.c:1646  */
-    {}
-#line 3247 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1666 "parser.y"
+    { (yyval.t) = (yyvsp[(1) - (1)].t);}
     break;
 
   case 71:
-#line 1689 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1667 "parser.y"
     {}
-#line 3253 "parser.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 1693 "parser.y" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 1671 "parser.y"
     {
   std::stringstream s;
-  s<< *(yyvsp[-1].t).code;
-  s << *(yyvsp[0].t).code;
+  s<< *(yyvsp[(2) - (3)].t).code;
+  s << *(yyvsp[(3) - (3)].t).code;
+	s << "leave\n";
   s << ".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
   s << ".size	";
   s << current_function;
@@ -3268,11 +3407,11 @@ yyreduce:
   current_function = "";
   nfunc++;
  }
-#line 3272 "parser.c" /* yacc.c:1646  */
     break;
 
 
-#line 3276 "parser.c" /* yacc.c:1646  */
+/* Line 1792 of yacc.c  */
+#line 3415 "parser.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3294,7 +3433,7 @@ yyreduce:
 
   *++yyvsp = yyval;
 
-  /* Now 'shift' the result of the reduction.  Determine what state
+  /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
 
@@ -3309,9 +3448,9 @@ yyreduce:
   goto yynewstate;
 
 
-/*--------------------------------------.
-| yyerrlab -- here on detecting error.  |
-`--------------------------------------*/
+/*------------------------------------.
+| yyerrlab -- here on detecting error |
+`------------------------------------*/
 yyerrlab:
   /* Make sure we have latest lookahead translation.  See comments at
      user semantic actions for why this is necessary.  */
@@ -3362,20 +3501,20 @@ yyerrlab:
   if (yyerrstatus == 3)
     {
       /* If just tried and failed to reuse lookahead token after an
-         error, discard it.  */
+	 error, discard it.  */
 
       if (yychar <= YYEOF)
-        {
-          /* Return failure if at end of input.  */
-          if (yychar == YYEOF)
-            YYABORT;
-        }
+	{
+	  /* Return failure if at end of input.  */
+	  if (yychar == YYEOF)
+	    YYABORT;
+	}
       else
-        {
-          yydestruct ("Error: discarding",
-                      yytoken, &yylval);
-          yychar = YYEMPTY;
-        }
+	{
+	  yydestruct ("Error: discarding",
+		      yytoken, &yylval);
+	  yychar = YYEMPTY;
+	}
     }
 
   /* Else will try to reuse lookahead token after shifting the error
@@ -3394,7 +3533,7 @@ yyerrorlab:
   if (/*CONSTCOND*/ 0)
      goto yyerrorlab;
 
-  /* Do not reclaim the symbols of the rule whose action triggered
+  /* Do not reclaim the symbols of the rule which action triggered
      this YYERROR.  */
   YYPOPSTACK (yylen);
   yylen = 0;
@@ -3407,29 +3546,29 @@ yyerrorlab:
 | yyerrlab1 -- common code for both syntax error and YYERROR.  |
 `-------------------------------------------------------------*/
 yyerrlab1:
-  yyerrstatus = 3;      /* Each real token shifted decrements this.  */
+  yyerrstatus = 3;	/* Each real token shifted decrements this.  */
 
   for (;;)
     {
       yyn = yypact[yystate];
       if (!yypact_value_is_default (yyn))
-        {
-          yyn += YYTERROR;
-          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
-            {
-              yyn = yytable[yyn];
-              if (0 < yyn)
-                break;
-            }
-        }
+	{
+	  yyn += YYTERROR;
+	  if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+	    {
+	      yyn = yytable[yyn];
+	      if (0 < yyn)
+		break;
+	    }
+	}
 
       /* Pop the current state because it cannot handle the error token.  */
       if (yyssp == yyss)
-        YYABORT;
+	YYABORT;
 
 
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp);
+		  yystos[yystate], yyvsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -3480,14 +3619,14 @@ yyreturn:
       yydestruct ("Cleanup: discarding lookahead",
                   yytoken, &yylval);
     }
-  /* Do not reclaim the symbols of the rule whose action triggered
+  /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
   YY_STACK_PRINT (yyss, yyssp);
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp);
+		  yystos[*yyssp], yyvsp);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -3498,9 +3637,13 @@ yyreturn:
   if (yymsg != yymsgbuf)
     YYSTACK_FREE (yymsg);
 #endif
-  return yyresult;
+  /* Make sure YYID is used.  */
+  return YYID (yyresult);
 }
-#line 1709 "parser.y" /* yacc.c:1906  */
+
+
+/* Line 2055 of yacc.c  */
+#line 1688 "parser.y"
 
 #include <cstdio>
 #include <string>
@@ -3556,6 +3699,22 @@ void print_printint(){
   s << ".LFE0:\n";
   s << ".size	printint, .-printint\n";
   printf("%s", s.str().c_str());
+  type_t int_param;
+  int_param.element_type = INT_T;
+  int_param.kind = -1;
+  
+  type_t printint;
+  printint.element_type = VOID_T;
+  printint.element_size = 1;
+  printint.kind = 1;
+  std::stringstream s1;
+  std::stringstream s2;
+  s1 << "printint" << " " << "x";
+  s2 << "printint";
+  VariableStack.insert ( std::pair<std::string, type_t>(s1.str(),int_param) );
+  VariableStack.insert(std::pair<std::string, type_t>(s2.str(),printint)); 
+  ParameterStack.insert(std::pair<std::string, type_t>(s1.str(),int_param));
+  
 }
 
 void print_printfloat(){
@@ -3588,15 +3747,61 @@ void print_printfloat(){
   s << ".LFE1:\n";
   s << ".size	printfloat, .-printfloat\n";
   printf("%s", s.str().c_str());
+  
+  type_t int_param;
+  int_param.element_type = FLOAT_T;
+  int_param.kind = -1;
+  
+  type_t printint;
+  printint.element_type = VOID_T;
+  printint.element_size = 1;
+  printint.kind = 1;
+  std::stringstream s1;
+  std::stringstream s2;
+  s1 << "printfloat" << " " << "x";
+  s2 << "printfloat";
+  VariableStack.insert ( std::pair<std::string, type_t>(s1.str(),int_param) );
+  VariableStack.insert(std::pair<std::string, type_t>(s2.str(),printint)); 
+  ParameterStack.insert(std::pair<std::string, type_t>(s1.str(),int_param));
+
 }
+
+void print_malloc_int(){
+std::stringstream s;
+s << "malloc_int:\n";
+s << ".LFB2:\n";
+s << ".cfi_startproc\n";
+s << "pushq %rbp\n";
+s << ".cfi_def_cfa_offset 16\n";
+s << ".cfi_offset 6, -16\n";
+s << "movq %rsp, %rbp\n";
+s << ".cfi_def_cfa_register 6\n";
+s << "subq $32, %rsp\n";
+s << "movq %rdi, -20(%rbp)\n";
+s << "movq $4, %rdi\n";
+s << "call malloc\n";
+s << "movq %rax, -8(%rbp)\n";
+s << "movq -8(%rbp), %rax\n";
+s << "movq -20(%rbp), %rdx\n";
+s << "movq %rdx, (%rax)\n";
+s << "movq -8(%rbp), %rax\n";
+s << "leave\n";
+s << ".cfi_def_cfa 7, 8\n";
+s << "ret\n";
+s << ".cfi_endproc\n";
+s << ".LFE2:\n";
+s << ".size malloc_int, .-malloc_int\n";
+printf("%s", s.str().c_str());
+} 
 
 
 int main (int argc, char *argv[]) {
   FILE *input = NULL;
   if (argc==2) {
     printf(".file	\"%s\"\n",argv[1]);
-    print_printint();
-    print_printfloat();
+    print_printint();nfunc++;
+    print_printfloat();nfunc++;
+    print_malloc_int();nfunc++;
     input = fopen (argv[1], "r");
     file_name = strdup (argv[1]);
     if (input) {

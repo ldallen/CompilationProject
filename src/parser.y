@@ -87,7 +87,7 @@ primary_expression
   $$.kind = -1;
   vec.push_back($$.code);
   }
-| FCONSTANT {
+| FCONSTANT { //non correct
   std::stringstream s;
   s << "pushq $" << $1 << "\n";
   $$.code = new std::string(s.str());
@@ -177,23 +177,13 @@ primary_expression
     s << "(%rbp)\n";
   }
   else if (local_identifier.element_type == FLOAT_T){
-    s << "fld1\n";
-    s << "fstp DWORD %xmm0\n";
-    //s << "fld st0\n";
-    //s << "movss st0, %xmm0\n";
-    /*s << "movss ";
-      s << -local_identifier.addre;
-      s << "(%rbp)";
-      s << ", %xmm1\n";*/
-    s << "fstp QWORD %xmm1\n";
-    s << "addss %xmm0, %xmm1\n";
-    /*s << "movss %xmm1, ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";
-      s << "pushq ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";*/
-    s << "fld QWORD %xmm1\n" ;
+	s << "movq " << -local_identifier.addre << "(%rbp), %rax\n";
+    s << "movq %rax, %xmm0\n";
+	s << "movq " << "$1" << ", %rbx\n";
+	s << "movq %rbx, %xmm1\n";
+	s << "addss %xmm1,%xmm0\n";
+	s << "movq %xmm0,%rax\n";
+	s << "pushq %rax\n";
   }
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
@@ -211,28 +201,18 @@ primary_expression
     s << "(%rbp)\n";
   }
   else if(local_identifier.element_type == FLOAT_T){
-    s << "fld1\n";
-    s << "fstp QWORD %xmm0\n";
-    //s << "movq $1, %rax\n";
-    //s << "movss st0, %xmm0\n";
-    /*s << "movss ";
-      s << -local_identifier.addre;
-      s << "(%rbp)";*/
-    s << "fstp QWORD %xmm1\n";
-    //s << ", %xmm1\n";
-    s << "subss %xmm0, %xmm1\n";
-    /*s << "movss %xmm1, ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";*/
-    /*s << "pushq ";
-      s << -local_identifier.addre;
-      s << "(%rbp)\n";*/
-    s << "fld QWORD %xmm1\n";
+    s << "movq " << -local_identifier.addre << "(%rbp), %rax\n";
+    s << "movq %rax, %xmm0\n";
+	s << "movq " << "$1" << ", %rbx\n";
+	s << "movq %rbx, %xmm1\n";
+	s << "subss %xmm1,%xmm0\n";
+	s << "movq %xmm0,%rax\n";
+	s << "pushq %rax\n";
   }
   $$.code = new std::string(s.str());
   vec.push_back($$.code);
  }
-| IDENTIFIER '[' expression ']' { //changer $$.kind
+| IDENTIFIER '[' expression ']' {
   type_t local_identifier = VariableStack[current_function + " "+$1];
   $$ = local_identifier; 
 	  if(local_identifier.kind == 0)
@@ -296,13 +276,11 @@ unary_expression
   else if ($2.element_type == FLOAT_T){
     std::stringstream s;
     s << *$2.code;
-    s << "fstp QWORD %xmm0\n"; 
-    //s << "popq %rax\n";
-    s << "negss %xmm0\n";
-    //s << "pushq %rax\n";
-    s << "fld QWORD %xmm0\n";
-    $$.code = new std::string(s.str());
-    vec.push_back($$.code);
+    s << "popq %rax";
+    s << "movq %rax, %xmm0\n";
+	s << "negss %xmm0\n";
+	s << "movq %xmm0,%rax\n";
+	s << "pushq %rax\n";
   }
   else{
 		perror("Irregular Operation\n");
@@ -331,22 +309,19 @@ unary_expression
   else if ($2.element_type == FLOAT_T){
     std::stringstream s;
     s << *$2.code;
-    /*s << "popq %rax\n";
-      s << "movq $0, %rbx\n\n";
-      s << "movss %rax, %xmm0\n";
-      s << "movss %rbx, %xmm1\n";*/
-    s << "fldz\n";
-    s << "fstp QWORD %xmm0";
-    s << "fstp QWORD %xmm1";
+    s << "popq %rax";
+    s << "movq %rax, %xmm0\n";
+    s << "movq " << "$1" << ", %rbx\n";
+    s << "movq %rbx, %xmm1\n";
     s << "cmpeqss %xmm0, %xmm1\n";
     s << "jne L" << nlabel << "\n";
-    s << "fld1\n";
+    s << "pushq $1\n";
     s << "jmp L" << (nlabel+1) << "\n";
     s << ".L" << nlabel << ":\n";
-    s << "fldz\n";
+    s << "pushq $0\n";
     s << ".L"<< (nlabel+1) <<":\n";
     $$.code = new std::string(s.str());
-    vec.push_back($$.code); 
+    vec.push_back($$.code);
     nlabel += 2;
   }
     else{
@@ -382,36 +357,30 @@ multiplicative_expression
       s << *$1.code;
       s << *$3.code;
       s << "popq %rax\n";
-      //s << "popq %rbx\n";
-      s << "fild QWORD %rax\n";
-      s << "fstp QWORD %xmm0\n";
-      //s << "movss %rbx, %xmm0\n";
-      s << "fstp QWORD %xmm1\n"; 
-      s << "mulss %xmm0, %xmm1\n";
-      //s << "movss %xmm1, %rax\n";
-      s << "fld QWORD %xmm1\n";
-      //s << "pushq %rax\n";
+      s << "movq %rax, %xmm0\n";
+      s << "popq %rbx\n";
+	  s << "movq %rbx, %xmm1\n";
+	  s << "mulss %xmm1,%xmm0\n";
+	  s << "movq %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
   else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
     {
       $$.element_type = FLOAT_T;
-      $$.element_type = FLOAT_T;
       std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      //s << "popq %rax\n";
       s << "popq %rax\n";
-      s << "fild QWORD %rax";
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n"; 
-      /*s << "movss %rbx, %xmm0\n";
-	s << "movss %rax, %xmm1\n";*/
-      s << "mulss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+      s << "movq %rax, %xmm0\n";
+      s << "popq %rbx\n";
+	  s << "movq %rbx, %xmm1\n";
+	  s << "mulss %xmm1,%xmm0\n";
+	  s << "movq %xmm0,%rax\n";
+	  s << "pushq %rax\n";
+      $$.code = new std::string(s.str());
+      vec.push_back($$.code);
     }
   else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
     {
@@ -419,23 +388,16 @@ multiplicative_expression
       std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      /*s << "popq %rax\n";
-	s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "mulss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n" ;
+      s << "popq %rax\n";
+      s << "movq %rax, %xmm0\n";
+      s << "popq %rbx\n";
+	  s << "movq %rbx, %xmm1\n";
+	  s << "mulss %xmm1,%xmm0\n";
+	  s << "movq %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
-      else{
-		perror("Irregular Operation\n");
-		exit(EXIT_FAILURE);
-	}
   }
 ;
 
@@ -464,63 +426,52 @@ additive_expression
       std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      s << "popq %rax\n";
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fild QWORD %rax\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "addss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n" ;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "addss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
   else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
     {
       $$.element_type = FLOAT_T;
-      std::stringstream s;
+     std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      s << "popq %rax\n";
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fild QWORD %rax\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n" ;
-      s << "addss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "addss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
   else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
     {
       $$.element_type = FLOAT_T;
-      std::stringstream s;
+     std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      /*s << "popq %rax\n";
-	s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm1\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "addss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "addss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
-      else{
-		perror("Irregular Operation\n");
+    else{
+		perror("irregular operation");
 		exit(EXIT_FAILURE);
-	}
+    }
   }
 | additive_expression '-' multiplicative_expression {
   $$ = $1;
@@ -540,59 +491,48 @@ additive_expression
   else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T))
     {
       $$.element_type = FLOAT_T;
-      std::stringstream s;
+     std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      s << "popq %rax\n";
-      s << "fild QWORD %rax\n" ;
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "subss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n";
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "subss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
   else if (($1.element_type == FLOAT_T)&&($3.element_type == INT_T))
     {
       $$.element_type = FLOAT_T;
-      std::stringstream s;
+     std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      s << "popq %rax\n";
-      s << "fild QWORD %rax\n";
-      /*s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm1\n";
-      s << "fstp QWORD %xmm0\n";
-      s << "subss %xmm0, %xmm1\n";
-      /*s << "movss %xmm1, %rax\n";
-	s << "pushq %rax\n";*/
-      s << "fld QWORD %xmm1\n" ;
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "subss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
   else if (($1.element_type == FLOAT_T)&&($3.element_type == FLOAT_T))
     {
       $$.element_type = FLOAT_T;
-      std::stringstream s;
+     std::stringstream s;
       s << *$1.code;
       s << *$3.code;
-      /*s << "popq %rax\n";
-	s << "popq %rbx\n";
-	s << "movss %rax, %xmm0\n";
-	s << "movss %rbx, %xmm1\n";*/
-      s << "fstp QWORD %xmm0\n";
-      s << "fstp QWORD %xmm1\n";
-      s << "subss %xmm0, %xmm1\n";
-      //s << "movss %xmm1, %rax\n";
-      //s << "pushq %rax\n";
-      s << "fld QWORD %xmm1\n";
+	  s << "popq %rax\n";
+	  s << "movd %rax, %xmm0\n";
+	  s << "popq %rbx\n";
+	  s << "movd %rbx, %xmm1\n";
+	  s << "subss %xmm1,%xmm0\n";
+	  s << "movd %xmm0,%rax\n";
+	  s << "pushq %rax\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
     }
@@ -1287,7 +1227,7 @@ declarator
 	  }
 	  $$.element_type = bt;
 	  $$.kind = -1 ;
-	  $$.code = new std::string("");
+	  $$.code = new std::string("pushq %rax\n");
 	  vec.push_back($$.code);
 	  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
 		}
@@ -1295,7 +1235,7 @@ declarator
   
   	  $$.element_type = bt;
 	  $$.kind = -1 ;
-	  $$.code = new std::string("");
+	  $$.code = new std::string("pushq %rax\n");
 	  vec.push_back($$.code);
       temp_param_stack.insert(std::pair<std::string, type_t>($1,$$));
   }
@@ -1313,7 +1253,7 @@ declarator
 		  $$.addre = addr;
 		  $$.element_type = (type)(bt+1); 
 		  $$.kind = -1;
-		  $$.code = new std::string("");
+		  $$.code = new std::string("pushq %rax\n");
 		  vec.push_back($$.code);
 		  VariableStack.insert ( std::pair<std::string, type_t>(current_function +" "+$2,$$) );
 		}
@@ -1323,7 +1263,7 @@ declarator
   		$$.addre = addr;
   		$$.element_type = (type)(bt+1); 
 		$$.kind = -1;
-  		$$.code = new std::string("");
+  		$$.code = new std::string("pushq %rax\n");
 		vec.push_back($$.code);
 		temp_param_stack.insert(std::pair<std::string, type_t>($2,$$));
   }
@@ -1336,7 +1276,7 @@ declarator
 	  $$.element_size = $3; 
 	  addr += 8*$3 ; 
 	  $$.addre = addr; 
-	  $$.code = new std::string(""); 
+	  $$.code = new std::string("pushq %rax\n"); 
 	  vec.push_back($$.code); 
 	  VariableStack.insert( std::pair<std::string, type_t>(current_function +" "+$1,$$) );
   }
@@ -1384,6 +1324,7 @@ declarator
 	  ss2 <<" ";
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second)); //on duplique pour pouvoir rechercher les parametres facilement hors de la fonction
+	  s << "pushq %rax\n";
 	switch(i){
 		case 0:
 		s <<"movq	%rdi, -8(%rbp)\n";
@@ -1452,7 +1393,7 @@ declarator
 	  ss2 <<" ";
 	  ss2 << i;
 	  ParameterStack.insert(std::pair<std::string, type_t>(ss2.str(),it->second));
-
+    s << "pushq %rax\n";
 	switch(i){
 		case 0:
 		s <<"movq	%rdi, -8(%rbp)\n";
@@ -1722,7 +1663,7 @@ program
 ;
 
 external_declaration
-: function_definition  {}
+: function_definition  { $$ = $1;}
 | declaration {}
 ;
 
@@ -1731,13 +1672,7 @@ function_definition
   std::stringstream s;
   s<< *$2.code;
   s << *$3.code;
-  if(current_function == "main")
-  {
 	s << "leave\n";
-  }
-  else{
-  s <<  "popq	%rbp\n";
-  }
   s << ".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
   s << ".size	";
   s << current_function;

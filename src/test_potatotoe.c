@@ -1,20 +1,19 @@
-
-int foo1(int a, int b, int c, int d, int e, int f, int g, float h)
+int foo()
 {
-	return a+b+c+d+e+f+g+h;
+		int x;
+		x = 3;
+		return x;
 }
-
-void foo2(int a, int b, int c, int d, int e, int f, int g, int h)
-{
-	a=a+b+c+d+e+f+g+h;
-}
-
 int main()
 {
-  foo1(1,0,3,4,5,6,7,2.0);
-  int y[10];
-  int * x = y;
-  x[3]=2;
+  int x;
+  int y;
+  x = 3;
+  y = 10;
+  if(x < y)
+	printint(x+y);
+  x = foo();
+  printint(x);
   
   return 0;
 }
