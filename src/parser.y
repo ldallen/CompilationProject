@@ -121,10 +121,9 @@ primary_expression
   {
 	std::stringstream ss;
 	ss << $1 << " "<< i;
-	
 	if( ParameterStack[ss.str()].element_type != temp_appel_param_stack[i].element_type){
 	
-		printf("type %d -> %d\n", ParameterStack[ss.str()].element_type, temp_appel_param_stack[i].element_type);
+		
 		//perror("type not valid (argument)");
 		//exit(EXIT_FAILURE);
 	}
@@ -150,6 +149,7 @@ primary_expression
 
   s << "call " << $1 << "\n";
   $$.code = new std::string(s.str());
+  temp_appel_param_stack.clear();
   }
 
 | IDENTIFIER INC_OP {
@@ -1172,6 +1172,7 @@ expression
   }
   else if(local_identifier.element_type == INTSTAR_T || local_identifier.element_type == FLOATSTAR_T) 
   {
+  
 	 if($3.element_type == local_identifier.element_type && $3.kind == -1) // egalite entre pointeurs
 	 {
 	    std::stringstream s;
@@ -1182,7 +1183,7 @@ expression
 		$$.code = new std::string(s.str());
 		vec.push_back($$.code);
 	 }
-	 else if(($3.kind = 0) && ($3.element_type == local_identifier.element_type + 1)) //pointeur egal vecteur
+	 else if(($3.kind == 0) && ($3.element_type == local_identifier.element_type - 1)) //pointeur egal vecteur
 	 {
 	  std::stringstream s;
 	  s << *$3.code;
@@ -1192,7 +1193,6 @@ expression
 	 }
 	 else
 	 {
-	 
 		perror("invalid operation");
 		exit(EXIT_FAILURE);
 	 
