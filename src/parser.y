@@ -158,7 +158,8 @@ primary_expression
 	}	  
   }	
 
-  s << "call " << $1 << "\n";
+  s << "call " << $1 <<"\n";
+	s << "pushq %rax\n";
   $$.code = new std::string(s.str());
   temp_appel_param_stack.clear();
   }
@@ -1724,7 +1725,14 @@ function_definition
   std::stringstream s;
   s<< *$2.code;
   s << *$3.code;
-  s << "popq	%rbp\n.cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
+  if(current_function == "main")
+  {
+	s << "leave\n";
+  }
+  else{
+  s <<  "popq	%rbp\n";
+  }
+  s << ".cfi_def_cfa 7, 8\nret\n.cfi_endproc\n.LFE" << nfunc << ":\n";
   s << ".size	";
   s << current_function;
   s << ", .-" << current_function << "\n"; 
@@ -1791,6 +1799,22 @@ void print_printint(){
   s << ".LFE0:\n";
   s << ".size	printint, .-printint\n";
   printf("%s", s.str().c_str());
+  type_t int_param;
+  int_param.element_type = INT_T;
+  int_param.kind = -1;
+  
+  type_t printint;
+  printint.element_type = VOID_T;
+  printint.element_size = 1;
+  printint.kind = 1;
+  std::stringstream s1;
+  std::stringstream s2;
+  s1 << "printint" << " " << "x";
+  s2 << "printint";
+  VariableStack.insert ( std::pair<std::string, type_t>(s1.str(),int_param) );
+  VariableStack.insert(std::pair<std::string, type_t>(s2.str(),printint)); 
+  ParameterStack.insert(std::pair<std::string, type_t>(s1.str(),int_param));
+  
 }
 
 void print_printfloat(){
@@ -1823,6 +1847,23 @@ void print_printfloat(){
   s << ".LFE1:\n";
   s << ".size	printfloat, .-printfloat\n";
   printf("%s", s.str().c_str());
+  
+  type_t int_param;
+  int_param.element_type = FLOAT_T;
+  int_param.kind = -1;
+  
+  type_t printint;
+  printint.element_type = VOID_T;
+  printint.element_size = 1;
+  printint.kind = 1;
+  std::stringstream s1;
+  std::stringstream s2;
+  s1 << "printfloat" << " " << "x";
+  s2 << "printfloat";
+  VariableStack.insert ( std::pair<std::string, type_t>(s1.str(),int_param) );
+  VariableStack.insert(std::pair<std::string, type_t>(s2.str(),printint)); 
+  ParameterStack.insert(std::pair<std::string, type_t>(s1.str(),int_param));
+
 }
 
 void print_malloc_int(){
@@ -1858,9 +1899,9 @@ int main (int argc, char *argv[]) {
   FILE *input = NULL;
   if (argc==2) {
     printf(".file	\"%s\"\n",argv[1]);
-    //print_printint();nfunc++;
-    //print_printfloat();nfunc++;
-    //print_malloc_int();nfunc++;
+    print_printint();nfunc++;
+    print_printfloat();nfunc++;
+    print_malloc_int();nfunc++;
     input = fopen (argv[1], "r");
     file_name = strdup (argv[1]);
     if (input) {
