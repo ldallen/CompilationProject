@@ -10,10 +10,11 @@ int main()
   int y;
   x = 3;
   y = 10;
-  if(x < y)
-	printint(x+y);
-  x = foo();
-  printint(x);
+  while(x>0)
+  {
+	 printint(x); 
+	  x--;
+  }
   
   return 0;
 }

@@ -653,12 +653,14 @@ comparison_expression
       s << "popq %rbx\n";
       s << "cmpq %rax, %rbx\n";
       s << "jg .L" << nlabel << "\n";
-      s << "pushq $1\n";
-      s << ".L" << nlabel << ":\n";
       s << "pushq $0\n";
+      s << "jmp .L" << (nlabel + 1) << "\n";
+      s << ".L" << nlabel << ":\n";
+      s << "pushq $1\n";
+      s << ".L" << (nlabel+1) << ":\n";
       $$.code = new std::string(s.str());
       vec.push_back($$.code);
-      nlabel++;
+      nlabel+=2;
     }
   else if (($1.element_type == INT_T)&&($3.element_type == FLOAT_T)){
     $$.element_type = FLOAT_T;
@@ -1597,8 +1599,8 @@ iteration_statement
   s << ".L" << nlabel << ":\n";
   s << *$3.code;
   s << "popq %rax\n";
-  s << "movq $0 $rbx\n";
-  s << "cmpq %rax, $rbx\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rax, %rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << *$5.code;
   s << "jmp .L" << nlabel << "\n";
@@ -1614,8 +1616,8 @@ iteration_statement
   s << ".L" << nlabel << ":\n";
   s << *$4.code;
   s << "popq %rax\n";
-  s << "movq $0 $rbx\n";
-  s << "cmpq %rax, $rbx\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rax, %rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << *$7.code;
   s << *$5.code;
@@ -1632,8 +1634,8 @@ iteration_statement
   s << *$2.code;
   s << *$5.code;
   s << "popq %rax\n";
-  s << "movq $0 $rbx\n";
-  s << "cmpq %rax, $rbx\n";
+  s << "movq $0, %rbx\n";
+  s << "cmpq %rax, %rbx\n";
   s << "je .L" << nlabel+1 << "\n";
   s << "jmp .L" << nlabel << "\n";
   s << ".L" << nlabel+1 << ":\n";
