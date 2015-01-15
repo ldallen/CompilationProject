@@ -1,6 +1,6 @@
 LEX=lex
 YACC=bison
-CFLAGS=-Wall -std=gnu++11 -g
+CFLAGS=-Wall -std=c++11 -g
 CC=g++
 
 all: parser

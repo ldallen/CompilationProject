@@ -23,7 +23,10 @@
   int addr = 0;
   int nlabel = 0;
   int nfunc = 0;
+  int extensionlabel = 0;
   string current_function;
+  string codecore;
+  string extensioncode;
   vector<std::string*> vec;
   map<std::string, type_t> VariableStack;
   map<std::string, type_t> ParameterStack; //pour comparer à l'appel
@@ -1708,19 +1711,116 @@ function_definition
 pragma_statement
 : PRAGMA FOR '(' IDENTIFIER '=' ICONSTANT ';' IDENTIFIER '<' ICONSTANT ';' IDENTIFIER '=' IDENTIFIER '+' ICONSTANT ')' statement {
 
-	if ( !($4 == $8 && $4 == $12 && $4 == $14))
-	{
-		perror("indentifer must be UNIQUE");
-		exit(EXIT_FAILURE);
-	}
-	if($16 != 1)
-	{
-		perror("increment must be of size 1");
-		exit(EXIT_FAILURE);
-	}
-	
-
-}
+  if ( (std::strcmp($4, $8) || std::strcmp($4,$12) || std::strcmp($4,$14)))
+    {
+      perror("identifer must be UNIQUE");
+      exit(EXIT_FAILURE);
+    }
+  if($16 != 1)
+    {
+      perror("increment must be of size 1");
+      exit(EXIT_FAILURE);
+    }
+  else 
+    {
+      std::stringstream ssj1;
+      std::stringstream extensioncore;
+      int debut = $6;
+      int milieu = ($10/2);
+      int fin = $10;
+      int increment = $16;
+      ssj1 << "call startthread" << extensionlabel << "\n";
+      $$.code = new std::string(ssj1.str());
+      extensioncore << "start"<< extensionlabel <<":\n";
+      extensioncore << ".LFBEXT"<< extensionlabel <<":\n";
+      extensioncore << ".cfi_startproc\n";
+      extensioncore << "pushq	%rbp\n";
+      extensioncore << ".cfi_def_cfa_offset 16\n";
+      extensioncore << ".cfi_offset 6, -16\n";
+      extensioncore << "movq	%rsp, %rbp\n";
+      extensioncore << ".cfi_def_cfa_register 6\n";
+      extensioncore << "subq	$16, %rsp\n";
+      extensioncore << "movq	$" << debut << ", -8(%rbp)\n";
+      extensioncore << "jmp	.LEXT" << extensionlabel + 2<< "\n";
+      extensioncore << ".LEXT" << extensionlabel + 3 <<":\n";
+      extensioncore << "movq	-8(%rbp), %rax\n";
+      extensioncore << "movq	%rax, %rsi\n";
+      extensioncore <<  *$18.code ;
+      extensioncore << "addq	$" << increment << ", -8(%rbp)\n";
+      extensioncore << ".LEXT" << extensionlabel +2 << ":\n";
+      extensioncore << "cmpq	$" << milieu - 1<< ", -8(%rbp)\n";
+      extensioncore << "jle	.LEXT"<< extensionlabel + 3<<"\n";
+      extensioncore << "movq	$0, %rax\n";
+      extensioncore << "leave\n";
+      extensioncore << ".cfi_def_cfa 7, 8\n";
+      extensioncore << "ret\n";
+      extensioncore << ".cfi_endproc\n";
+      extensioncore << ".LFEEXT" << extensionlabel <<":\n";
+      extensioncore << ".size	start" << extensionlabel << ", .-start" << extensionlabel << "\n";
+      extensioncore << "start" <<  extensionlabel + 1 << ":\n";
+      extensioncore << ".LFBEXT" << extensionlabel + 1 << ":\n";
+      extensioncore << ".cfi_startproc\n";
+      extensioncore << "pushq	%rbp\n";
+      extensioncore << ".cfi_def_cfa_offset 16\n";
+      extensioncore << ".cfi_offset 6, -16\n";
+      extensioncore << "movq	%rsp, %rbp\n";
+      extensioncore << ".cfi_def_cfa_register 6\n";
+      extensioncore << "subq	$16, %rsp\n";
+      extensioncore << "movq	$" << milieu  << ", -8(%rbp)\n";
+      extensioncore << "jmp	.LEXT" << extensionlabel + 4<< "\n";
+      extensioncore << ".LEXT" << extensionlabel + 5<< ":\n";
+      extensioncore << "movq	-8(%rbp), %rax\n";
+      extensioncore << "movq	%rax, %rsi\n"<< *$18.code << "addq	$" << increment <<", -8(%rbp)\n";
+      extensioncore << ".LEXT" << extensionlabel + 4 << ":\n";
+      extensioncore << "cmpq	$" << fin - 1 <<", -8(%rbp)\n";
+      extensioncore << "jle	.LEXT" << extensionlabel + 5<< "\n";
+      extensioncore << "movq	$0, %rax\n";
+      extensioncore << "leave\n";
+      extensioncore << ".cfi_def_cfa 7, 8\n";
+      extensioncore << "ret\n";
+      extensioncore << ".cfi_endproc\n";
+      extensioncore << ".LFEEXT"<< extensionlabel + 1 << ":\n";
+      extensioncore << ".size	start" << extensionlabel +1 << ", .-start" << extensionlabel +1 << "\n";
+      extensioncore << "startthread" << extensionlabel << ":\n";
+      extensioncore << ".LFBEXT" << extensionlabel + 2 <<":\n";
+      extensioncore << ".cfi_startproc\n";
+      extensioncore << "pushq	%rbp\n";
+      extensioncore << ".cfi_def_cfa_offset 16\n";
+      extensioncore << ".cfi_offset 6, -16\n";
+      extensioncore << "movq	%rsp, %rbp\n";
+      extensioncore << ".cfi_def_cfa_register 6\n";
+      extensioncore << "subq	$16, %rsp\n";
+      extensioncore << "leaq	-16(%rbp), %rax\n";
+      extensioncore << "movq	$0, %rcx\n";
+      extensioncore << "movq	$start" << extensionlabel << ", %rdx\n";
+      extensioncore << "movq	$0, %rsi\n";
+      extensioncore << "movq	%rax, %rdi\n";
+      extensioncore << "call	pthread_create\n";
+      extensioncore << "leaq	-16(%rbp), %rax\n";
+      extensioncore << "addq	$8, %rax\n";
+      extensioncore << "movq	$0, %rcx\n";
+      extensioncore << "movq	$start" << extensionlabel +1<<", %rdx\n";
+      extensioncore << "movq	$0, %rsi\n";
+      extensioncore << "movq	%rax, %rdi\n";
+      extensioncore << "call	pthread_create\n";
+      extensioncore << "movq	-16(%rbp), %rax\n";
+      extensioncore << "movq	$0, %rsi\n";
+      extensioncore << "movq	%rax, %rdi\n";
+      extensioncore << "call	pthread_join\n";
+      extensioncore << "movq	-8(%rbp), %rax\n";
+      extensioncore << "movq	$0, %rsi\n";
+      extensioncore << "movq	%rax, %rdi\n";
+      extensioncore << "call	pthread_join\n";
+      extensioncore << "leave\n";
+      extensioncore << ".cfi_def_cfa 7, 8\n";
+      extensioncore << "ret\n";
+      extensioncore << ".cfi_endproc\n";
+      extensioncore << ".LFEXT" << extensionlabel + 2 << ":\n";
+      extensioncore << ".size	startthread" << extensionlabel << ", .-startthread" << extensionlabel <<"\n";
+      extensioncode += extensioncore.str();
+      extensionlabel += 5;
+    }
+ }
 ;
 
 %%
@@ -1741,7 +1841,7 @@ int yyerror (const char *s) {
 }
 
 void printCode (std::string* code) {
-  std::cout << *code;
+  codecore += *code;
   for (std::string* i : vec)
     {
       delete(i);
@@ -1902,6 +2002,8 @@ int main (int argc, char *argv[]) {
     if (input) {
       yyin = input;
       yyparse();
+      std::cout << extensioncode;
+      std::cout << codecore ;
     }
     else {
       fprintf (stderr, "%s: Could not open %s\n", *argv, argv[1]);
